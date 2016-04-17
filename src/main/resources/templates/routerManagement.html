@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/css/dropzone.css" />
+
+
+    <script th:replace="header :: header"></script>
+
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
+    <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
+
+</head>
+
+<body>
+<div th:replace="navbar :: navbar(${user})"></div>
+
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'pj_sb_router'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">主页</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">监控管理配置</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">设备</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">路由器</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <span class="input-icon">
+                        <input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                        <i class="icon-search nav-search-icon"></i>
+                    </span>
+                </div><!-- #nav-search -->
+            </div>
+        </div><!-- /.main-content -->
+        <div class="page-content">
+            <div>
+                <div class="col-xs-10">
+                    <div id="routerModelGrid"  ></div>
+                </div>
+            </div>
+            <!--路由器模板-->
+            <div id="routerModelWnd" style="display:none">
+                <div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 52px" >路由器编号:</label>
+                        <input  style="height:30px;width:400px" id="routerSerialNumber"/><label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 36px" >路由器S/N号:</label>
+                        <input  style="height:30px;width:400px" id="routerSN"/>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 67px">购买时间:</label>
+                        <input  style="height:30px;width:400px" id="routerPurchasingDate" placeholder="请选择..." border="1"/>
+
+                    </div>
+
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 40px" >维保到期时间:</label>
+                        <input  style="height:30px;width:400px" id="routerMaintenanceDueTime" placeholder="请选择..." border="1"/>
+
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 53px" >路由器品牌:</label>
+                        <input  style="height:30px;width:400px"  id="routerBrand" />
+
+                    </div>
+
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 52px" >路由器型号:</label>
+                        <input  style="height:30px;width:400px" id="routerType"/>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 65px" >路由器IP:</label>
+                        <input  style="height:30px;width:400px" id="routerIP"/><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 85px" >Group:</label>
+                        <input  style="height:30px;width:400px" id="routerGroup"/><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 92px" >SNMP:</label>
+                        <input  style="height:30px;width:113px" id="routerSNMP"/>
+                        <label style="margin-left: 100px" >端口号:</label>
+                        <input  style="height:30px;width:119px" id="routerPort"/>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 62px" >应用名称:</label>
+                        <input  style="height:30px;width:400px;margin-left:1px"  id="routerApplicationName" /><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 62px" >所在机柜:</label>
+                        <input  style="height:30px;width:400px;margin-left:1px"  id="routerEquipmentCabinet" /><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 82px" >所在U:</label>
+                        <input  style="height:30px;width:100px;margin-left:1px"  id="routerU1" onchange="compare()"/><label style="color: red;margin-left: 5px">*</label>
+                        ——
+                        <input  style="height:30px;width:100px"  id="routerU2" onchange="compare()" /><label style="color: red;margin-left: 5px">*</label>
+                        <lable style="margin-left:60px" id="routerUHeight">共  U高度</lable>
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 90px">备注:</label>
+                        <textarea   style="height:70px;width:400px;margin-left:2px" rows="5" cols="30" id="routerRemark" />
+
+                    </div>
+
+                    <div style="margin-left:190px;margin-top:20px;">
+                        <button id="saveRouterModel"  class="k-button" style="marginleft: 180px;"onclick="submitRouterModel()">
+                            <i class="icon-ok"></i>
+                            保存
+                        </button>
+                        <button id="closeRouterModel"  class="k-button" style="margin-left: 100px;" >
+                            <i class="icon-remove"></i>
+                            取消
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            <div id="routerInputWnd" style="display:none">
+                <div class="file-box">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input type='file' name='textfield' style="margin-left:80px;margin-top:40px;height:25px" />
+                    </form>
+                    <button style="margin-left:400px;margin-top:25px;height:25px">导入</button>
+                    <button id="closeRouterFolder" style="margin-left:20px;margin-top:25px;height:25px">取消</button>
+                </div>
+            </div>
+            <div id="routerOutputWnd" style="display:none">
+                <div style="margin-top: 10px">
+                    <label style="margin-left: 52px" >选择路由器:</label>
+                    <input  style="margin-left: 10px;height:30px;width:400px" id="routerSelection"/><label style="color: red;margin-left: 5px">*</label>
+                    <button style="margin-left:400px;margin-top:80px;height:25px">导出</button>
+                    <button id="closeRouterSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
+                </div>
+            </div>
+
+        </div><!-- /.page-content -->
+    </div><!-- /.main-container-inner -->
+</div><!-- /.main-container -->
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="icon-double-angle-up icon-only bigger-110"></i>
+</a>
+
+<script src="/js/elementUseage.js"></script>
+
+<script src='/assets/js/jquery-2.0.3.min.js'></script>
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script src="/assets/js/excanvas.min.js"></script>
+<![endif]-->
+
+<script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
+<script src="/assets/js/jquery.slimscroll.min.js"></script>
+<script src="/assets/js/jquery.easy-pie-chart.min.js"></script>
+<script src="/assets/js/jquery.sparkline.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.pie.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.resize.min.js"></script>
+<script src="/assets/js/dropzone.min.js"></script>
+
+
+
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/js/jSingnature/libs/flashcanvas.js"></script>
+<![endif]-->
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+
+<script src="/js/console.js"></script>
+<script src="/js/kendo.web.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+    var crudServiceBaseUrl ="/predictCenter/api/router";  //根地址
+    var dropDownListUrl="/predictCenter/api/dropDownList";//获取下拉列表的根路径
+    var tabStrip = $("#tabStrip").kendoTabStrip().data("kendoTabStrip");      //切换grid
+
+    /*声明dataSource*/
+    var routerModelGridDataSource;
+    /*声明弹出的窗体*/
+    var routerModelWnd;
+    var routerInputWnd;
+    var routerOutputWnd;
+
+
+
+
+    /*声明数据选中行的id*/
+    var routerModelRecordId;
+    /*服务器模板*/
+    // 数据源
+    function setRouterModelGridDataSource(){
+        routerModelGridDataSource=new kendo.data.DataSource({
+            transport: {
+                read:  {
+                    url: crudServiceBaseUrl + "/getAllRouters",
+                    dataType: "json"
+                },
+                create:{
+                    url:crudServiceBaseUrl+"/createAndUpdateRouter",
+                    dataType:"json"
+                },
+                destroy:{
+                    url:crudServiceBaseUrl+"/deleteRouter",
+                    dataType:"json"
+                }
+            },
+            batch: true,
+            pageSize: 20,
+            schema: {
+                model: {
+                    id: "id",
+                    fields: {
+                        id: { editable: false, nullable: true },
+                        routerSerialNumber:{validation:{required: { message: "必填项" } }},
+                        routerIP:{validation:{required: { message: "必填项" } }},
+                        routerGroup:{validation:{required: { message: "必填项" } }},
+                        routerApplicationName:{validation:{required: { message: "必填项" } }},
+                        routerEquipmentCabinet:{validation:{required: { message: "必填项" } }},
+                        routerU1:{validation:{required: { message: "必填项" } }},
+
+                    }
+                }
+            }
+        });
+    }
+    //路由器模板 数据表
+    function setRouterModelGrid(){
+        $("#routerModelGrid").kendoGrid({
+            dataSource:routerModelGridDataSource,
+            toolbar:[{template: kendo.template($("#routerModel_toolbar").html())},
+                     {template: kendo.template($("#inputModel_toolbar").html())},
+                     {template: kendo.template($("#outputModel_toolbar").html())}],
+            columns:[
+                {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+                { field:"routerSerialNumber",title:"路由器编号"},
+                { field: "routerSN", title: "路由器S/N号",width:"8%",hidden:true},
+                { field: "routerPurchasingDate", title: "购买时间",hidden:true},
+                { field: "routerMaintenanceDueTime", title: "维保到期时间",hidden:true},
+                { field: "routerBrand", title: "路由器品牌",template:"#=getBrandNameById(routerBrand)#",hidden:true},
+                { field: "routerType", title: "路由器型号",hidden:true},
+                { field: "routerIP", title: "路由器IP"},
+                { field: "routerGroup", title: "Group",hidden:true},
+                { field: "routerSNMP", title: "SNMP",width:"5%",hidden:true},
+                { field: "routerPort", title: "端口号",width:"5%",hidden:true},
+                {field:"routerApplicationName",title:"应用名称",template:"#=getApplicationNameById(routerApplicationName)#"},
+                { field: "routerEquipmentCabinet", title: "所在机柜",template:"#=getEquipmentCabinetNameById(routerEquipmentCabinet)#",hidden:true},
+                { field: "routerU", title: "所在U",hidden:true},
+                { field: "routerRemark", title: "备注",hidden:true},
+                { command: [
+                    {name:"view",text:"查看",
+                    click:function(e){
+                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        var url ="/predictCenter/routers/getRouterViewInfo/"+dataItem.id+".html";
+                        window.open(url);
+                    }
+                },
+                    {text: "编辑", click: showRouterModel },   //编辑窗体内容
+                    { text: "删除",click:delRouterModel }    //删除记录
+                ] ,  title: "操作",width:"20%"}
+            ],
+            pageable: {
+                buttonCount:3,
+                input: true,
+                messages:{
+                    display:"共{2}条记录",
+                    first:"第一页",
+                    last:"最后一页",
+                    next:"下一页",
+                    previous:"前一页",
+                    morePages:"更多页",
+                    refresh:"刷新表格",
+                    empty:"没有数据",
+                    itemsPerPage:"项数据每页",
+                    page:"第",
+                    of:"页"
+                }
+            },
+            selectable: "row"
+        });
+        //添加及查看模板窗体 郑霞 20160115
+        routerModelWnd = $("#routerModelWnd").kendoWindow({
+            title: "路由器信息",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 630,
+            height:700
+        }).data("kendoWindow");
+
+        //导入模板窗体 郑霞 20160115
+         routerInputWnd = $("#routerInputWnd").kendoWindow({
+            title: "导入",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 600,
+            height:150
+        }).data("kendoWindow");
+        //导出模板窗体 郑霞 20160115
+         routerOutputWnd = $("#routerOutputWnd").kendoWindow({
+            title: "导出",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 600,
+            height:200
+        }).data("kendoWindow");
+    }
+
+
+    //编辑弹窗
+    function showRouterModel(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        routerModelRecordId=dataItem.id;//记录当前被选中的路由器模板的id
+        $("#routerSerialNumber").val(dataItem.routerSerialNumber);//路由器编号
+        $("#routerSN").val(dataItem.routerSN);//路由器序列号
+        $("#routerPurchasingDate").val(dataItem.routerPurchasingDate);//路由器购买时间
+        $("#routerMaintenanceDueTime").val(dataItem.routerMaintenanceDueTime);//路由器维保到期时间
+        $("#routerType").val(dataItem.routerType);//路由器型号
+        $("#routerIP").val(dataItem.routerIP);//路由器IP
+        $("#routerGroup").val(dataItem.routerGroup);
+        $("#routerSNMP").val(dataItem.routerSNMP);//路由器SNMP
+        $("#routerPort").val(dataItem.routerPort);//服务器端口
+        $("#routerRemark").val(dataItem.routerRemark);//备注
+
+        /*声明为 下拉 输入框样式并赋值*/
+        //路由器品牌
+        var routerBrand= $("#routerBrand").data("kendoDropDownList");
+        routerBrand.value(dataItem.routerBrand);
+        //应用名称
+        var routerApplicationName=$("#routerApplicationName").data("kendoDropDownList");
+        routerApplicationName.value(dataItem.routerApplicationName);
+        //routerU数据储存方式为123-123,需要拆分
+        var routerU=dataItem.routerU;//获取路由器所在U
+        var routerUs = routerU.split("-");//拆分
+        var routerU1= $("#routerU1").data("kendoDropDownList");
+        routerU1.value(routerUs[0]);
+        var routerU2= $("#routerU2").data("kendoDropDownList");
+        routerU2.value(routerUs[1]);
+        compute();
+        //所在机柜
+        var routerEquipmentCabinet=$("#routerEquipmentCabinet").data("kendoDropDownList");
+        routerEquipmentCabinet.value(dataItem.routerEquipmentCabinet);
+
+       routerModelWnd.center().open();
+    }
+    //删除数据
+    function delRouterModel(e){
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        routerModelRecordId=dataItem.id;   //记录当前被选中的路由器模板的id
+        swal({
+            title: "确认要删除该数据吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#55c6dc",
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: true
+        },function(){
+            $.ajax({
+                url:crudServiceBaseUrl+"/deleteRouter/"+routerModelRecordId,
+                dataType: "json",   //返回格式为json
+                async: true,//同步，这也是ajax重要特性
+                type: "GET",   //请求方式
+                success:function(data){
+                    setRouterModelGridDataSource();
+                    setRouterModelGrid();
+                }
+            })
+        });
+    }
+    //添加数据
+    function addRouterModel(){
+        $("#routerSerialNumber").val("");
+        $("#routerSN").val("");
+        $("#routerBrand").val("");
+        $("#routerType").val("");
+        $("#routerIP").val("");
+        $("#routerGroup").val("");
+        $("#routerSNMP").val("");
+        $("#routerPort").val("");
+        $("#routerApplicationName").val("");
+        $("#routerEquipmentCabinet").val("");
+        $("#routerU1").val("");
+        $("#routerU2").val("");
+        $("#routerRemark").val("");
+
+        routerModelRecordId=0;//添加路由器模板，模板id设为0.
+        routerModelWnd.center().open();
+    }
+    //导入
+    function addRouterInputModel(){
+        routerInputWnd.center().open();
+    }
+    //导出
+     function addRouterOutputModel(){
+        routerOutputWnd.center().open();
+    }
+     //比较U1和U2的大小，进而提示U2须要大于U1
+    function compare(){
+        var routerU1Val= $("#routerU1").val();
+        var routerU2Val= $("#routerU2").val();
+        if(routerU1Val=="" || routerU2Val==""){
+        }else{
+        if(parseInt(routerU1Val)>parseInt(routerU2Val)){
+          alert("后面下拉框中的值必须大于前面下拉框中的值！");
+            return false;//下面方法调用
+        }
+        else{
+            compute();
+            return true;
+       }
+      }
+     }
+     //计算U高度
+    function compute(){
+        var routerU1Val= $("#routerU1").val();
+        var routerU2Val= $("#routerU2").val();
+        var uHeight=routerU2Val-routerU1Val+1;
+        $("#routerUHeight").html('共'+uHeight+'U高度');
+        //document.getElementById('routerUHeight').innerHTML = '共'+uHeight+'U高度';
+    }
+    // 添加路由器保存
+    function submitRouterModel(){
+        var routerSerialNumberVal= $("#routerSerialNumber").val();
+        var routerSNVal= $("#routerSN").val();
+        var routerPurchasingDateVal= $("#routerPurchasingDate").val();
+        var routerMaintenanceDueTimeVal= $("#routerMaintenanceDueTime").val();
+        var routerBrandVal= $("#routerBrand").val();
+        var routerTypeVal= $("#routerType").val();
+        var routerIPVal= $("#routerIP").val();
+        var routerGroupVal= $("#routerGroup").val();
+        var routerSNMPVal= $("#routerSNMP").val();
+        var routerPortVal= $("#routerPort").val();
+        var routerApplicationNameVal=$("#routerApplicationName").val();
+        var routerEquipmentCabinetVal= $("#routerEquipmentCabinet").val();
+        var routerU1Val= $("#routerU1").val();
+        var routerU2Val= $("#routerU2").val();
+        var routerRemarkVal= $("#routerRemark").val();
+        if(routerSerialNumberVal==""||routerIPVal==""||routerGroupVal==""||routerEquipmentCabinetVal==""||routerU1Val==""||routerU2Val==""||routerApplicationNameVal==""){
+            alert("带有红色标记的为必填项");
+            return;
+        }else if(!compare()){}
+        else{
+            var submitRouterModelData={
+                //提交当前行数据的所有数据
+                id:routerModelRecordId,
+                routerSerialNumber:routerSerialNumberVal,
+                routerSN:routerSNVal,
+                routerPurchasingDate:routerPurchasingDateVal,
+                routerMaintenanceDueTime:routerMaintenanceDueTimeVal,
+                routerBrand:routerBrandVal,
+                routerType:routerTypeVal,
+                routerIP:routerIPVal,
+                routerGroup:routerGroupVal,
+                routerSNMP:routerSNMPVal,
+                routerPort:routerPortVal,
+                routerApplicationName:routerApplicationNameVal,
+                routerEquipmentCabinet:routerEquipmentCabinetVal,
+                routerU:routerU1Val+"-"+routerU2Val,
+                routerRemark:routerRemarkVal,
+
+            };
+            submitRouterModelAjax(crudServiceBaseUrl + "/createAndUpdateRouter",submitRouterModelData);
+        }
+    }
+    //导入保存
+    function submitRouterFolder(){
+        var RouterFolderVal= $("#RouterFolder").val();
+        if(RouterFolderVal==""){
+            alert("带有红色标记的为必填项");
+            return;
+        }else{
+            var submitRouterFolderData={
+                //提交当前行数据的所有数据
+                id:routerModelRecordId,
+                RouterFolder:RouterFolderVal
+                };
+                submitRouterFolderAjax(crudServiceBaseUrl + "/createRouter",submitRouterFolderData);
+         }
+    }
+    //提交数据至后台
+    function submitRouterModelAjax(submitURL,objData){
+        $.ajax({
+                    url:submitURL,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    data:objData,
+                    success:function(data){
+                        $("#routerModelWnd").data("kendoWindow").close();
+                        setRouterModelGridDataSource();
+                        setRouterModelGrid();
+                     }
+                })
+    }
+    //提交导入数据至后台
+    function submitRouterFolderAjax(submitURL,objData){
+        $.ajax({
+                    url:submitURL,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    data:objData,
+                    success:function(data){
+                        $("#routerFolderWnd").data("kendoWindow").close();
+                        setRouterModelGridDataSource();
+                        setRouterModelGrid();
+                     }
+                })
+    }
+
+
+    //关闭窗口
+    $("#closeRouterModel").click( function (e) {
+        $("#routerModelWnd").data("kendoWindow").close();
+    });
+    //取消导入
+    $("#closeRouterFolder").click( function (e) {
+        $("#routerInputWnd").data("kendoWindow").close();
+    });
+    //取消导出
+     $("#closeRouterSelection").click( function (e) {
+        $("#routerOutputWnd").data("kendoWindow").close();
+    });
+
+       /*声明一级模板下拉框*/
+    //根据品牌Id 获取品牌名称
+    function getBrandNameById(id){
+        var brandName;//品牌名称
+        $.ajax({
+            dataType:"json",
+            url:dropDownListUrl + "/getBrandNameById/"+id,
+            async:false,                       //是否异步：不异步，页面加载同时加载数据
+            success:function(data){
+                brandName=data.brandName;
+            }
+        });
+        return brandName;
+    }
+    //根据Id获取应用名称
+     function getApplicationNameById(id){
+        var ApplicationName;//应用名称
+        $.ajax({
+            dataType:"json",
+            url:dropDownListUrl + "/getApplicationNameById/"+id,
+            async:false,                       //是否异步：不异步，页面加载同时加载数据
+            success:function(data){
+               ApplicationName=data.applicationName;
+            }
+        });
+        return ApplicationName;
+    }
+
+     //根据Id获取所在U
+     function getUNumberById(id){
+        var UNumber;//所在U
+        $.ajax({
+            dataType:"json",
+            url:dropDownListUrl + "/getUNumberById/"+id,
+            async:false,                       //是否异步：不异步，页面加载同时加载数据
+            success:function(data){
+               UNumber=data.UNumber;
+            }
+        });
+        return UNumber;
+    }
+    //根据Id获取所在机柜
+     function getEquipmentCabinetNameById(id){
+        var EquipmentCabinetName;//所在机柜
+        $.ajax({
+            dataType:"json",
+            url:dropDownListUrl + "/getEquipmentCabinetNameById/"+id,
+            async:false,                       //是否异步：不异步，页面加载同时加载数据
+            success:function(data){
+               EquipmentCabinetName=data.equipmentCabinetName;
+            }
+        });
+        return EquipmentCabinetName;
+    }
+    //设置下拉列表
+    function setDropDownList(){
+          //路由器品牌下拉列表
+        $("#routerBrand").kendoDropDownList({
+                optionLabel: "请选择...",
+                dataTextField: "brandName",
+                dataValueField: "id",
+                dataSource: {
+                    transport:{
+                        read:{
+                            dataType:"json",
+                            url:dropDownListUrl + "/getBrandsByType/4"
+                        }
+                    }
+                 }
+            });
+       //应用名称下拉列表
+            $("#routerApplicationName").kendoDropDownList({
+                optionLabel: "请选择...",
+                dataTextField: "applicationName",
+                dataValueField: "id",
+                dataSource: {
+                    transport:{
+                        read:{
+                            dataType:"json",
+                            url:dropDownListUrl + "/getAllApplicationNames"
+                        }
+                    }
+                 }
+            });
+            //所在U起始
+             $("#routerU1").kendoDropDownList({
+                            optionLabel: "请选择...",
+                            dataTextField: "uName",
+                            dataValueField: "uCode",
+                            dataSource: {
+                                transport:{
+                                    read:{
+                                        dataType:"json",
+                                        url:dropDownListUrl + "/getAllUs"
+                                    }
+                                }
+                             }
+                        });
+            //所在U结束
+            $("#routerU2").kendoDropDownList({
+                optionLabel: "请选择...",
+                dataTextField: "uName",
+                dataValueField: "uCode",
+                dataSource: {
+                    transport:{
+                        read:{
+                            dataType:"json",
+                            url:dropDownListUrl + "/getAllUs"
+                        }
+                    }
+                 }
+            });
+        //所在机柜数据源
+            $("#routerEquipmentCabinet").kendoDropDownList({
+                optionLabel: "请选择...",
+                dataTextField: "equipmentCabinetName",
+                dataValueField: "id",
+                dataSource: {
+                                transport:{
+                                    read:{
+                                        dataType:"json",
+                                        url:dropDownListUrl + "/getAllEquipmentCabinets"
+                                    }
+                                }
+                             }
+                        });
+         //导出数据源
+          var routerSelectionData= [
+                        { text: "请选择", value: "0" },
+                        { text: "服务器1", value: "1" },
+                        { text: "服务器2", value: "2" },
+                        { text: "服务器3", value: "3" },
+                        { text: "服务器4", value: "4" },
+                        { text: "服务器5", value: "5" },
+                    ];
+            $("#routerSelection").kendoDropDownList({
+                dataTextField: "text",
+                dataValueField: "value",
+                dataSource: routerSelectionData,
+                index: 0
+            });
+
+    }
+    function setDatePicks(){
+        $("#routerPurchasingDate").kendoDatePicker({
+            culture:"zh-CN"
+       });
+        $("#routerMaintenanceDueTime").kendoDatePicker({
+            culture:"zh-CN"
+       });
+    }
+    //程序入口
+    $(function(){
+        setRouterModelGridDataSource();   //调用设置路由器模板 数据源函数
+        setRouterModelGrid();              //调用设置路由器模板 数据表函数
+        setDropDownList();//加载下拉列表
+        setDatePicks();//设置日历控件
+        });
+
+
+</script>
+
+<script id="routerModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="routerModel_toolbar_queryBtn" onclick="addRouterModel();"><span class="k-icon k-add"></span>添加路由器</button>   <!--添加路由器-->
+
+</script>
+<script id="inputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addRouterInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
+
+</script>
+
+<script id="outputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addRouterOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
+
+</script>
+</body>
+</html>

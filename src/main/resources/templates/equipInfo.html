@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script th:replace="header :: header"></script>
+</head>
+
+<body>
+<div th:replace="navbar :: navbar(${user})"></div>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'xtsz'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">主页</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">监控数据</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <input type="text"  class="nav-search-input" id="serverNum"  />
+                    <input type="text"  class="nav-search-input" id="serverElement"  />
+                </div><!-- #nav-search -->
+            </div>
+
+
+        </div><!-- /.main-content -->
+        <div class="page-content">
+            <div >
+                <div style="height: 280px; position:absolute; margin-left:200px;margin-top: 10px;">
+                    <div style="float: left;width: 400px;height: 200px;">
+
+                        <div id="gaugeOne"></div>
+                        <div><h3 style="text-align: center">服务器1CPU</h3></div>
+                    </div>
+                    <div style="float: left;width: 400px;height: 200px" >
+                        <div id="gaugeTwo"></div>
+                        <div><h3 style="text-align: center">服务器2CPU</h3></div>
+                    </div>
+                    <div style="float: left;width: 400px;height: 200px">
+                        <div id="gaugeThree"></div>
+                        <div><h3 style="text-align: center">服务器3CPU</h3></div>
+                    </div>
+                </div>
+                <div style="position: absolute;margin-left: 200px; margin-top: 300px;">
+                    <div style="float: left;width: 400px;height: 200px">
+                        <div  id="gaugesOne"></div>
+                        <div><h3 style="text-align: center">服务器1磁盘使用率</h3></div>
+                    </div>
+                    <div style="float: left;width: 400px;height: 200px" >
+                        <div id="gaugesTwo"></div>
+                        <div><h3 style="text-align: center">服务器2磁盘使用率</h3></div>
+                    </div>
+                    <div style="float: left;width: 400px;height: 200px" >
+                        <div id="gaugesThree"></div>
+                        <div><h3 style="text-align: center">服务器3磁盘使用率</h3></div>
+                    </div>
+                </div>
+                <div style="position: absolute;margin-top: 600px; margin-left: 200px;">
+                    <div id="grid"></div>
+                </div>
+
+            </div>
+        </div><!-- /.page-content -->
+
+    </div><!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="/assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/assets/js/jquery.1.10.2.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+<script src="/js/kendo.all.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<!-- inline scripts related to this page -->
+<script>
+    var serverSelectionData= [
+        { text: "请选择服务器", value: "0" },
+        { text: "服务器1", value: "1" },
+        { text: "服务器2", value: "2" },
+        { text: "服务器3", value: "3" },
+        { text: "服务器4", value: "4" },
+        { text: "服务器5", value: "5" },
+    ];
+    $("#serverNum").kendoDropDownList({
+        dataTextField: "text",
+        dataValueField: "value",
+        dataSource: serverSelectionData,
+        index: 0
+    });
+
+    var elementSelectionData= [
+        { text: "请选择要素", value: "0" },
+        { text: "电源", value: "1" },
+        { text: "风扇", value: "2" },
+        { text: "磁盘使用率", value: "3" },
+        { text: "CPU使用率", value: "4" },
+    ];
+    $("#serverElement").kendoDropDownList({
+        dataTextField: "text",
+        dataValueField: "value",
+        dataSource: elementSelectionData,
+        index: 0
+    });
+
+
+    function createGaugeOne() {
+        //var value = $("#gauge-value").val();
+
+        $("#gaugeOne").kendoLinearGauge({
+            pointer: {
+                value: 40
+            },
+            scale: {
+                majorUnit: 20,
+                minorUnit: 2,
+                min: 0,
+                max: 100,
+                vertical: true,
+                ranges: [
+                    {
+                        from: 0,
+                        to: 20,
+                        color: "#2798df"
+                    }, {
+                        from: 60,
+                        to: 80,
+                        color: "#ffc700"
+                    }, {
+                        from: 80,
+                        to: 100,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        });
+    }
+    $(document).ready(function() {
+        createGaugeOne();
+
+        $(document).bind("kendo:skinChange", function(e) {
+            createGaugeOne();
+        });
+    });
+
+    function createGaugeTwo() {
+        //var value = $("#gauge-value").val();
+
+        $("#gaugeTwo").kendoLinearGauge({
+            pointer: {
+                value: 60
+            },
+
+            scale: {
+                majorUnit: 20,
+                minorUnit: 2,
+                min: 0,
+                max: 100,
+                vertical: true,
+                ranges: [
+                    {
+                        from: 0,
+                        to: 20,
+                        color: "#2798df"
+                    }, {
+                        from: 60,
+                        to: 80,
+                        color: "#ffc700"
+                    }, {
+                        from: 80,
+                        to: 100,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        });
+    }
+    $(document).ready(function() {
+        createGaugeTwo();
+
+        $(document).bind("kendo:skinChange", function(e) {
+            createGaugeTwo();
+        });
+    });
+
+    function createGaugeThree() {
+        //var value = $("#gauge-value").val();
+
+        $("#gaugeThree").kendoLinearGauge({
+            pointer: {
+                value: 85
+            },
+
+            scale: {
+                majorUnit: 20,
+                minorUnit: 2,
+                min: 0,
+                max: 100,
+                vertical: true,
+                ranges: [
+                    {
+                        from: 0,
+                        to: 20,
+                        color: "#2798df"
+                    }, {
+                        from: 60,
+                        to: 80,
+                        color: "#ffc700"
+                    }, {
+                        from: 80,
+                        to: 100,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        });
+    }
+    $(document).ready(function() {
+        createGaugeThree();
+
+        $(document).bind("kendo:skinChange", function(e) {
+            createGaugeThree();
+        });
+    });
+</script>
+<script>
+    function createGaugesOne(labelPosition) {
+        $("#gaugesOne").kendoRadialGauge({
+
+            pointer: {
+                value: 35
+            },
+
+            scale: {
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 100,
+                labels: {
+                    position: labelPosition || "inside"
+                },
+                ranges: [
+                    {
+                        from: 40,
+                        to: 60,
+                        color: "#ffc700"
+                    }, {
+                        from: 60,
+                        to: 80,
+                        color: "#ff7a00"
+                    }, {
+                        from: 80,
+                        to: 100,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        });
+    }
+    $(document).ready(function() {
+        createGaugesOne();
+
+        $(".box").bind("change");
+
+        $(document).bind("kendo:skinChange", function(e) {
+            createGaugesOne();
+        });
+    });
+
+    function createGaugesTwo(labelPosition) {
+        $("#gaugesTwo").kendoRadialGauge({
+
+            pointer: {
+                value: 65
+            },
+
+            scale: {
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 100,
+                labels: {
+                    position: labelPosition || "inside"
+                },
+                ranges: [
+                    {
+                        from: 40,
+                        to: 60,
+                        color: "#ffc700"
+                    }, {
+                        from: 60,
+                        to: 80,
+                        color: "#ff7a00"
+                    }, {
+                        from: 80,
+                        to: 100,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        });
+    }
+    $(document).ready(function() {
+        createGaugesTwo();
+
+        $(".box").bind("change");
+
+        $(document).bind("kendo:skinChange", function(e) {
+            createGaugesTwo();
+        });
+    });
+
+    function createGaugesThree(labelPosition) {
+        $("#gaugesThree").kendoRadialGauge({
+
+            pointer: {
+                value: 85
+            },
+
+            scale: {
+                minorUnit: 5,
+                startAngle: -30,
+                endAngle: 210,
+                max: 100,
+                labels: {
+                    position: labelPosition || "inside"
+                },
+                ranges: [
+                    {
+                        from: 40,
+                        to: 60,
+                        color: "#ffc700"
+                    }, {
+                        from: 60,
+                        to: 80,
+                        color: "#ff7a00"
+                    }, {
+                        from: 80,
+                        to: 100,
+                        color: "#c20000"
+                    }
+                ]
+            }
+        });
+    }
+    $(document).ready(function() {
+        createGaugesThree();
+
+        $(".box").bind("change");
+
+        $(document).bind("kendo:skinChange", function(e) {
+            createGaugesThree();
+        });
+    });
+
+</script>
+
+<script src="/assets/servers.js"></script>
+<script>
+    function serverGrid() {
+        $("#grid").kendoGrid({
+            dataSource: {
+                data:servers,
+                schema: {
+                    model: {
+                        fields: {
+                            Power: { type: "string" },
+                            Fine: { type: "string" },
+                            DiskUsage: { type: "string" },
+                            CpuUsage: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 20
+            },
+            height: 300,
+            scrollable: true,
+            sortable: true,
+            pageable: {
+                input: true,
+                numeric: false
+            },
+            columns: [
+                { field: "Power", title: "电源" },
+                { field: "Fine", title: "风扇" },
+                { field: "DiskUsage", title: "磁盘使用率" },
+                { field: "CpuUsage",title:"CPU使用率" }
+            ]
+        });
+    }
+    $(document).ready(serverGrid);
+    $(document).bind("kendo:skinChange", serverGrid);
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body th:fragment="slidermenu(activeitem)">
+<div class="sidebar" id="sidebar">
+    <script type="text/javascript">
+        try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+        <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+            <button class="btn btn-success" title="我的流程">
+                <i class="icon-list"></i>
+            </button>
+
+            <button class="btn btn-info">
+                <i class="icon-pencil"></i>
+            </button>
+
+            <button class="btn btn-warning">
+                <i class="icon-group"></i>
+            </button>
+
+            <button class="btn btn-danger">
+                <i class="icon-cogs"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+            <span class="btn btn-success"></span>
+
+            <span class="btn btn-info"></span>
+
+            <span class="btn btn-warning"></span>
+
+            <span class="btn btn-danger"></span>
+        </div>
+    </div><!-- #sidebar-shortcuts -->
+
+    <ul class="nav nav-list" >
+        <li th:class="${activeitem.contains('pj')}?'active'">
+            <a href="#" class="dropdown-toggle">
+                <i class="icon-dashboard"></i>
+                <span class="menu-text"> 监控管理配置 </span>
+                <b class="arrow icon-angle-down"></b>
+            </a>
+
+            <ul class="submenu">
+                <li th:class="${activeitem.contains('pj_sb')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class=" icon-laptop"></i>
+                        设备
+                    </a>
+                    <ul  class="submenu" >
+
+                        <li th:class="${activeitem=='pj_sb_server'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/servers/getServerInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                服务器
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_sb_store'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/stores/getStoreInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                存储设备
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_sb_router'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/routers/getRouterInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                路由器
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_sb_switchboard'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/switchboards/getSwitchboardInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                交换机
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_sb_fw'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/fws/getFwInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                防火墙
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem.contains('pj_zjj')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-inbox"></i>
+                        中间件
+                    </a>
+                    <ul class="submenu"  >
+
+                        <li th:class="${activeitem=='pj_zjj_oracle'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getOracleInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Oracle数据库
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='zjj_sql'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getSqlserverInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                SQLServer数据库
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_zjj_tomcat'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/getTomcatInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Tomcat
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_zjj_iis'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/getIISInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                IIS
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_zjj_java'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/getJaveInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Java虚拟机
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem.contains('pj_zj')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-inbox"></i>
+                        主机
+                    </a>
+                    <ul class="submenu"  >
+                        <li th:class="${activeitem=='pj_zj_vmware'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getVmwareInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                VMWare虚拟机
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_zj_host'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getHostInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                物理主机
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem.contains('pj_wl')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-globe"></i>
+                        网络
+                    </a>
+                    <ul class="submenu"  >
+
+                        <li th:class="${activeitem=='pj_wl_ping'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getPingInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Ping监控
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem=='pj_yy'}?'active'">
+                    <a href="/predictCenter/applications/getApplicationInfo">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-asterisk"></i>
+                        应用
+                    </a>
+                </li>
+                <li th:class="${activeitem=='pj_dlhj'}?'active'">
+                    <a href="/predictCenter/getDynamicEnvironmentInfo">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-bolt"></i>
+                        动力环境
+                    </a>
+                </li>
+                <li th:class="${activeitem=='pj_gjgz'}?'active'">
+                    <a style="text-decoration:none;" href="/predictCenter/getAlarmInfo">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-exclamation-sign"></i>
+                        告警规则
+                    </a>
+                </li>
+                <li th:class="${activeitem=='pj_rz'}?'active'">
+                    <a href="/predictCenter/logs/getLogInfo;">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-book"></i>
+                        日志
+                    </a>
+                </li>
+                <li th:class="${activeitem=='pj_fwdx'}?'active'">
+                    <a href="/predictCenter/getServiceObjectInfo">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-book"></i>
+                        服务对象
+                    </a>
+                </li>
+                <li th:class="${activeitem=='pj_yh'}?'active'">
+                    <a href="/user/userManage">
+                   <!-- <a style="text-decoration:none;" href="javascript:void(0);">-->
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-group"></i>
+                        用户
+                    </a>
+                </li>
+                <li th:class="${activeitem.contains('pj_pz')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-globe"></i>
+                        系统设置
+                    </a>
+                    <ul class="submenu"  >
+                        <li th:class="${activeitem=='pj_pz_brand'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/system/getSystemBrandInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配置品牌
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_pz_appGroup'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getAppGroupInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配置应用分组
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_pz_version'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getVersionInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配置版本信息
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_pz_cabinet'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getCabinetInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配置机柜
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_pz_serObjGroup'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getSerObjGroupInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配置服务对象分组
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='pj_pz_system'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getOperatingSystemInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配置操作系统
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </li>
+        <li th:class="${activeitem.contains('sjzs')}?'active'">
+            <a href="#" class="dropdown-toggle">
+                <i class="icon-flag"></i>
+                <span class="menu-text"> 监控数据展示 </span>
+                <b class="arrow icon-angle-down"></b>
+            </a>
+
+            <ul class="submenu">
+                <li th:class="${activeitem.contains('sjzs_sb')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class=" icon-laptop"></i>
+                        设备
+                    </a>
+                    <ul  class="submenu" >
+
+                        <li th:class="${activeitem=='sjzs_sb_server'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/servers/getServerShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                服务器
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_sb_store'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/stores/getStoreShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                存储设备
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_sb_router'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/routers/getRouterShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                路由器
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_sb_switchboard'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/switchboards/getSwitchShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                交换机
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_sb_fw'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/fws/getFwShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                防火墙
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem.contains('sjzs_zhjj')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-inbox"></i>
+                        中间件
+                    </a>
+                    <ul class="submenu"  >
+
+                        <li th:class="${activeitem=='sjzs_zhjj_oracle'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getOracleShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Oracle数据库
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_zhjj_sqlserver'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getSqlserverShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                SQLServer数据库
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_zhjj_tomcat'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/getTomcatShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Tomcat
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_zhjj_iis'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/getIisShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                IIS
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_zhjj_java'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/getJavaShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Java虚拟机
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem.contains('sjzs_zj')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-inbox"></i>
+                        主机
+                    </a>
+                    <ul class="submenu"  >
+
+                        <li th:class="${activeitem='sjzs_zj_vmware'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getVmwareShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                VMWare虚拟机
+                            </a>
+                        </li>
+                        <li th:class="${activeitem='sjzs_zj_host'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getHostShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                物理主机
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem.contains('sjzs_wgl')}?'active'">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-inbox"></i>
+                        网络
+                    </a>
+                    <ul class="submenu"  >
+
+                        <li th:class="${activeitem=='sjzs_wgl_ping'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getPingShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                Ping 监控
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li th:class="${activeitem=='sjzs_app'}?'active'">
+                    <a href="/predictCenter/applications/getAppShow">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-globe"></i>
+                        应用
+                    </a>
+                </li>
+                <li th:class="${activeitem=='sjzs_serObj'}?'active'">
+                    <a href="/predictCenter/getSerObjShow">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-globe"></i>
+                        服务对象
+                    </a>
+                </li>
+                <li th:class="${activeitem=='sjzs_dlhj'}?'active'">
+                    <a href="/predictCenter/getEnvironShow">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-bolt"></i>
+                        动力环境
+                    </a>
+                </li>
+                <li th:class="${activeitem=='sjzs_rz'}?'active'">
+                    <a href="javascript:void(0);">
+                        <i class="icon-double-angle-right"></i>
+                        <i class="icon-book"></i>
+                        日志
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul><!-- /.nav-list -->
+
+    <div class="sidebar-collapse" id="sidebar-collapse">
+        <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+    </div>
+
+    <script type="text/javascript">
+        try{ace.settings.check('sidebar' , 'collapsed')}catch(e){}
+    </script>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script th:replace="header :: header"></script>
+</head>
+
+<body>
+<div th:replace="navbar :: navbar(${user})"></div>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'zt_pj_zj_host'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">主页</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">监控管理配置</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">主机</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">物理主机</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <span class="input-icon">
+                        <input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                        <i class="icon-search nav-search-icon"></i>
+                    </span>
+                </div><!-- #nav-search -->
+            </div>
+
+
+        </div><!-- /.main-content -->
+        <div class="page-content">
+            <div>
+                <div class="col-xs-10">
+                    <div id="hostGrid" style="position: absolute"></div>
+                </div>
+            </div>
+            <!--主机模板-->
+            <div id="hostModelWnd" style="display:none">
+                <div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 76px" >主机名称:</label>
+                        <input  style="margin-left: 10px;height:30px;width:340px"  id="hosts"/>
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 90px" >主机IP:</label>
+                        <input  style="margin-left: 10px;height:30px;width:340px"  id="hostIP" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 58px" >主机操作系统:</label>
+                        <input  style="margin-left: 9px;height:30px;width:345px"  id="hostOS" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 44px" >主机所在服务器:</label>
+                        <input  style="margin-left: 9px;height:30px;width:345px"  id="hostServer" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 112px">备注:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:335px"  id="hostNote" ></textarea>
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-left:190px;margin-top:20px;">
+                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 80px;"onclick="submitVmwareModel()">
+                            <i class="icon-ok"></i>
+                            保存
+                        </button>
+                        <button id="closeHostModel" class="k-button" style="margin-left: 80px;" >
+                            <i class="icon-remove"></i>
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="inputWnd" style="display:none">
+                <div class="file-box">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input type='file' name='textfield' style="margin-left:80px;margin-top:40px;height:25px" />
+                    </form>
+                    <button style="margin-left:400px;margin-top:25px;height:25px">导入</button>
+                    <button id="closeFolder" style="margin-left:20px;margin-top:25px;height:25px">取消</button>
+                </div>
+            </div>
+            <div id="outputWnd" style="display:none">
+                <div style="margin-top: 10px">
+                    <label style="margin-left: 52px" >选择服务器:</label>
+                    <input  style="margin-left: 10px;height:30px;width:400px" id="selection"/><label style="color: red;margin-left: 5px">*</label>
+                    <button style="margin-left:400px;margin-top:80px;height:25px">导出</button>
+                    <button id="closeSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
+                </div>
+            </div>
+        </div><!-- /.page-content -->
+
+    </div><!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="/assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/assets/js/jquery.1.10.2.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+<script src="/js/kendo.all.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+var crudHostBaseUrl = "/predictCenter/api/host";  //根地址
+var dropDownListUrl = "/predictCenter/api/dropDownList";  //根地址
+var hostGridDataSource;        //物理主机数据源
+var  hostModelWnd;  //声明弹出的窗体
+var hostRecordId;  //声明数据选中行的id
+//设置下拉列表
+function setDropDownList(){
+
+    $("#hostOS").kendoDropDownList({
+        optionLabel: "选择操作系统",
+        dataTextField: "operatingSystem",
+        dataValueField: "id",
+        dataSource: {
+            transport: {
+                read: {
+                    url: dropDownListUrl+"/getOperatingSystem",
+                    dataType: "json"
+                }
+            }
+
+        }
+    });
+
+    $("#hostServer").kendoDropDownList({
+        optionLabel: "选择服务器",
+        dataTextField: "serverSerialNumber",
+        dataValueField: "id",
+        dataSource: {
+            transport: {
+                read: {
+                    url: dropDownListUrl+"/getServerSerialNumber",
+                    dataType: "json"
+                }
+            }
+
+        }
+    });
+
+}
+//主程序入口
+$(function(){
+   setHostGridDataSource();//设服务器型数据源
+    setHostGrid();//设置服务器数据列表
+    setDropDownList();
+});
+//设置模型数据源
+function setHostGridDataSource(){
+    hostGridDataSource=new kendo.data.DataSource({
+        transport: {
+            read:  {
+                url: crudHostBaseUrl + "/getHost/2",
+                dataType: "json"
+            }
+        },
+        batch: true,
+        pageSize: 20,
+        schema: {
+            model: {
+                id: "id"
+            }
+        }
+    });
+}
+//物理主机 数据表函数
+function setHostGrid(){
+    $("#hostGrid").kendoGrid({
+        dataSource:hostGridDataSource,
+        toolbar:[{template: kendo.template($("#hostModel_toolbar").html())},
+            {template: kendo.template($("#inputModel_toolbar").html())},
+            {template: kendo.template($("#outputModel_toolbar").html())}],
+        columns:[
+            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+            {field:"hosts",title:"主机名称"},
+            {field:"hostIP",title:"主机IP"},
+            {field:"hostOS",title:"主机操作系统",template:"#=getHostOS(hostOS)#"},
+            {field:"hostServer",title:"主机所在服务器",template:"#=getHostServer(hostServer)#"},
+            {field:"hostNote",title:"备注",hidden:true},
+            { command: [ {name:"view",text:"查看",
+                click:function(e){
+                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                    var url ="/predictCenter/getHostViewInfo/"+dataItem.id+".html";
+                    window.open(url);
+                }
+            },
+                {text: "编辑", click: showHostModel },   //编辑窗体内容
+                { text: "删除",click:delHostModel }    //删除记录
+
+            ],
+                title: "操作"
+            }
+        ],
+        pageable: {
+            buttonCount:3,
+            input: true,
+            messages:{
+                display:"共{2}条记录",
+                first:"第一页",
+                last:"最后一页",
+                next:"下一页",
+                previous:"前一页",
+                morePages:"更多页",
+                refresh:"刷新表格",
+                empty:"没有数据",
+                itemsPerPage:"项数据每页",
+                page:"第",
+                of:"页"
+            }
+        },
+        selectable: "row"
+    });
+    hostModelWnd = $("#hostModelWnd").kendoWindow({
+        title: "物理主机",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 630,
+        height:350
+    }).data("kendoWindow");
+    //导入模板窗体
+    inputWnd = $("#inputWnd").kendoWindow({
+        title: "导入",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 600,
+        height:150
+    }).data("kendoWindow");
+    //导出模板窗体
+    outputWnd = $("#outputWnd").kendoWindow({
+        title: "导出",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 600,
+        height:200
+    }).data("kendoWindow");
+}
+//导入
+function addInputModel(){
+    inputWnd.center().open();
+}
+//导出
+function addOutputModel(){
+    outputWnd.center().open();
+}
+//取消导入
+$("#closeFolder").click( function (e) {
+    $("#inputWnd").data("kendoWindow").close();
+});
+//取消导出
+$("#closeSelection").click( function (e) {
+    $("#outputWnd").data("kendoWindow").close();
+});
+//导入保存
+function submitFolder(){
+    var FolderVal= $("#Folder").val();
+    if(FolderVal==""){
+        alert("带有红色标记的为必填项");
+        return;
+    }else{
+        var submitFolderData={
+            //提交当前行数据的所有数据
+            id:modelRecordId,
+            Folder:FolderVal
+        };
+        submitFolderAjax(crudServiceBaseUrl + "/create",submitFolderData);
+    }
+}
+//提交导入数据至后台
+function submitFolderAjax(submitURL,objData){
+    $.ajax({
+        url:submitURL,
+        dataType: "json",   //返回格式为json
+        async: true,//同步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        data:objData,
+        success:function(data){
+            $("#folderWnd").data("kendoWindow").close();
+            setModelGridDataSource();
+            setModelGrid();
+        }
+    })
+}
+
+//获取操作系统
+function getHostOS(hostOSId){
+    var operatingSystem="";//操作系统
+    $.ajax({
+        dataType:"json",
+        url:"/predictCenter/api/dropDownList/getOperatingSystemById/" + hostOSId,
+        async:false,                       //是否异步：不异步，页面加载同时加载数据
+        success:function(data){
+            operatingSystem=data.operatingSystem;
+        }
+    });
+    return operatingSystem;
+}
+//获取服务器
+function getHostServer(hostServerId){
+    var serverSerialNumber="";//服务器
+    $.ajax({
+        dataType:"json",
+        url:"/predictCenter/api/dropDownList/getServerSerialNumberById/" + hostServerId,
+        async:false,                       //是否异步：不异步，页面加载同时加载数据
+        success:function(data){
+            serverSerialNumber=data.serverSerialNumber;
+        }
+    });
+    return serverSerialNumber;
+}
+//查看弹窗
+function showHostModel(e) {
+    e.preventDefault();
+    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    hostRecordId=dataItem.id;//记录当前被选中的虚拟机的id
+
+    //文本框
+    $("#hostNote").val(dataItem.hostNote);    //备注
+    $("#hosts").val(dataItem.hosts);    //主机名称
+    $("#hostIP").val(dataItem.hostIP);    //主机IP
+
+    /*声明为 下拉 输入框样式并赋值*/
+    var hostOSDrop= $("#hostOS").data("kendoDropDownList");//主机操作系统
+    hostOSDrop.value(dataItem.hostOS);
+    var hostServerDrop= $("#hostServer").data("kendoDropDownList");//主机所在服务器
+    hostServerDrop.value(dataItem.hostServer);
+    hostModelWnd.center().open();
+}
+//删除数据
+function delHostModel(e){
+    e.preventDefault();
+
+    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    hostRecordId=dataItem.id;   //记录当前被选中的虚拟机的id
+
+    swal({
+        title: "确认要删除该数据吗？",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#55c6dc",
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        closeOnConfirm: true
+    },function(){
+        $.ajax({
+            url:crudHostBaseUrl+"/deleteHost/"+hostRecordId,
+            dataType: "json",   //返回格式为json
+            async: true,//同步，这也是ajax重要特性
+            type: "GET",   //请求方式
+            success:function(data){
+                //alert("记录删除成功！");
+                setHostGridDataSource();//获取主机数据源
+                setHostGrid();//重新生成表单
+            }
+        })
+    });
+}
+
+
+//添加数据
+function addHostModel(){
+    var hostOS= $("#hostOS").data("kendoDropDownList");
+    hostOS.value("");//主机操作系统
+    var hostServer= $("#hostServer").data("kendoDropDownList");
+    hostServer.value("");//主机所在服务器
+
+    $("#hosts").val("");
+    $("#hostIP").val("");
+    $("#hostNote").val("");
+    hostRecordId=0;//添加主机，模板id设为0.
+    hostModelWnd.center().open();
+}
+// 保存
+function submitVmwareModel(){
+    var hostsVal= $("#hosts").val();
+    var hostIPVal= $("#hostIP").val();
+    var hostOSVal= $("#hostOS").val();
+    var hostServerVal= $("#hostServer").val();
+    var hostNoteVal= $("#hostNote").val();
+
+    if(hostsVal==""||hostOSVal==""||hostIPVal==""||hostServerVal==""){
+        alert("带有红色标记的为必填项");
+        return;
+    }else{
+        var submitHostModelData={
+            //提交当前行数据的所有数据
+            id:hostRecordId,
+            hosts:hostsVal,
+            hostIP:hostIPVal,
+            hostOS:hostOSVal,
+            hostServer:hostServerVal,
+            hostNote:hostNoteVal,
+            hostType:'2'
+        };
+        submitHostModelAjax(crudHostBaseUrl + "/createAndUpdateHost",submitHostModelData);
+    }
+}
+//提交数据至后台
+function submitHostModelAjax(submitURL,objData){
+    $.ajax({
+        url:submitURL,
+        dataType: "json",   //返回格式为json
+        async: true,//同步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        data:objData,
+        success:function(data){
+            $("#hostModelWnd").data("kendoWindow").close();
+            setHostGridDataSource();//获取主机数据源
+            setHostGrid();//重新生成表单
+        }
+    })
+};
+// 关闭窗口
+$("#closeHostModel").click( function (e) {
+    $("#hostModelWnd").data("kendoWindow").close();
+});
+</script>
+<script id="hostModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="hostModel_toolbar_queryBtn" onclick="addHostModel();"><span class="k-icon k-add"></span>添加物理主机</button>   <!--添加证书-->
+</script>
+<script id="inputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
+</script>
+<script id="outputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
+</script>
+<!-- inline scripts related to this page -->
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script th:replace="header :: header"></script>
+    <link rel="stylesheet" href="/css/image-circle.css"/>
+</head>
+<body>
+<script>
+    var userbase64 = "[[${userbase64}]]";
+    var ping = "[[${ping}]]";
+</script>
+<div th:replace="navbar :: navbar(${user})"></div>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'pj_yh'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">首页</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/user/info/{userId}.html(userId=${user.id})}">个人设置</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<i class="icon-search nav-search-icon"></i>
+								</span>
+                    </form>
+                </div><!-- #nav-search -->
+            </div>
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="tab-content no-border padding-24" style="font-size: 14px;background-color:#fff;width:800px;font-family: Microsoft YaHei">
+                            <h2 class="header blue bolder smaller center">用户基本信息</h2>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-3 center">
+                                    <!--<img id="avatar"  th:src="*{user} ? *{user.imagePath} : '(no user specified)'" />-->
+
+                                    <div style="margin:0 auto" id="avatar1" class="img-circle1" ><div id="avatar" class="img-circle" th:style="'background-image:url(/user/image/'+${user.id}+');'"></div></div> <!---头像-->
+
+                                    <div class="space space-4"></div>
+                                    <a href="#" class="btn btn-sm btn-block btn-success" id="joinGroup">
+                                        <i class="icon-plus-sign bigger-120"></i>
+                                        <span class="bigger-110">加入群组</span>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-block btn-primary" id="sendMessage">
+                                        <i class="icon-envelope-alt bigger-110"></i>
+                                        <span class="bigger-110">发送短消息</span>
+                                    </a>
+                                </div>
+                                <div class="col-xs-12 col-sm-9">
+                                    <h4 class="blue">
+                                        <span class="middle"></span>
+                        <span class="label label-purple arrowed-in-right">
+                            <i class="icon-circle smaller-80 align-middle"></i>
+                            在线
+                        </span>
+                                    </h4>
+                                    <div class="profile-user-info">
+                                        <input name="id" type="hidden" th:value="*{user} ? *{user.id} : '0'"/>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 用户名： </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{user} ? *{user.userName} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 姓&nbsp;&nbsp;&nbsp;&nbsp;名： </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{user} ? *{user.Name} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 性&nbsp;&nbsp;&nbsp;&nbsp;别： </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{user} ? *{user.sex} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 邮&nbsp;&nbsp;&nbsp;&nbsp;箱：</div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{user} ? *{user.email} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 手&nbsp;&nbsp;&nbsp;&nbsp;机： </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{user} ? *{user.tel} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">单位/科室： </div>
+
+                                            <div class="profile-info-value">
+
+                                                <!--<label  th:text="*{user != null and user.group != null and user.group.group !=null or user.group.group.group !=null}?*{user.group.groupName}:'(no user specified)'"></label>-->
+                                                <label  th:text="*{user != null and user.group != null and user.group.groupName!=null}?*{user.group.groupName}:'(no user specified)'"></label>
+
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 短信提醒： </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{user.msgSend}==true?'是':'否'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 邮件提醒： </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{user.emailSend}==true?'是' : '否'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> 延时提醒： </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{delayWarm}"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hr hr-8 dotted"></div>
+                                    <div class="center"><a style="left: -60px;" th:href="@{/user/edit/{userid}.html(userid=${user.id})}" class="btn btn-primary">编辑</a>
+                                    <a th:href="@{/user/userManage}" class="btn btn-primary">返回</a></div>
+                                    <div class="hr hr-8 dotted"></div>
+                                </div><!-- /span -->
+                            </div><!-- /row-fluid -->
+                        </div>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div><!-- /.main-content -->
+
+
+    </div><!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="/assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/assets/js/jquery.1.10.2.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+<script src="/js/kendo.all.min.js"></script>
+
+<!-- inline scripts related to this page -->
+<script>
+
+    $('#joinGroup').click(function(){
+
+        alert("该系统版本此功能尚未开发！");
+
+    });
+
+    $('#sendMessage').click(function(){
+
+        alert("该系统版本此功能尚未开发！");
+
+    });
+    function dealDelay(delay,delayNum)
+    {
+        alert(delay);
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script th:replace="header :: header"></script>
+</head>
+
+<body>
+
+<div th:replace="navbar :: navbar(${user})"></div>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'pj_rz'})"></div>
+        <div class="main-content">
+            <div id="LogsGrid" style="position: absolute"></div>
+        </div><!-- /.main-content -->
+
+
+    </div><!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="/assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/assets/js/jquery.1.10.2.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+<script src="/js/kendo.all.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<!-- inline scripts related to this page -->
+
+
+
+<script>
+    var crudServiceBaseUrl = "/predictCenter/api/log";  //根地址
+    var logGridDataSource=null;        //日志数据源
+    //设置日志数据源
+    function setLogGridDataSource(){
+        LogGridDataSource=new kendo.data.DataSource({
+            transport: {
+                read:  {
+                    url: crudServiceBaseUrl + "/getAllLogs",
+                    dataType: "json"
+                },
+                create:{
+                    url:crudServiceBaseUrl+"/createLog",
+                    dataType:"json"
+                },
+                update:{
+                    url:crudServiceBaseUrl+"/updateLog",
+                    dataType:"json"
+                },
+                destroy:{
+                    url:crudServiceBaseUrl+"/deleteLog",
+                    dataType:"json"
+
+                },
+                parameterMap: function(options, operation) {
+                    if(operation !== "read" && options.models) {
+                        var id=options.models[0].id;
+                        var log=options.models[0].log;
+                        while(operation=="create"){
+                            return {log:log};
+                        }
+                        return {id:id,log:log};
+
+                    }
+                }
+            },
+            batch: true,
+            pageSize: 20,
+            schema: {
+                model: {
+                    id: "id",
+                    fields: {
+                        id: { editable: false, nullable: true },
+                        log: {validation: { required: true }  },
+                    }
+                }
+            }
+        });
+    }
+    function setLogGrid(){
+        $("#LogsGrid").kendoGrid({
+            dataSource:LogGridDataSource,
+            toolbar:[{name:"create",text:"添加日志"}],
+            columns:[
+                {field:"log",title:"日志"},
+                { command: [
+                    { name: "edit",text: { edit: "编辑", cancel: "取消", update: "保存" } },
+                    { name: "destroy", text: "删除", click: function(e){
+                        var entityGrid = $("#LogsGrid").data("kendoGrid");
+                        var row=entityGrid.select();
+                        var data=entityGrid.dataItem(row);
+
+                        if (confirm('你确定要删除：'+data.value)) {
+                            var dataSource = $("#LogsGrid").data("kendoGrid").dataSource;
+                            dataSource.remove(data);
+                            dataSource.sync();
+                        }
+                    } }
+
+                ],
+                    title: "&nbsp;" }
+            ],
+             pageable: {
+                buttonCount:3,
+                input: true,
+
+                messages:{
+                    display:"共{2}条记录",
+                    first:"第一页",
+                    last:"最后一页",
+                    next:"下一页",
+                    previous:"前一页",
+                    morePages:"更多页",
+                    refresh:"刷新表格",
+                    empty:"没有数据",
+                    itemsPerPage:"项数据每页",
+                    page:"第",
+                    of:"页"
+                }
+            },
+            selectable: "row",
+            editable: {
+                mode:"popup",
+                update:'true',
+                window:{title:"日志信息"},
+                confirmation: "确认删除这条记录?"
+            }
+        });
+    }
+    //主程序入口
+    $(function(){
+        setLogGridDataSource();//设置日志数据源
+        setLogGrid();//设置日志数据列表
+        });
+</script>
+</body>
+</html>

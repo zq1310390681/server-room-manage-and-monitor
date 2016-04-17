@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/css/dropzone.css" />
+
+
+    <script th:replace="header :: header"></script>
+
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
+    <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
+
+</head>
+
+<body>
+<div th:replace="navbar :: navbar(${user})"></div>
+
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'pj_yy'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">主页</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">监控管理配置</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">应用</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <span class="input-icon">
+                        <input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                        <i class="icon-search nav-search-icon"></i>
+                    </span>
+                </div><!-- #nav-search -->
+            </div>
+        </div><!-- /.main-content -->
+        <div class="page-content">
+            <div>
+                <div class="col-xs-10">
+                    <div id="applicationModelGrid"  ></div>
+                </div>
+            </div>
+            <!--应用模板-->
+            <div id="applicationModelWnd" style="display:none">
+                <div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 52px" >应用名称:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px" id="applicationName"/><label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 52px;margin-top:20px" >应用所在组:</label>
+                        <input  style="margin-left: 128px;height:30px;width:400px;margin-top:-25px" id="appGroup"/>
+                    </div>
+                  <!--  <div style="margin-top: 10px">
+                        <label style="margin-left: 52px;margin-top:20px" >应用用户:</label>
+                        <input  style="margin-left: 128px;height:30px;width:400px;margin-top:-25px" id="applicationUser"/>
+                    </div>-->
+                    <div style="margin:10px">
+                        <label style="margin-left: 40px ;margin-top:20px" >服务对象:</label>
+                        <input  style="margin-left: 120px;height:30px;width:403px;margin-top:-32px" id="applicationServiceObject"/>
+                    </div>
+                    <div id="hostselect" style="margin-top: 10px">
+                        <label style="margin-left: 52px;margin-top:15px">所在主机:</label>
+                        <input  style="margin-left:10px;height:20px;width:180px;margin-top:-12px" id="applicationHost"/>
+                        <label style="margin-left: 6px;margin-top:5px"></label>
+                        <input  style="margin-left:10px;height:26px;width:154px;margin-top:-12px" id="applicationHostRemark"/>
+                        <button onclick="addApplicationHost('')" class="btn btn-xs btn-info" style="width: 30px;">添加</button>
+                    </div>
+                    <div id="addHosts">
+
+
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 50px;margin-top:15px" >中间件名称:</label>
+                        <input  style="margin-left: 130px;margin-top:-25px;height:30px;width:403px"  id="applicationMiddlewareName" />
+                    </div>
+
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 83px">备注:</label>
+                        <textarea style="margin-left: 7px;height:70px;width:397px" rows="5" cols="30" id="applicationRemark" />
+
+                    </div>
+
+                    <div style="margin-left:190px;margin-top:20px;">
+                        <button id="saveApplicationModel"  class="k-button" style="marginleft: 180px;"onclick="submitApplicationModel()">
+                            <i class="icon-ok"></i>
+                            保存
+                        </button>
+                        <button id="closeApplicationModel"  class="k-button" style="margin-left: 100px;" >
+                            <i class="icon-remove"></i>
+                            取消
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            <div id="applicationInputWnd" style="display:none">
+                <div class="file-box">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input type='file' name='textfield' style="margin-left:80px;margin-top:40px;height:25px" />
+                    </form>
+                    <button style="margin-left:400px;margin-top:25px;height:25px">导入</button>
+                    <button id="closeApplicationFolder" style="margin-left:20px;margin-top:25px;height:25px">取消</button>
+                </div>
+            </div>
+            <div id="applicationOutputWnd" style="display:none">
+                <div style="margin-top: 10px">
+                    <label style="margin-left: 52px" >选择应用:</label>
+                    <input  style="margin-left: 10px;height:30px;width:400px" id="applicationSelection"/><label style="color: red;margin-left: 5px">*</label>
+                    <button style="margin-left:400px;margin-top:80px;height:25px">导出</button>
+                    <button id="closeApplicationSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
+                </div>
+            </div>
+
+        </div><!-- /.page-content -->
+    </div><!-- /.main-container-inner -->
+</div><!-- /.main-container -->
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="icon-double-angle-up icon-only bigger-110"></i>
+</a>
+
+<script src="/js/elementUseage.js"></script>
+
+<script src='/assets/js/jquery-2.0.3.min.js'></script>
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script src="/assets/js/excanvas.min.js"></script>
+<![endif]-->
+
+<script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
+<script src="/assets/js/jquery.slimscroll.min.js"></script>
+<script src="/assets/js/jquery.easy-pie-chart.min.js"></script>
+<script src="/assets/js/jquery.sparkline.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.pie.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.resize.min.js"></script>
+<script src="/assets/js/dropzone.min.js"></script>
+
+
+
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/js/jSingnature/libs/flashcanvas.js"></script>
+<![endif]-->
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+
+<script src="/js/console.js"></script>
+<script src="/js/kendo.web.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+    var crudServiceBaseUrl ="/predictCenter/api/application";  //根地址
+    var dropDownListUrl="/predictCenter/api/dropDownList";//获取下拉列表的根路径
+    var MultiSelectUrl="/predictCenter/api/MultiSelect";//获取多选列表的根路径
+   /* var applicationUserUrl="/predictCenter/api/applicationUser";//获取应用用户根路径*/
+    var serviceObjectUrl="/predictCenter/api/serviceObject";//获取服务对象根路径
+    var hostUrl="/predictCenter/api/host";//获取所在主机根路径
+    var middleUrl="/predictCenter/api/middle";//获取中间件根路径
+
+
+    var tabStrip = $("#tabStrip").kendoTabStrip().data("kendoTabStrip");      //切换grid
+
+
+    /*声明dataSource*/
+    var applicationModelGridDataSource;
+    /*声明弹出的窗体*/
+    var applicationModelWnd;
+    var applicationInputWnd;
+    var applicationOutputWnd;
+    var applicationNetWnd;
+    var iCount=1;//计数，添加几个
+    var applicationModelGrid;
+
+
+
+    /*声明数据选中行的id*/
+    var applicationModelRecordId;
+    /*应用模板*/
+   // 数据源
+    function setApplicationModelGridDataSource(){
+        applicationModelGridDataSource=new kendo.data.DataSource({
+            transport: {
+                read:  {
+                    url: crudServiceBaseUrl + "/getAllApplications",
+                    dataType: "json"
+                },
+                create:{
+                    url:crudServiceBaseUrl+"/createAndUpdateApplication",
+                    dataType:"json"
+                },
+                destroy:{
+                    url:crudServiceBaseUrl+"/deleteApplication",
+                    dataType:"json"
+                }
+            },
+            batch: true,
+            pageSize: 20,
+            schema: {
+                model: {
+                    id: "id",
+                    fields: {
+                        id: { editable: false, nullable: true },
+                        applicationName:{validation:{required: { message: "必填项" } }},
+
+                    }
+                }
+            }
+        });
+    }
+    //应用模板 数据表
+    function setApplicationModelGrid(){
+        var applicationModelGrid=$("#applicationModelGrid").kendoGrid({
+            dataSource:applicationModelGridDataSource,
+            toolbar:[{template: kendo.template($("#applicationModel_toolbar").html())},
+                     {template: kendo.template($("#inputModel_toolbar").html())},
+                     {template: kendo.template($("#outputModel_toolbar").html())}],
+            columns:[
+                {title: "<input type='checkbox' id='chkAll' onclick='checkAll()'/>全选",template: '<input type="checkbox" name="selectChk"/>',width:"5%"},
+                { field:"applicationName",title:"应用名称"},
+                { field:"appGroup",title:"应用所在组",template:"#=getAppGroup(appGroup)#"},
+                { field: "applicationServiceObject", title: "服务对象",template:"#=getApplicationServiceObjectNameById(applicationServiceObject)#"},
+                { field: "applicationHost", title: "所在主机",template:"#=getApplicationHostNameById(applicationHost)#"},
+
+                { field: "applicationMiddlewareName", title: "中间件名称",template:"#=getApplicationMiddlewareNameById(applicationMiddlewareName)#"},
+                { field: "applicationRemark", title: "备注",hidden:true},
+                { command: [
+                  {name:"view",text:"查看",
+                    click:function(e){
+                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        var url ="/predictCenter/applications/getApplicationViewInfo/"+dataItem.id+".html";
+                        window.open(url);
+                    }
+                   },
+                    {text: "编辑", click: showApplicationModel },   //编辑窗体内容
+                    { text: "删除",click:delApplicationModel }    //删除记录
+                ] ,  title: "操作",width:"22%"}
+            ],
+            pageable: {
+                buttonCount:3,
+                input: true,
+                messages:{
+                    display:"共{2}条记录",
+                    first:"第一页",
+                    last:"最后一页",
+                    next:"下一页",
+                    previous:"前一页",
+                    morePages:"更多页",
+                    refresh:"刷新表格",
+                    empty:"没有数据",
+                    itemsPerPage:"项数据每页",
+                    page:"第",
+                    of:"页"
+                }
+            },
+            selectable: "row"
+        });
+        //添加及查看模板窗体 郑霞 20160115
+        applicationModelWnd = $("#applicationModelWnd").kendoWindow({
+            title: "应用信息",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 600,
+            height:450
+        }).data("kendoWindow");
+
+        //导入模板窗体 郑霞 20160115
+         applicationInputWnd = $("#applicationInputWnd").kendoWindow({
+            title: "导入",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 600,
+            height:150
+        }).data("kendoWindow");
+        //导出模板窗体 郑霞 20160115
+         applicationOutputWnd = $("#applicationOutputWnd").kendoWindow({
+            title: "导出",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 600,
+            height:200
+        }).data("kendoWindow");
+    }
+
+
+    //编辑弹窗
+    function showApplicationModel(e) {
+        iCount=1;
+        //清除所有添加的主机
+        $("#addHosts").empty();
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        applicationModelRecordId=dataItem.id;//记录当前被选中的应用模板的id
+        $("#applicationName").val(dataItem.applicationName);//应用名称
+
+         var applicationServiceObjectMulSelect=$("#applicationServiceObject").data("kendoMultiSelect");//服务对象
+         var applicationServiceObject=dataItem.applicationServiceObject;
+         var applicationServiceObjectVal=applicationServiceObject==null?"":applicationServiceObject.split(",");
+         applicationServiceObjectMulSelect.value(applicationServiceObjectVal);
+        var appGroupDrop= $("#appGroup").data("kendoDropDownList");//应用所在组
+        appGroupDrop.value(dataItem.appGroup);
+
+        //所在主机 进行拆分处理
+        var appHosts=null;//所在主机
+        var hostContent=null;
+        if(dataItem.applicationHost!=null && dataItem.applicationHost!=""){
+            appHosts=dataItem.applicationHost.split(',');//进行拆分
+            if(dataItem.hostContent!=null ||dataItem.hostContent!=""){
+                hostContent=dataItem.hostContent.split(',');//内容拆分
+            }
+        }
+        //主机和内容肯定是一致的
+        if(appHosts!=null && appHosts!=""){
+            for(var i=0;i<appHosts.length;++i){
+                if(i==0){//加载第一条主机信息
+                    var applicationHost=$("#applicationHost").data("kendoDropDownList");
+                    applicationHost.value(appHosts[0]);
+                    hostContent==null?"":$("#applicationHostRemark").val(hostContent[0]);//主机内容
+                }else{
+                    addApplicationHost(appHosts[i]);//动态添加主机
+                    hostContent==null?"":$("#applicationHostRemark"+i).val(hostContent[i]);//主机内容
+                }
+                //iCount++;
+            }
+        }
+
+
+         var applicationMiddlewareNameMulSelect=$("#applicationMiddlewareName").data("kendoMultiSelect");//中间件名称
+         var applicationMiddlewareName=dataItem.applicationMiddlewareName;
+         var applicationMiddlewareNameVal=applicationMiddlewareName==null?"":applicationMiddlewareName.split(",");
+         applicationMiddlewareNameMulSelect.value(applicationMiddlewareNameVal);
+
+        $("#applicationRemark").val(dataItem.applicationRemark);//备注
+        applicationModelWnd.center().open();
+    }
+    //删除数据
+    function delApplicationModel(e){
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        applicationModelRecordId=dataItem.id;   //记录当前被选中的应用模板的id
+        swal({
+            title: "确认要删除该数据吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#55c6dc",
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: true
+        },function(){
+            $.ajax({
+                url:crudServiceBaseUrl+"/deleteApplication/"+applicationModelRecordId,
+                dataType: "json",   //返回格式为json
+                async: true,//同步，这也是ajax重要特性
+                type: "GET",   //请求方式
+                success:function(data){
+                    setApplicationModelGridDataSource();
+                    setApplicationModelGrid();
+                }
+            })
+        });
+    }
+    //添加数据
+    function addApplicationModel(){
+        $("#applicationName").val("");
+        var applicationServiceObject=$("#applicationServiceObject").data("kendoMultiSelect");
+        applicationServiceObject.value("");
+        var applicationHost=$("#applicationHost").data("kendoDropDownList");
+        applicationHost.value("");
+        $("#applicationHostRemark").val("");
+        var applicationMiddlewareName=$("#applicationMiddlewareName").data("kendoMultiSelect");
+        applicationMiddlewareName.value("");
+        var appGroup= $("#appGroup").data("kendoDropDownList");
+        appGroup.value("");//应用所在组
+        $("#applicationRemark").val("");
+        $("#applicationNet").val("");
+        //清除所有添加的主机
+        $("#addHosts").empty();
+
+        applicationModelRecordId=0;//添加应用模板，模板id设为0.
+        applicationModelWnd.center().open();
+    }
+    //导入
+    function addApplicationInputModel(){
+        applicationInputWnd.center().open();
+    }
+    //导出
+     function addApplicationOutputModel(){
+        applicationOutputWnd.center().open();
+    }
+
+    //全选
+    function checkAll(){
+        var trs = $("#applicationModelGrid").find('tr');
+        for (var i = 1; i < trs.length; i++) {
+            var chk=$(trs[i]).find(":checkbox");
+            if (!chk.is(":checked")) {
+                chk.attr("checked",true);
+            }else{
+                chk.attr("checked",false);
+            }
+        }
+    }
+
+    // 添加应用保存
+    function submitApplicationModel(){
+        var applicationNameVal= $("#applicationName").val();
+        var applicationServiceObjectArr=$("#applicationServiceObject").data("kendoMultiSelect").value();
+        var applicationServiceObjectVal=applicationServiceObjectArr.join(",");
+        var  applicationMiddlewareNameArr=$("#applicationMiddlewareName").data("kendoMultiSelect").value();
+        var  applicationMiddlewareNameVal= applicationMiddlewareNameArr.join(",");
+        var applicationRemarkVal= $("#applicationRemark").val();
+        var appGroupVal= $("#appGroup").val();
+        //添加所在主机
+        var applicationHostVal= $("#applicationHost").val();
+        var applicationContent=$("#applicationHostRemark").val();
+        for(var i=0;i<iCount;++i){//循环处理后面添加的主机
+            var applicationHostAdd=$("#applicationHost"+i);
+            var applicationContentAdd=$("#applicationHostRemark"+i);
+            if(applicationHostAdd.length>0 && applicationContentAdd.length>0){
+                applicationHostVal+=","+applicationHostAdd.val();
+                applicationContent+=","+applicationContentAdd.val();
+            }
+        }
+        if(applicationNameVal==""){
+            alert("带有红色标记的为必填项");
+            return;
+        }else{
+            var submitApplicationModelData={
+                //提交当前行数据的所有数据
+                id:applicationModelRecordId,
+                applicationName:applicationNameVal,
+                hostContent:applicationContent,
+                applicationServiceObject:applicationServiceObjectVal,
+                applicationHost:applicationHostVal,
+                applicationMiddlewareName:applicationMiddlewareNameVal,
+                applicationRemark:applicationRemarkVal,
+                appGroup:appGroupVal
+
+            };
+            submitApplicationModelAjax(crudServiceBaseUrl + "/createAndUpdateApplication",submitApplicationModelData);
+
+        }
+    }
+
+
+    //提交数据至后台
+    function submitApplicationModelAjax(submitURL,objData){
+        $.ajax({
+                    url:submitURL,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    data:objData,
+                    success:function(data){
+                        $("#applicationModelWnd").data("kendoWindow").close();
+                        setApplicationModelGridDataSource();
+                        setApplicationModelGrid();
+                     }
+                })
+    }
+    //提交导入数据至后台
+    function submitapplicationFolderAjax(submitURL,objData){
+        $.ajax({
+                    url:submitURL,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    data:objData,
+                    success:function(data){
+                        $("#applicationFolderWnd").data("kendoWindow").close();
+                        setApplicationModelGridDataSource();
+                        setApplicationModelGrid();
+                     }
+                })
+    }
+    //关闭窗口
+    $("#closeApplicationModel").click( function (e) {
+        $("#applicationModelWnd").data("kendoWindow").close();
+    });
+    //取消导入
+    $("#closeApplicationFolder").click( function (e) {
+        $("#applicationInputWnd").data("kendoWindow").close();
+    });
+    //取消导出
+     $("#closeApplicationSelection").click( function (e) {
+        $("#applicationOutputWnd").data("kendoWindow").close();
+    });
+
+    //服务对象多选
+    $("#applicationServiceObject").kendoMultiSelect({
+                placeholder: "请选择...",
+                dataTextField: "serviceObjectName",
+                dataValueField: "id",
+                enabled:true,
+                dataSource: {
+                    transport: {
+                        read: MultiSelectUrl+"/getAllServiceObjects",
+                        dataType: "json"
+                    }
+                }
+
+             });
+    //获取应用分组
+    function getAppGroup(appGroupId){
+        if(appGroupId!=null&&appGroupId!=""){
+            var appGroupName="";//应用分组
+            $.ajax({
+                dataType:"json",
+                url:"/predictCenter/api/dropDownList/getAppGroupById/" + appGroupId,
+                async:false,                       //是否异步：不异步，页面加载同时加载数据
+                success:function(data){
+                    appGroupName=data.appGroupName;
+                }
+            });
+        }else{
+            appGroupName="暂无数据";
+        }
+        return appGroupName;
+    }
+
+    function setDropDownList(){
+        //中间件名称多选
+        $("#applicationMiddlewareName").kendoMultiSelect({
+            placeholder: "请选择...",
+            dataTextField: "middleName",
+            dataValueField: "id",
+            enabled:true,
+            dataSource: {
+                transport: {
+                    read: MultiSelectUrl+"/getAllMiddle",
+                    dataType: "json"
+                }
+            }
+        });
+        //所在主机下拉框
+        $("#applicationHost").kendoDropDownList({
+            optionLabel: "请选择...",
+            dataTextField: "hosts",
+            dataValueField: "id",
+            enabled:true,
+            dataSource: {
+                transport: {
+                    read: dropDownListUrl+"/getAllHosts",
+                    dataType: "json"
+                }
+            }
+        });
+        //应用组
+        $("#appGroup").kendoDropDownList({
+            optionLabel: "选择应用分组",
+            dataTextField: "appGroupName",
+            dataValueField: "id",
+            dataSource: {
+                transport: {
+                    read: {
+                        url: dropDownListUrl+"/getAppGroup",
+                        dataType: "json"
+                    }
+                }
+            }
+        });
+    }
+
+    //在页面显示名称，而不是ID
+    //根据服务对象字符串获取名称字符串
+    function getApplicationServiceObjectNameById(services){
+       if(services!=null && services!=""){
+           var ApplicationServiceObjectName;//服务对象
+           $.ajax({
+               dataType:"json",
+               url:serviceObjectUrl + "/getServiceObjectNamesByIds/"+services,
+               async:false,                       //是否异步：不异步，页面加载同时加载数据
+               success:function(data){
+                   ApplicationServiceObjectName=data;
+               },
+               error:function(data){
+                   ApplicationServiceObjectName=data.responseText;
+               }
+           });
+       }else{
+           ApplicationServiceObjectName="暂无数据";
+       }
+
+        return ApplicationServiceObjectName;
+    }
+
+    //根据主机字符串获取名称字符串
+    function getApplicationHostNameById(hosts){
+        if(hosts!=null && hosts!=""){
+            var ApplicationHostName;//所在主机
+            $.ajax({
+                dataType:"json",
+                url:hostUrl + "/getHostsById/"+hosts,
+                async:false,                       //是否异步：不异步，页面加载同时加载数据
+                success:function(data){
+                    ApplicationHostName=data.hosts;
+                },
+                error:function(data){
+                    ApplicationHostName=data.responseText;
+                }
+            });
+        }else{
+            ApplicationHostName="暂无数据";
+        }
+
+        return ApplicationHostName;
+    }
+    //根据中间件字符串获取名称字符串
+    function getApplicationMiddlewareNameById(middleNames){
+        if(middleNames!=null && middleNames!=""){
+            var ApplicationMiddlewareName;//中间件名称
+            $.ajax({
+                dataType:"json",
+                url:middleUrl + "/getMiddleNamesByIds/"+middleNames,
+                async:false,                       //是否异步：不异步，页面加载同时加载数据
+                success:function(data){
+                    ApplicationMiddlewareName=data;
+                },
+                error:function(data){
+                    ApplicationMiddlewareName=data.responseText;
+                }
+            });
+        }else{
+            ApplicationMiddlewareName="暂无数据";
+        }
+
+        return ApplicationMiddlewareName;
+    }
+
+    //动态添加所在主机
+    function addApplicationHost(val){
+
+        var childDiv="<div id='host' style='margin-top: 15px;margin-left: 63px;'>"+
+                "<label style='margin-left: 52px;margin-top:15px'></label>"+
+        "<input  style='margin-left:10px;height:20px;width:180px;margin-top:-12px' id='applicationHost"+iCount+"'/>"+
+                "<label style='margin-left: 6px;margin-top:5px'></label>"+
+        "<input  style='margin-left:16px;height:26px;width:154px;margin-top:-12px' id='applicationHostRemark"+iCount+"'/>"+
+                "<button onclick='delHost(this);' class='btn btn-xs btn-info' style='width: 30px;margin-left: 3px;'>删除</button>"+"</div>";//需要添加的子div
+
+        $("#addHosts").append(childDiv);//动态添加主机添加项
+        //加载所在主机kendoui DropDownList
+        initHostDataSource(iCount,val);
+        iCount=iCount+1;//计数加一
+
+    }
+    //删除所在主机
+    function delHost(obj){
+        $("#host").remove();
+    }
+    //加载所在主机kendoui DropDownList
+    function initHostDataSource(i,val){
+        $("#applicationHost"+i).kendoDropDownList({
+            optionLabel: "请选择...",
+            dataTextField: "hosts",
+            dataValueField: "id",
+            enabled:true,
+            value:val,
+            dataSource: {
+                transport: {
+                    read: dropDownListUrl+"/getAllHosts",
+                    dataType: "json"
+                }
+            }
+        });
+
+    }
+
+    //程序入口
+    $(function(){
+        setApplicationModelGridDataSource();   //调用设置应用模板 数据源函数
+        setApplicationModelGrid();              //调用设置应用模板 数据表函数
+        setDropDownList();//加载下拉列表
+        });
+
+
+</script>
+
+<script id="applicationModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="applicationModel_toolbar_queryBtn" onclick="addApplicationModel();"><span class="k-icon k-add"></span>添加应用</button>   <!--添加应用-->
+
+</script>
+<script id="inputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addApplicationInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
+</script>
+
+<script id="outputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addApplicationOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
+</script>
+</body>
+</html>

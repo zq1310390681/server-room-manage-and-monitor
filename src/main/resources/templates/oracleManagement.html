@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script th:replace="header :: header"></script>
+</head>
+
+<body>
+<div th:replace="navbar :: navbar(${user})"></div>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'zt_pj_zjj_oracle'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">主页</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">监控管理配置</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">中间件</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">Oracle数据库</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <span class="input-icon">
+                        <input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                        <i class="icon-search nav-search-icon"></i>
+                    </span>
+                </div><!-- #nav-search -->
+            </div>
+
+
+        </div><!-- /.main-content -->
+        <div class="page-content">
+            <div>
+                <div class="col-xs-10">
+                    <div id="oracleGrid" style="position: absolute"></div>
+
+                </div>
+
+            </div>
+            <!--Oracle数据库模板-->
+            <div id="oracleModelWnd" style="display:none">
+                <div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 65px" >Oracle数据库名称:</label>
+                        <input  style="margin-left: 10px;height:30px;width:340px"  id="middleName"/>
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 79px" >Oracle数据库IP:</label>
+                        <input  style="margin-left: 11px;height:30px;width:340px"  id="middleIP" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 46px" >Oracle数据库所在主机:</label>
+                        <input  style="margin-left: 10px;height:30px;width:345px"  id="middleHost" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 60px" >Oracle数据库用户名:</label>
+                        <input  style="margin-left: 10px;height:30px;width:340px"  id="middleUserName" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 75px" >Oracle数据库密码:</label>
+                        <input  style="margin-left: 10px;height:30px;width:340px"  id="middlePassword" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left:159px">备注:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:335px"  id="middleNote" ></textarea>
+                    </div>
+                    <div style="margin-left:190px;margin-top:20px;">
+                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 100px;"onclick="submitOracleModel()">
+                            <i class="icon-ok"></i>
+                            保存
+                        </button>
+                        <button id="closeOracleModel" class="k-button" style="margin-left: 100px;" >
+                            <i class="icon-remove"></i>
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="inputWnd" style="display:none">
+                <div class="file-box">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input type='file' name='textfield' style="margin-left:80px;margin-top:40px;height:25px" />
+                    </form>
+                    <button style="margin-left:400px;margin-top:25px;height:25px">导入</button>
+                    <button id="closeFolder" style="margin-left:20px;margin-top:25px;height:25px">取消</button>
+                </div>
+            </div>
+            <div id="outputWnd" style="display:none">
+                <div style="margin-top: 10px">
+                    <label style="margin-left: 52px" >选择服务器:</label>
+                    <input  style="margin-left: 10px;height:30px;width:400px" id="selection"/><label style="color: red;margin-left: 5px">*</label>
+                    <button style="margin-left:400px;margin-top:80px;height:25px">导出</button>
+                    <button id="closeSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
+                </div>
+            </div>
+
+        </div><!-- /.page-content -->
+
+    </div><!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="/assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/assets/js/jquery.1.10.2.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<!--<script src="/assets/js/jszip.min.js"></script>-->
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+<script src="/js/kendo.all.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+var crudOracleBaseUrl = "/predictCenter/api/middle";  //根地址
+var dropDownListUrl = "/predictCenter/api/dropDownList";  //根地址
+var oracleGridDataSource;        //Oracle数据源
+var oracleModelWnd;  //声明弹出的窗体
+var inputWnd; //声明弹出导入框
+var outputWnd;//声明弹出导出框
+var oracleRecordId;  //声明数据选中行的id
+//设置下拉列表
+function setDropDownList(){
+    $("#middleHost").kendoDropDownList({
+        optionLabel: "选择主机",
+        dataTextField: "hosts",
+        dataValueField: "id",
+        dataSource: {
+            transport: {
+                read: {
+                    url: dropDownListUrl+"/getAllHosts",
+                    dataType: "json"
+                }
+            }
+
+        }
+    });
+}
+//主程序入口
+$(function(){
+    setOracleGridDataSource();//Oracle数据源
+    setOracleGrid();//获取Oracle数据列表
+    setDropDownList();
+});
+//设置Oracle数据源
+function setOracleGridDataSource(){
+    oracleGridDataSource=new kendo.data.DataSource({
+        transport: {
+            read:  {
+                url: crudOracleBaseUrl + "/getMiddleType/4",
+                dataType: "json"
+            }
+        },
+        batch: true,
+        pageSize: 20,
+        schema: {
+            model: {
+                id: "id",
+                fields: {
+                    id: { editable: false, nullable: true },
+                    middleName: {validation: { required: { message: "必填项" } }  },
+                    middleIP: {validation: { required: { message: "必填项" } }  },
+                    middleUserName: { validation: { required: { message: "必填项" }} },
+                    middlePassword: { validation: { required: { message: "必填项" }} },
+                    middleHost: { validation: { required: { message: "必填项" } } }
+                }
+            }
+        }
+    });
+}
+//VMWare虚拟机 数据表函数
+function setOracleGrid(){
+    $("#oracleGrid").kendoGrid({
+        dataSource:oracleGridDataSource,
+        toolbar:[{template: kendo.template($("#oracleModel_toolbar").html())},
+            {template: kendo.template($("#inputModel_toolbar").html())},
+            {template: kendo.template($("#outputModel_toolbar").html())}],
+
+        columns:[
+            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+            {field:"middleName",title:"Oracle数据库名称"},
+            {field:"middleIP",title:"Oracle数据库IP"},
+            {field:"middleUserName",title:"Oracle数据库用户名"},
+            {field:"middlePassword",title:"Oracle数据库密码"},
+            {field:"middleHost",title:"Oracle数据库所在主机",template:"#=getOracleHost(middleHost)#"},
+            {field:"middleNote",title:"备注",hidden:true},
+            { command: [
+                /* {name:"view",text:"查看",
+                    click:function(e) {
+                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        var url = "/predictCenter/getOracleInfoView/" + dataItem.id + ".html";
+                        window.open(url);
+                         }
+                    }, */
+                {text: "编辑", click: showOracleModel },   //编辑窗体内容
+                { text: "删除",click:delOracleModel }    //删除记录
+
+            ],
+                title: "操作"
+            }
+        ],
+        pageable: {
+            buttonCount:3,
+            input: true,
+            messages:{
+                display:"共{2}条记录",
+                first:"第一页",
+                last:"最后一页",
+                next:"下一页",
+                previous:"前一页",
+                morePages:"更多页",
+                refresh:"刷新表格",
+                empty:"没有数据",
+                itemsPerPage:"项数据每页",
+                page:"第",
+                of:"页"
+            }
+        },
+        selectable: "row"
+    });
+    $(".k-grid-Export").on('click', function(e){
+        var grid = $("#oracleGrid").getKendoGrid();
+        var rows = [{
+            cells: [
+                { value: "Oracle数据库名称" },
+                { value: "Oracle数据库IP" },
+                {value:"Oracle数据库用户名"},
+                {value:"Oracle数据库密码"},
+                {value:"Oracle数据库所在主机"},
+                {value:"备注"}
+            ]
+        }];
+        var trs = $("#oracleGrid").find('tr');
+        for (var i = 0; i < trs.length; i++) {
+            if ($(trs[i]).find(":checkbox").is(":checked")) {
+                var dataItem = grid.dataItem(trs[i]);
+                rows.push({
+                    cells: [
+                        { value: dataItem.middleName},
+                        { value: dataItem.middleIP },
+                        { value: dataItem.middleUserName },
+                        { value: dataItem.middlePassword },
+                        { value: dataItem.middleHost },
+                        { value: dataItem.middleNote }
+                    ]
+                })
+            }
+        }
+        excelExport(rows)
+    })
+
+    function excelExport(rows) {
+        var workbook = new kendo.ooxml.Workbook({
+            sheets: [
+                {
+                    columns: [
+                        { autoWidth: true },
+                        { autoWidth: true },
+                        { autoWidth: true },
+                        { autoWidth: true },
+                        { autoWidth: true },
+                        { autoWidth: true }
+                    ],
+                    title: "Orders",
+                    rows: rows
+                }
+            ]
+        });
+        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "Test.xlsx"});
+    }
+
+    //导入模板窗体
+    inputWnd = $("#inputWnd").kendoWindow({
+        title: "导入",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 600,
+        height:150
+    }).data("kendoWindow");
+    //导出模板窗体
+    outputWnd = $("#outputWnd").kendoWindow({
+        title: "导出",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 600,
+        height:200
+    }).data("kendoWindow");
+
+    oracleModelWnd = $("#oracleModelWnd").kendoWindow({
+        title: "Oracle数据库",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 620,
+        height:400
+    }).data("kendoWindow");
+}
+
+//导入
+function addInputModel(){
+    inputWnd.center().open();
+}
+//导出
+function addOutputModel(){
+    outputWnd.center().open();
+}
+//取消导入
+$("#closeFolder").click( function (e) {
+    $("#inputWnd").data("kendoWindow").close();
+});
+//取消导出
+$("#closeSelection").click( function (e) {
+    $("#outputWnd").data("kendoWindow").close();
+});
+//导入保存
+function submitFolder(){
+    var FolderVal= $("#Folder").val();
+    if(FolderVal==""){
+        alert("带有红色标记的为必填项");
+        return;
+    }else{
+        var submitFolderData={
+            //提交当前行数据的所有数据
+            id:modelRecordId,
+            Folder:FolderVal
+        };
+        submitFolderAjax(crudServiceBaseUrl + "/create",submitFolderData);
+    }
+}
+//提交导入数据至后台
+function submitFolderAjax(submitURL,objData){
+    $.ajax({
+        url:submitURL,
+        dataType: "json",   //返回格式为json
+        async: true,//同步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        data:objData,
+        success:function(data){
+            $("#folderWnd").data("kendoWindow").close();
+            setModelGridDataSource();
+            setModelGrid();
+        }
+    })
+}
+//获取主机
+function getOracleHost(middleHostId){
+    var hosts="";//主机
+    $.ajax({
+        dataType:"json",
+        url:"/predictCenter/api/dropDownList/getHostById/" + middleHostId,
+        async:false,                       //是否异步：不异步，页面加载同时加载数据
+        success:function(data){
+            hosts=data.hosts;
+        }
+    });
+    return hosts;
+}
+//查看弹窗
+function showOracleModel(e) {
+    e.preventDefault();
+    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    oracleRecordId=dataItem.id;//记录当前被选中的虚拟机的id
+
+    //文本框
+    $("#middleNote").val(dataItem.middleNote);    //备注
+    $("#middleName").val(dataItem.middleName);    //Oracle数据库名称
+    $("#middleIP").val(dataItem.middleIP);    //Oracle数据库IP
+    $("#middleUserName").val(dataItem.middleUserName);    //Oracle数据库用户名
+    $("#middlePassword").val(dataItem.middlePassword);    //Oracle数据库密码
+    /*声明为 下拉 输入框样式并赋值*/
+    var middleHostDrop= $("#middleHost").data("kendoDropDownList");//Oracle数据库所在主机
+    middleHostDrop.value(dataItem.middleHost);
+    oracleModelWnd.center().open();
+}
+//删除数据
+function delOracleModel(e){
+    e.preventDefault();
+
+    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    oracleRecordId=dataItem.id;   //记录当前被选中的Oracle的id
+
+    swal({
+                title: "确认要删除该数据吗？",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#55c6dc",
+                confirmButtonText: "删除",
+                cancelButtonText: "取消",
+                closeOnConfirm: true
+            },function(){
+                $.ajax({
+                    url:crudOracleBaseUrl+"/deleteMiddle/"+oracleRecordId,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    success:function(data){
+                        //alert("记录删除成功！");
+                        setOracleGridDataSource();//获取Oracle数据源
+                        setOracleGrid();//重新生成表单
+                    }
+                })
+            }
+    );
+}
+//添加数据
+function addOracleModel(){
+    var middleHost= $("#middleHost").data("kendoDropDownList");
+    middleHost.value("");//Oracle数据库所在主机
+
+    $("#middleUserName").val("");//Oracle数据库用户名
+    $("#middlePassword").val("");//Oracle数据库密码
+    $("#middleName").val("");
+    $("#middleIP").val("");
+    $("#middleNote").val("");
+    oracleRecordId=0;//添加Oracle，模板id设为0.
+    oracleModelWnd.center().open();
+}
+// 保存
+function submitOracleModel(){
+    var middleNameVal= $("#middleName").val();
+    var middleIPVal= $("#middleIP").val();
+    var middleUserNameVal= $("#middleUserName").val();
+    var middlePasswordVal= $("#middlePassword").val();
+    var middleHostVal= $("#middleHost").val();
+    var middleNoteVal= $("#middleNote").val();
+
+    if(middleNameVal==""||middleUserNameVal==""||middlePasswordVal==""||middleIPVal==""||middleHostVal==""){
+        alert("带有红色标记的为必填项");
+        return;
+    }else{
+        var submitOracleModelData={
+            //提交当前行数据的所有数据
+            id:oracleRecordId,
+            middleName:middleNameVal,
+            middleIP:middleIPVal,
+            middleUserName:middleUserNameVal,
+            middlePassword:middlePasswordVal,
+            middleHost:middleHostVal,
+            middleNote:middleNoteVal,
+            middleType:'4'
+        };
+        submitOracleModelAjax(crudOracleBaseUrl + "/createAndUpdateMiddle",submitOracleModelData);
+    }
+}
+//提交数据至后台
+function submitOracleModelAjax(submitURL,objData){
+    $.ajax({
+        url:submitURL,
+        dataType: "json",   //返回格式为json
+        async: true,//同步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        data:objData,
+        success:function(data){
+            $("#oracleModelWnd").data("kendoWindow").close();
+            setOracleGridDataSource();//获取Oracle数据源
+            setOracleGrid();//重新生成表单
+        }
+    })
+};
+// 关闭窗口
+$("#closeOracleModel").click( function (e) {
+    $("#oracleModelWnd").data("kendoWindow").close();
+});
+</script>
+<script id="oracleModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="oracleModel_toolbar_queryBtn" onclick="addOracleModel();"><span class="k-icon k-add"></span>添加Oracle数据库</button>   <!--添加证书-->
+</script>
+<script id="inputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
+</script>
+<script id="outputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
+</script>
+<!-- inline scripts related to this page -->
+</body>
+</html>

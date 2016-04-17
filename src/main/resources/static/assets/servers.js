@@ -1,0 +1,51 @@
+/**
+ * Created by Administrator on 2016/1/23.
+ */
+var servers = [{
+    Power:6,
+    Fine:-5,
+    DiskUsage:16.4,
+    CpuUsage:5.4
+},
+    {
+        Power:10,
+        Fine:-6,
+        DiskUsage:21.7,
+        CpuUsage:2
+    },
+    {
+        Power:10,
+        Fine:0,
+        DiskUsage:35.4,
+        CpuUsage:5.4
+    },
+    {
+        Power:10,
+        Fine:-4,
+        DiskUsage:19,
+        CpuUsage:3
+    },
+    {
+        Power:9,
+        Fine:-3,
+        DiskUsage:10.9,
+        CpuUsage:2
+    },
+    {
+        Power:5,
+        Fine:-5.2,
+        DiskUsage:13.6,
+        CpuUsage:1
+    },
+    {
+        Power:5,
+        Fine:-5,
+        DiskUsage:10.9,
+        CpuUsage:3.2
+    },
+    {
+        Power:10,
+        Fine:-1.7,
+        DiskUsage:16.4,
+        CpuUsage:7.4
+    }];

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/css/dropzone.css" />
+
+
+    <script th:replace="header :: header"></script>
+
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
+    <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
+
+</head>
+
+<body>
+<div th:replace="navbar :: navbar(${user})"></div>
+
+
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'pj_sb_fw'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">主页</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">监控管理配置</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">设备</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">防火墙</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <span class="input-icon">
+                        <input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                        <i class="icon-search nav-search-icon"></i>
+                    </span>
+                </div><!-- #nav-search -->
+            </div>
+        </div><!-- /.main-content -->
+        <div class="page-content">
+            <div>
+                <div class="col-xs-10">
+                    <div id="fwModelGrid"  ></div>
+                </div>
+            </div>
+            <!--路由器模板-->
+            <div id="fwModelWnd" style="display:none">
+                <div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 52px" >防火墙编号:</label>
+                        <input  style="height:30px;width:400px" id="fwSerialNumber"/><label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 36px" >防火墙S/N号:</label>
+                        <input  style="height:30px;width:400px" id="fwSN"/>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 67px">购买时间:</label>
+                        <input  style="height:30px;width:400px" id="fwPurchasingDate" placeholder="请选择..."/>
+
+                    </div>
+
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 40px" >维保到期时间:</label>
+                        <input  style="height:30px;width:400px" id="fwMaintenanceDueTime" placeholder="请选择..."/>
+
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 53px" >防火墙品牌:</label>
+                        <input  style="height:30px;width:400px"  id="fwBrand" />
+
+                    </div>
+
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 52px" >防火墙型号:</label>
+                        <input  style="height:30px;width:400px" id="fwType"/>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 65px" >防火墙IP:</label>
+                        <input  style="height:30px;width:400px" id="fwIP"/><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 85px" >Group:</label>
+                        <input  style="height:30px;width:400px" id="fwGroup"/><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 92px" >SNMP:</label>
+                        <input  style="height:30px;width:113px" id="fwSNMP"/>
+                        <label style="margin-left: 100px" >端口号:</label>
+                        <input  style="height:30px;width:120px" id="fwPort"/>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 62px" >应用名称:</label>
+                        <input  style="height:30px;width:400px;margin-left:1px"  id="fwApplicationName" /><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 90px">备注:</label>
+                        <textarea   style="margin-left: 2px;height:70px;width:400px" rows="5" cols="30" id="fwRemark" />
+
+                    </div>
+
+                    <div style="margin-left:190px;margin-top:20px;">
+                        <button id="saveFwModel"  class="k-button" style="marginleft: 180px;"onclick="submitFwModel()">
+                            <i class="icon-ok"></i>
+                            保存
+                        </button>
+                        <button id="closeFwModel"  class="k-button" style="margin-left: 100px;" >
+                            <i class="icon-remove"></i>
+                            取消
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            <div id="fwInputWnd" style="display:none">
+                <div class="file-box">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input type='file' name='textfield' style="margin-left:80px;margin-top:40px;height:25px" />
+                    </form>
+                    <button style="margin-left:400px;margin-top:25px;height:25px">导入</button>
+                    <button id="closeFwFolder" style="margin-left:20px;margin-top:25px;height:25px">取消</button>
+                </div>
+            </div>
+            <div id="fwOutputWnd" style="display:none">
+                <div style="margin-top: 10px">
+                    <label style="margin-left: 52px" >选择防火墙:</label>
+                    <input  style="margin-left: 10px;height:30px;width:400px" id="fwSelection"/><label style="color: red;margin-left: 5px">*</label>
+                    <button style="margin-left:400px;margin-top:80px;height:25px">导出</button>
+                    <button id="closeFwSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
+                </div>
+            </div>
+
+        </div><!-- /.page-content -->
+    </div><!-- /.main-container-inner -->
+</div><!-- /.main-container -->
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+    <i class="icon-double-angle-up icon-only bigger-110"></i>
+</a>
+
+<script src="/js/elementUseage.js"></script>
+
+<script src='/assets/js/jquery-2.0.3.min.js'></script>
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+
+<!-- page specific plugin scripts -->
+
+<!--[if lte IE 8]>
+<script src="/assets/js/excanvas.min.js"></script>
+<![endif]-->
+
+<script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
+<script src="/assets/js/jquery.slimscroll.min.js"></script>
+<script src="/assets/js/jquery.easy-pie-chart.min.js"></script>
+<script src="/assets/js/jquery.sparkline.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.pie.min.js"></script>
+<script src="/assets/js/flot/jquery.flot.resize.min.js"></script>
+<script src="/assets/js/dropzone.min.js"></script>
+
+
+
+
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/js/jSingnature/libs/flashcanvas.js"></script>
+<![endif]-->
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+
+<script src="/js/console.js"></script>
+<script src="/js/kendo.web.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+    var crudServiceBaseUrl ="/predictCenter/api/fw";  //根地址
+    var dropDownListUrl="/predictCenter/api/dropDownList";//获取下拉列表的根路径
+    var tabStrip = $("#tabStrip").kendoTabStrip().data("kendoTabStrip");      //切换grid
+
+    /*声明dataSource*/
+    var fwModelGridDataSource;
+    /*声明弹出的窗体*/
+    var fwModelWnd;
+    var fwInputWnd;
+    var fwOutputWnd;
+
+
+
+
+    /*声明数据选中行的id*/
+    var fwModelRecordId;
+    /*服务器模板*/
+    // 数据源
+    function setFwModelGridDataSource(){
+        fwModelGridDataSource=new kendo.data.DataSource({
+            transport: {
+                read:  {
+                    url: crudServiceBaseUrl + "/getAllFws",
+                    dataType: "json"
+                },
+                create:{
+                    url:crudServiceBaseUrl+"/createAndUpdateFw",
+                    dataType:"json"
+                },
+                destroy:{
+                    url:crudServiceBaseUrl+"/deleteFw",
+                    dataType:"json"
+                }
+            },
+            batch: true,
+            pageSize: 20,
+            schema: {
+                model: {
+                    id: "id",
+                    fields: {
+                        id: { editable: false, nullable: true },
+                        fwSerialNumber:{validation:{required: { message: "必填项" } }},
+                        fwIP:{validation:{required: { message: "必填项" } }},
+                        fwGroup:{validation:{required: { message: "必填项" } }},
+                        fwApplicationName:{validation:{required: { message: "必填项" } }},
+
+                    }
+                }
+            }
+        });
+    }
+    //服务器模板 数据表
+    function setFwModelGrid(){
+        $("#fwModelGrid").kendoGrid({
+            dataSource:fwModelGridDataSource,
+            toolbar:[{template: kendo.template($("#fwModel_toolbar").html())},
+                     {template: kendo.template($("#inputModel_toolbar").html())},
+                     {template: kendo.template($("#outputModel_toolbar").html())}],
+            columns:[
+                {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+                { field:"fwSerialNumber",title:"防火墙编号"},
+                { field: "fwSN", title: "防火墙S/N号",hidden:true},
+                { field: "fwPurchasingDate", title: "购买时间",hidden:true},
+                { field: "fwMaintenanceDueTime", title: "维保到期时间",hidden:true},
+                { field: "fwBrand", title: "防火墙品牌",template:"#=getBrandNameById(fwBrand)#",hidden:true},
+                { field: "fwType", title: "防火墙型号",hidden:true},
+                { field: "fwIP", title: "防火墙IP"},
+                { field: "fwGroup", title: "Group",hidden:true},
+                { field: "fwSNMP", title: "SNMP",hidden:true},
+                { field: "fwPort", title: "端口号",hidden:true},
+                {field: "fwApplicationName",title: "应用名称",template:"#=getApplicationNameById(fwApplicationName)#"},
+                { field: "fwRemark", title: "备注",hidden:true},
+                { command: [
+                    {text: "编辑", click: showFwModel },   //编辑窗体内容
+                    { text: "删除",click:delFwModel }    //删除记录
+                ] ,  title: "操作",width:"20%"}
+            ],
+            pageable: {
+                buttonCount:3,
+                input: true,
+                messages:{
+                    display:"共{2}条记录",
+                    first:"第一页",
+                    last:"最后一页",
+                    next:"下一页",
+                    previous:"前一页",
+                    morePages:"更多页",
+                    refresh:"刷新表格",
+                    empty:"没有数据",
+                    itemsPerPage:"项数据每页",
+                    page:"第",
+                    of:"页"
+                }
+            },
+            selectable: "row"
+        });
+        //添加及查看模板窗体 郑霞 20160115
+        fwModelWnd = $("#fwModelWnd").kendoWindow({
+            title: "防火墙信息",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 630,
+            height:600
+        }).data("kendoWindow");
+
+        //导入模板窗体 郑霞 20160115
+         fwInputWnd = $("#fwInputWnd").kendoWindow({
+            title: "导入",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 600,
+            height:150
+        }).data("kendoWindow");
+        //导出模板窗体 郑霞 20160115
+         fwOutputWnd = $("#fwOutputWnd").kendoWindow({
+            title: "导出",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 600,
+            height:200
+        }).data("kendoWindow");
+    }
+
+
+    //查看弹窗
+    function showFwModel(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        fwModelRecordId=dataItem.id;//记录当前被选中的防火墙模板的id
+        $("#fwSerialNumber").val(dataItem.fwSerialNumber);//防火墙编号
+        $("#fwSN").val(dataItem.fwSN);//防火墙序列号
+        $("#fwPurchasingDate").val(dataItem.fwPurchasingDate);//防火墙购买时间
+        $("#fwMaintenanceDueTime").val(dataItem.fwMaintenanceDueTime);//防火墙维保到期时间
+        $("#fwType").val(dataItem.fwType);//防火墙型号
+        $("#fwIP").val(dataItem.fwIP);//防火墙IP
+        $("#fwGroup").val(dataItem.fwGroup);
+        $("#fwSNMP").val(dataItem.fwSNMP);//防火墙SNMP
+        $("#fwPort").val(dataItem.fwPort);//服务器端口
+        $("#fwRemark").val(dataItem.fwRemark);//备注
+        /*声明为 下拉 输入框样式并赋值*/
+        //防火墙品牌
+        var fwBrand= $("#fwBrand").data("kendoDropDownList");
+        fwBrand.value(dataItem.fwBrand);
+        //应用名称
+        var fwApplicationName=$("#fwApplicationName").data("kendoDropDownList");
+        fwApplicationName.value(dataItem.fwApplicationName);
+       fwModelWnd.center().open();
+    }
+    //删除数据
+    function delFwModel(e){
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        fwModelRecordId=dataItem.id;   //记录当前被选中的防火墙模板的id
+        swal({
+            title: "确认要删除该数据吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#55c6dc",
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: true
+        },function(){
+            $.ajax({
+                url:crudServiceBaseUrl+"/deleteFw/"+fwModelRecordId,
+                dataType: "json",   //返回格式为json
+                async: true,//同步，这也是ajax重要特性
+                type: "GET",   //请求方式
+                success:function(data){
+                    setFwModelGridDataSource();
+                    setFwModelGrid();
+                }
+            })
+        });
+    }
+    //添加数据
+    function addFwModel(){
+        $("#fwSerialNumber").val("");
+        $("#fwSN").val("");
+        $("#fwBrand").val("");
+        $("#fwType").val("");
+        $("#fwIP").val("");
+        $("#fwSNMP").val("");
+        $("#fwPort").val("");
+        $("#fwApplicationName").val("");
+        $("#fwRemark").val("");
+
+        fwModelRecordId=0;//添加防火墙模板，模板id设为0.
+        fwModelWnd.center().open();
+    }
+    //导入
+    function addFwInputModel(){
+        fwInputWnd.center().open();
+    }
+    //导出
+     function addFwOutputModel(){
+        fwOutputWnd.center().open();
+    }
+
+    // 添加防火墙保存
+    function submitFwModel(){
+        var fwSerialNumberVal= $("#fwSerialNumber").val();
+        var fwSNVal= $("#fwSN").val();
+        var fwPurchasingDateVal= $("#fwPurchasingDate").val();
+        var fwMaintenanceDueTimeVal= $("#fwMaintenanceDueTime").val();
+        var fwBrandVal= $("#fwBrand").val();
+        var fwTypeVal= $("#fwType").val();
+        var fwIPVal= $("#fwIP").val();
+        var fwGroupVal= $("#fwGroup").val();
+        var fwSNMPVal= $("#fwSNMP").val();
+        var fwPortVal= $("#fwPort").val();
+        var fwApplicationNameVal=$("#fwApplicationName").val();
+        var fwRemarkVal= $("#fwRemark").val();
+
+        if(fwSerialNumberVal==""||fwIPVal==""||fwGroupVal==""||fwApplicationNameVal==""){
+            alert("带有红色标记的为必填项");
+            return;
+        }else{
+            var submitFwModelData={
+                //提交当前行数据的所有数据
+                id:fwModelRecordId,
+                fwSerialNumber:fwSerialNumberVal,
+                fwSN:fwSNVal,
+                fwPurchasingDate:fwPurchasingDateVal,
+                fwMaintenanceDueTime:fwMaintenanceDueTimeVal,
+                fwBrand:fwBrandVal,
+                fwType:fwTypeVal,
+                fwIP:fwIPVal,
+                fwGroup:fwGroupVal,
+                fwSNMP:fwSNMPVal,
+                fwPort:fwPortVal,
+                fwApplicationName:fwApplicationNameVal,
+                fwRemark:fwRemarkVal
+
+            };
+            submitFwModelAjax(crudServiceBaseUrl + "/createAndUpdateFw",submitFwModelData);
+        }
+    }
+    //导入保存
+    function submitFwFolder(){
+        var FwFolderVal= $("#FwFolder").val();
+        if(FwFolderVal==""){
+            alert("带有红色标记的为必填项");
+            return;
+        }else{
+            var submitFwFolderData={
+                //提交当前行数据的所有数据
+                id:fwModelRecordId,
+                FwFolder:FwFolderVal
+                };
+                submitFwFolderAjax(crudServiceBaseUrl + "/createFw",submitFwFolderData);
+         }
+    }
+    //提交数据至后台
+    function submitFwModelAjax(submitURL,objData){
+        $.ajax({
+                    url:submitURL,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    data:objData,
+                    success:function(data){
+                        $("#fwModelWnd").data("kendoWindow").close();
+                        setFwModelGridDataSource();
+                        setFwModelGrid();
+                     }
+                })
+    }
+    //提交导入数据至后台
+    function submitfwFolderAjax(submitURL,objData){
+        $.ajax({
+                    url:submitURL,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    data:objData,
+                    success:function(data){
+                        $("#fwFolderWnd").data("kendoWindow").close();
+                        setFwModelGridDataSource();
+                        setFwModelGrid();
+                     }
+                })
+    }
+    //关闭窗口
+    $("#closeFwModel").click( function (e) {
+        $("#fwModelWnd").data("kendoWindow").close();
+    });
+    //取消导入
+    $("#closeFwFolder").click( function (e) {
+        $("#fwInputWnd").data("kendoWindow").close();
+    });
+    //取消导出
+     $("#closeFwSelection").click( function (e) {
+        $("#fwOutputWnd").data("kendoWindow").close();
+    });
+
+       /*声明一级模板下拉框*/
+    //根据品牌Id 获取品牌名称
+    function getBrandNameById(id){
+        var brandName;//品牌名称
+        $.ajax({
+            dataType:"json",
+            url:dropDownListUrl + "/getBrandNameById/"+id,
+            async:false,                       //是否异步：不异步，页面加载同时加载数据
+            success:function(data){
+                brandName=data.brandName;
+            }
+        });
+        return brandName;
+    }
+    //根据Id获取应用名称
+     function getApplicationNameById(id){
+        var ApplicationName;//应用名称
+        $.ajax({
+            dataType:"json",
+            url:dropDownListUrl + "/getApplicationNameById/"+id,
+            async:false,                       //是否异步：不异步，页面加载同时加载数据
+            success:function(data){
+               ApplicationName=data.applicationName;
+            }
+        });
+        return ApplicationName;
+    }
+    //设置下拉列表
+    function setDropDownList(){
+          //防火墙品牌下拉列表
+        $("#fwBrand").kendoDropDownList({
+                optionLabel: "请选择...",
+                dataTextField: "brandName",
+                dataValueField: "id",
+                dataSource: {
+                    transport:{
+                        read:{
+                            dataType:"json",
+                            url:dropDownListUrl + "/getBrandsByType/5"
+                        }
+                    }
+                 }
+            });
+     //应用名称下拉列表
+            $("#fwApplicationName").kendoDropDownList({
+                optionLabel: "请选择...",
+                dataTextField: "applicationName",
+                dataValueField: "id",
+                dataSource: {
+                    transport:{
+                        read:{
+                            dataType:"json",
+                            url:dropDownListUrl + "/getAllApplications"
+                        }
+                    }
+                 }
+            });
+         //导出数据源
+          var fwSelectionData= [
+                        { text: "请选择", value: "0" },
+                        { text: "服务器1", value: "1" },
+                        { text: "服务器2", value: "2" },
+                        { text: "服务器3", value: "3" },
+                        { text: "服务器4", value: "4" },
+                        { text: "服务器5", value: "5" },
+                    ];
+            $("#fwSelection").kendoDropDownList({
+                dataTextField: "text",
+                dataValueField: "value",
+                dataSource: fwSelectionData,
+                index: 0
+            });
+
+    }
+     function setDatePicks(){
+        $("#fwPurchasingDate").kendoDatePicker({
+            culture:"zh-CN"
+       });
+        $("#fwMaintenanceDueTime").kendoDatePicker({
+            culture:"zh-CN"
+       });
+    }
+    //程序入口
+    $(function(){
+        setFwModelGridDataSource();   //调用设置防火墙模板 数据源函数
+        setFwModelGrid();              //调用设置防火墙模板 数据表函数
+        setDropDownList();//加载下拉列表
+        setDatePicks();//设置日历控件
+        });
+
+
+</script>
+
+<script id="fwModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="fwModel_toolbar_queryBtn" onclick="addFwModel();"><span class="k-icon k-add"></span>添加防火墙</button>   <!--添加防火墙-->
+
+</script>
+<script id="inputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addFwInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
+
+</script>
+
+<script id="outputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addFwOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
+
+</script>
+</body>
+</html>

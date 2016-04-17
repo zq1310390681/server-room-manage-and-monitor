@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script th:replace="header :: header"></script>
+
+    <link rel="stylesheet" href="/css/image-circle.css"/>
+
+</head>
+
+<body>
+<!--<script>
+
+    var userbase64 = "[[${userbase64}]]";
+
+</script>-->
+
+<div th:replace="navbar :: navbar(${user})"></div>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+
+
+        <div th:replace="slider :: slidermenu(${'zt_pj_wl_server'})"></div>
+
+
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">首页</a>
+                    </li>
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">监控管理配置</a>
+                    </li>
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/predictCenter/servers/getServerInfo">设备</a>
+                    </li>
+                    <li>
+                        <a th:href="@{/predictCenter/servers/getServerInfo/{serverid}.html(serverId=${server.id})}">服务器详细信息</a>
+                    </li>
+
+                </ul><!-- .breadcrumb -->
+
+                <div class="nav-search" id="nav-search">
+                    <form class="form-search">
+								<span class="input-icon">
+									<input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+									<i class="icon-search nav-search-icon"></i>
+								</span>
+                    </form>
+                </div><!-- #nav-search -->
+            </div>
+
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-xs-8" style="width: 600px">
+                        <div class="tab-content no-border padding-24" style="font-size: 12px;background-color:#fff;font-family: Microsoft YaHei">
+                            <div class="header blue bolder "  style="display: inline-block ;width:530px">
+                                <b style="font-size: 20px">服务器详细信息</b>
+                                <button id="ServerMangeViewClose" class="btn btn-primary btn-sm" style=" float:right  " >
+                                    <i class="icon-reply icon-only"></i>
+                                </button>
+                                <!--//<a class="fa fa-close" style="height:26px "></a>-->
+                            </div>
+                           <!-- <div class="row">
+                                <div align="center" style="background-color:#428bca!important;height: 45px;width:700px;">
+                                    <b style="color:#ffffff;font-size:25px;font-family:Microsoft YaHei">Ping监控详细信息</b>
+                                </div>
+                            </div>-->
+                            <div class="row ">
+                                <div class="col-xs-12 col-sm-9 header blue" style="width:530px;left:10px">
+                                    <!--<h4 class="blue">
+                                            <span class="middle"></span>
+                                            <span class="label label-purple arrowed-in-right">
+                                                <i class="icon-circle smaller-80 align-middle"></i>
+                                                在线
+                                            </span>
+                                    </h4>-->
+                                    <div class="profile-user-info">
+                                        <input name="id" type="hidden" th:value="*{server} ? *{server.id} : '0'"/>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                服务器编号：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverSerialNumber} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                服务器S/N号：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverSN} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                购买时间：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverPurchasingDate} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                维保到期时间：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverMaintenanceDueTime} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                服务器品牌：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverBrand} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                服务器型号：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverType} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                服务器IP：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverIP} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                存储设备：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverStorageDevice} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                       <!-- <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                应用名称：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverApplicationName} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>-->
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                所在机柜：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverEquipmentCabinet} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                               所在U：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{server} ? *{server.serverU} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
+                                                备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <!--<label th:text="*{ping} ? *{ping.pingNote} : '(no user specified)'"></label>-->
+                                                <textarea style="color: #478fca!important" readonly="true" th:text="*{server} ? *{server.serverRemark} : '(no user specified)'" cols="45" rows="10"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div style="margin-left: 10px">-->
+                                        <!--<a class="btn btn-primary">返回</a>-->
+                                    <!--</div>-->
+                                </div><!-- /span -->
+                            </div><!-- /row-fluid -->
+                        </div>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.page-content -->
+        </div><!-- /.main-content -->
+
+
+    </div><!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="/assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/assets/js/jquery.1.10.2.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+    $("#ServerMangeViewClose").click( function (e) {
+       var confirm1= confirm("确定关闭吗T T？");
+        if(confirm1==true){
+            window.close();
+        }
+
+
+    });
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+<script src="/js/kendo.all.min.js"></script>
+</body>
+</html>
