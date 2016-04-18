@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmAlarmForm;
-import cn.edu.shou.monitor.domain.predictMmAlarm;
+import cn.edu.shou.monitor.domain.PredictMmAlarm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,16 +21,16 @@ public class AlarmManagementApiController {
     cn.edu.shou.monitor.service.AlarmManagementRepository AlarmManagementRepository;
     //获取所有告警规则数据信息
     @RequestMapping(value = "/getAllAlarm")
-    public List<predictMmAlarm> getAllAlarm(){
+    public List<PredictMmAlarm> getAllAlarm(){
         return AlarmManagementRepository.findAll();
     }
     //创建告警规则
     @RequestMapping(value = "/createAndUpdateAlarm",method = RequestMethod.GET)
-    public List<predictMmAlarm> createSurveillancePro(predictMmAlarmForm alarmForm) {
+    public List<PredictMmAlarm> createSurveillancePro(predictMmAlarmForm alarmForm) {
         long recordId=alarmForm.getId();//获取记录ID
-        predictMmAlarm predictAlarm= null;
+        PredictMmAlarm predictAlarm= null;
         if(recordId==0){
-            predictAlarm=new predictMmAlarm();
+            predictAlarm=new PredictMmAlarm();
         }else {
             predictAlarm=AlarmManagementRepository.findOne(recordId);
         }
@@ -40,17 +40,17 @@ public class AlarmManagementApiController {
         predictAlarm.setAlarmNote(alarmForm.getAlarmNote());
 
         AlarmManagementRepository.save(predictAlarm);
-        List<predictMmAlarm> list=new ArrayList<predictMmAlarm>();
+        List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
         list.add(predictAlarm);
         return list;
     }
 
     //删除告警规则
     @RequestMapping(value = "/deleteAlarm/{id}")
-    public List<predictMmAlarm> deleteSurveillancePro(@PathVariable long id){
-        predictMmAlarm predictAlarm=AlarmManagementRepository.findOne(id);
+    public List<PredictMmAlarm> deleteSurveillancePro(@PathVariable long id){
+        PredictMmAlarm predictAlarm=AlarmManagementRepository.findOne(id);
         AlarmManagementRepository.delete(predictAlarm);
-        List<predictMmAlarm> list=new ArrayList<predictMmAlarm>();
+        List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
         list.add(predictAlarm);
         return list;
 

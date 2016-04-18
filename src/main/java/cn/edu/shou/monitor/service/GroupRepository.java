@@ -36,6 +36,7 @@ public interface GroupRepository extends PagingAndSortingRepository<Group,Long> 
 
     @Query(value = "select g from Group g where g.groupList IS EMPTY")
     public List<Group> getAllLeafGroup();
+
     @Query(value = "select g from Group g where g.group.id = ?1")
     public Group getGroupListByGroupID(Long id);
 }

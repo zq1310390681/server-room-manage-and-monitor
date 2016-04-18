@@ -48,7 +48,8 @@ public class GetDropDownListApiContentController {
     SerObjGroupManagementRepository serObjGroupManagementRepository;
     @Autowired
     AppGroupManagementRepository appGroupManagementRepository;
-
+    @Autowired
+    AlarmGradeRepository alarmGradeRepository;
     //获取所有品牌数据
     @RequestMapping(value = "/getAllBrands")
     public List<predictMmBrand>getAllBrands(){
@@ -182,6 +183,17 @@ public class GetDropDownListApiContentController {
     @RequestMapping(value = "/getAppGroupById/{id}")
     public PredictMmAppGroup getAppGroupById(@PathVariable long id){
         return appGroupManagementRepository.findOne(id);
+    }
+
+    //获取等级列表
+    @RequestMapping("/getAlarmGrade")
+    public List<PredictMmAlarmGrade> getAlarmGrade(){
+        return alarmGradeRepository.findAll();
+    }
+    //根据等级Id获取等级名称
+    @RequestMapping(value="/getAlarmGradeById/{id}")
+    public PredictMmAlarmGrade getAlarmGradeById(@PathVariable long id){
+        return alarmGradeRepository.findOne(id);
     }
 
     //获取服务器列表

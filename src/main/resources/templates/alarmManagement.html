@@ -59,26 +59,40 @@
                 <div>
                     <div style="margin:10px">
                         <label style="margin-left: 36px" >告警设备:</label>
-                        <input  style="margin-left: 10px;height:30px;width:200px"  id="equipTypeName" />
-                        <input  style="margin-left: 10px;height:30px;width:200px"  id="equipElementName" />
+                        <input  style="margin-left: 10px;height:30px;width:452px"  id="equipTypeName" />
+
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px;">
+                        <div>
+                            <label style="margin-left: 36px" >监控要素:</label>
+                            <input  style="margin-left: 10px;height:30px;width:180px"  id="equipElementName" />
+                            <label style="width: 25px"></label>
+
+                            <label>阈值:</label>
+                            <input  style="margin-left: 10px;height:25px;width:180px"  id="alarmThreshold" />
+                            <label style="color: red;margin-left: 5px">*</label>
+                        </div>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 36px" >告警等级:</label>
+                        <input  style="margin-left: 10px;height:30px;width:450px"  id="alarmGrade" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin:10px">
-                        <label style="margin-left: 36px" >告警阈值:</label>
-                        <input  style="margin-left: 10px;height:30px;width:415px"  id="alarmThreshold" />
-                        <label style="color: red;margin-left: 5px">*</label>
+                        <label style="margin-left: 36px" >告警信息:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:445px" readonly="true"  id="alarmInform" ></textarea>
                     </div>
                     <div style="margin-top: 10px">
                         <label style="margin-left: 73px">备注:</label>
-                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:410px"  id="alarmNote" ></textarea>
-                        <label style="color: red;margin-left: 5px">*</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:445px"  id="alarmNote" ></textarea>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="alarmModel"  class="k-button" style="margin-left: 100px;"onclick="submitAlarmModel()">
+                        <button id="alarmModel"  class="k-button" style="margin-left: 185px;"onclick="submitAlarmModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeAlarmModel" class="k-button" style="margin-left: 100px;" >
+                        <button id="closeAlarmModel" class="k-button" style="margin-left: 50px;" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -191,6 +205,20 @@ function setDropDownList(){
             }
         }
     });
+
+    $("#alarmGrade").kendoDropDownList({
+        optionLabel: "选择告警等级",
+        dataTextField: "alarmGradeName",
+        dataValueField: "id",
+        dataSource: {
+            transport: {
+                read: {
+                    url: dropDownListUrl+"/getAlarmGrade",
+                    dataType: "json"
+                }
+            }
+        }
+    });
 }
 //主程序入口
 $(function(){
@@ -211,13 +239,7 @@ function setAlarmGridDataSource(){
         pageSize: 20,
         schema: {
             model: {
-                id: "id",
-                fields: {
-                    id: { editable: false, nullable: true },
-                    equipTypeName: {validation: { required: { message: "必填项" } }  },
-                    equipTypeElement: {validation: { required: { message: "必填项" } }  },
-                    alarmThreshold: { validation: { required: { message: "必填项" }} }
-                }
+                id: "id"
             }
         }
     });
@@ -234,6 +256,8 @@ function setAlarmGrid(){
             {field:"equipTypeName",title:"告警设备",template:"#=getEquipTypeName(equipTypeName)#"},
             {field:"equipTypeElement",title:"告警设备要素",template:"#=getEquipTypeName(equipTypeElement)#"},
             {field:"alarmThreshold",title:"告警阈值(%)"},
+            {field:"alarmGrade",title:"告警等级"},
+            {field:"alarmInform",title:"告警信息"},
             {field:"alarmNote",title:"备注",hidden:true},
             { command: [
                 {name:"view",text:"查看",
@@ -274,8 +298,8 @@ function setAlarmGrid(){
         modal: true,
         visible: false,
         resizable: false,
-        width: 630,
-        height:250
+        width: 650,
+        height:400
     }).data("kendoWindow");
     //导入模板窗体
     inputWnd = $("#inputWnd").kendoWindow({
@@ -357,6 +381,19 @@ function getEquipTypeName(equipTypeId){
     });
     return equipTypeName;
 }
+//获取设备类型名称
+function getAlarmGradeById(equipTypeId){
+    var alarmGradeName="";//设备名称
+    $.ajax({
+        dataType:"json",
+        url:"/predictCenter/api/dropDownList/getAlarmGradeById/" + equipTypeId,
+        async:false,                       //是否异步：不异步，页面加载同时加载数据
+        success:function(data){
+            alarmGradeName=data.alarmGradeName;
+        }
+    });
+    return alarmGradeName;
+}
 
 //查看弹窗
 function showAlarmModel(e) {
@@ -373,6 +410,8 @@ function showAlarmModel(e) {
     equipTypeNameDrop.value(dataItem.equipTypeName);
     var equipElementNameDrop= $("#equipElementName").data("kendoDropDownList");//告警设备
     equipElementNameDrop.value(dataItem.equipTypeElement);
+    var alarmGradeNameDrop= $("#alarmGradeName").data("kendoDropDownList");//告警等级
+    equipElementNameDrop.value(dataItem.alarmGradeName);
     alarmModelWnd.center().open();
 }
 //删除数据
@@ -403,16 +442,15 @@ function delAlarmModel(e){
                 })
             }
     );
-
 }
-
-
 //添加数据
 function addAlarmModel(){
     var equipTypeName= $("#equipTypeName").data("kendoDropDownList");
     equipTypeName.value("");//设备类型
     var equipElementName= $("#equipElementName").data("kendoDropDownList");
     equipElementName.value("");//要素
+    var alarmGradeName= $("#alarmGradeName").data("kendoDropDownList");
+    equipElementName.value("");//要素等级
 
     $("#alarmThreshold").val("");
     $("#alarmNote").val("");
@@ -425,7 +463,7 @@ function submitAlarmModel(){
     var equipElementVal= $("#equipElementName").val();
     var alarmThresholdVal= $("#alarmThreshold").val();
     var alarmNoteVal= $("#alarmNote").val();
-
+    var alarmGradeNameVal=$("#alarmGradeName").val;
 
     if(equipTypeNameVal==""||alarmThresholdVal==""){
         alert("带有红色标记的为必填项");
@@ -436,7 +474,9 @@ function submitAlarmModel(){
             id:alarmRecordId,
             equipTypeName:equipTypeNameVal,
             equipTypeElement:equipElementVal,
+            alarmGradeName:alarmGradeNameVal,
             alarmThreshold:alarmThresholdVal,
+            alarmGradeName:alarmGradeNameVal,
             alarmNote:alarmNoteVal
         };
         submitAlarmModelAjax(crudAlarmBaseUrl + "/createAndUpdateAlarm",submitAlarmModelData);
