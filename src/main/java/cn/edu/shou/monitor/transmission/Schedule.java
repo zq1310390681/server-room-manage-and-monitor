@@ -113,8 +113,13 @@ public class Schedule {
         return FrontScreen.sendPutNet("output");
     }
 
-    @RequestMapping(value = "/superComputer")
-    public String sendScData() throws Exception{
-        return SuComputerScreen.sendSuComputer();
-    } // to String
+    @RequestMapping(value = "/superComputerShort")
+    public String sendScDataShort() throws Exception{
+        return SuComputerScreen.sendSuComputer("qstat \n");
+    }
+
+    @RequestMapping(value = "/superComputerLong")
+    public String sendScDataLong() throws Exception{
+        return SuComputerScreen.sendSuComputer("pbsnodes \n");
+    }
 }

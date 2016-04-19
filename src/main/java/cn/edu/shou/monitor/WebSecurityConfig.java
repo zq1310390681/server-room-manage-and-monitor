@@ -78,7 +78,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         BCryptPasswordEncoder bcpe = new BCryptPasswordEncoder();
@@ -116,20 +115,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web
                 .ignoring()
                 .antMatchers("/index")
-                .antMatchers("/ybzx/**")
-                .antMatchers("/front/**")
+                .antMatchers("/fonts/**")
                 .antMatchers("/assets/**")
                 .antMatchers("/css/**")
                 .antMatchers("/img/**")
                 .antMatchers("/js/**")
-                .antMatchers("/styles/**")
-                .antMatchers("/api/pad/login")
-                .antMatchers("/missiveSign/missiveSignToPDF/**")
-                .antMatchers("/missive/missivePublishToPDF/**")
-                .antMatchers("/html2pdf/missiveReceive/**")
-                .antMatchers("/api/bgPng/**")
-                .antMatchers("/FaxCable/static/**");
-        //.antMatchers("/api/**");
+                .antMatchers("/styles/**");
 
     }
 }

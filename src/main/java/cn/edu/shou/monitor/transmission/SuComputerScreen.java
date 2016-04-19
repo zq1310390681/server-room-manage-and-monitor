@@ -6,6 +6,7 @@ import com.jcraft.jsch.Session;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +24,9 @@ public class SuComputerScreen {
      * @param privateKey 密钥文件路径
      * @param passphrase 密钥的密码
      */
-    public  List<String> sshShell(String ip, String user, String psw
-            ,int port ,String privateKey ,String passphrase) throws Exception{
-        List<String> line = new ArrayList<String>();
+    public  String sshShell(String ip, String user, String psw
+            ,int port ,String privateKey ,String passphrase,String command) throws Exception{
+
         String shellString = null;
         Session session = null;
         Channel channel = null;
@@ -63,6 +64,7 @@ public class SuComputerScreen {
         //设置登陆超时时间
         session.connect(30000);
 
+        String shellOutput = "";
         try {
             //创建sftp通信通道
             channel = session.openChannel("shell");
@@ -73,15 +75,14 @@ public class SuComputerScreen {
             OutputStream outstream = channel.getOutputStream();
 
             //发送需要执行的SHELL命令，需要用\n结尾，表示回车
-            String shellCommand = "qstat \n";
-            outstream.write(shellCommand.getBytes());
+            outstream.write(command.getBytes());  //"qstat \n";  // "pbsnodes \n"
             outstream.flush();
 
 
             Thread.sleep(1000);
             //获取命令执行的结果
             List<String> result = new ArrayList<String>();
-            String shellOutput;
+
             while (instream.available() > 0){
                 byte[] data = new byte[instream.available()];
                 int nLen = instream.read(data);
@@ -93,16 +94,6 @@ public class SuComputerScreen {
                 //转换输出结果并打印出来
                 shellOutput = new String(data, 0, nLen,"iso8859-1");
 //                System.out.println("OUTPUT IS "+shellOutput);
-                String[] tempArray = shellOutput.split("\n");
-                result.addAll(Arrays.asList(tempArray));
-            }
-            if (result.size()>5){
-                for(String rs : result){
-                    if(rs.substring(0, 1).matches("[0-9]")){
-                        rs=rs.replaceAll("\\s+", ",");
-                        line.add(rs.substring(0,rs.length()-1));
-                    }
-                }
             }
 
             outstream.close();
@@ -113,12 +104,64 @@ public class SuComputerScreen {
             session.disconnect();
             channel.disconnect();
         }
-        return line;
+        return shellOutput;
     }
 
-    public static String sendSuComputer() throws Exception{
-        SuComputerScreen scScreen = new SuComputerScreen();
-        List<String> scScreenList = scScreen.sshShell("192.168.9.27", "test", "test123", -1, "", "");
-        return scScreenList.toString();
+    public static String sendSuComputer(String command) throws Exception{
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        SuComputerScreen superComputer = new SuComputerScreen();
+        List<String> line = new ArrayList<String>();
+        List<String> result = new ArrayList<String>();
+
+        if(command.equals("qstat \\n")){
+            String shellResult = superComputer.sshShell("192.168.9.27", "test", "test123", -1, "", "",command); //"qstat \n"; "pbsnodes \n"
+            String[] tempArray = shellResult.split("\n");
+            result.addAll(Arrays.asList(tempArray));
+            if (result.size()>5){
+                for(String rs : result){
+                    if(rs.substring(0, 1).matches("[0-9]")){
+                        rs=rs.replaceAll("\\s+", ",");
+                        line.add(rs.substring(0,rs.length()-1));
+                    }
+                }
+            }
+            return line.toString();
+        }
+
+        if(command.equals("pbsnodes \n")){
+            String shellResult = superComputer.sshShell("192.168.9.27", "test", "test123", -1, "", "",command); //"qstat \n"; "pbsnodes \n"
+            String[] tempArray = shellResult.split("\n"+""+"\n");
+            result.addAll(Arrays.asList(tempArray));
+            for(int i= 0;i<result.size();i++){
+                String str = result.get(i);
+                String sub = str.substring(0,5);
+                if(sub.equals("admin")||sub.equals("login")){
+                    result.remove(i);
+                }
+            }
+
+            List<List<String>> info = new ArrayList<>();
+            for(String str:result){
+                List<String> inner = new ArrayList<>();
+                String computTemp = str.substring(str.indexOf("comput"),str.indexOf("state")).replace("\n","").replace(" ","");
+                String comput = "comput="+computTemp;
+                inner.add(comput);
+                String state = str.substring(str.indexOf("state"),str.indexOf("np")).replace("\n","").replace(" ","");
+                inner.add(state);
+                String loadave = str.substring(str.indexOf("loadave"), str.indexOf(",ncpus"));
+                inner.add(loadave);
+                String availmem = str.substring(str.indexOf("availmem=")+9, str.indexOf("kb,totmem"));
+                String totmem = str.substring(str.indexOf("totmem=")+7, str.indexOf("kb,idletime"));
+                double memTemp = 100*Double.valueOf(availmem)/Double.valueOf(totmem);
+                String memTemp1 = decimalFormat.format(memTemp);
+                String freeMem = "freeMem="+memTemp1;
+                inner.add(freeMem);
+                info.add(inner);
+            }
+            System.out.println(info.toString().replace("=",":"));
+            return info.toString().replace("=",":");
+        }else{
+            return null;
+        }
     }
 }
