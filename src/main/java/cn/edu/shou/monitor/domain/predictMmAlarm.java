@@ -12,13 +12,17 @@ import javax.persistence.Entity;
  */
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class predictMmAlarm extends BaseEntity {
+public class PredictMmAlarm extends BaseEntity {
     @Getter @Setter
     private long equipTypeName;//告警设备类别名称编号
     @Getter @Setter
     private long equipTypeElement;//告警设备监控要素
-       @Getter @Setter
+    @Getter @Setter
     private String alarmThreshold;//告警阈值
+    @Getter @Setter
+    private String alarmGrade;//告警等级
+    @Getter @Setter
+    private String alarmInform;//填写信息
     @Getter @Setter
     private String alarmNote;//备注
 
@@ -61,5 +65,21 @@ public class predictMmAlarm extends BaseEntity {
 
     public void setAlarmNote(String alarmNote) {
         this.alarmNote = alarmNote;
+    }
+
+    public String getAlarmGrade() {
+        return alarmGrade;
+    }
+
+    public void setAlarmGrade(String alarmGrade) {
+        this.alarmGrade = alarmGrade;
+    }
+
+    public String getAlarmInform() {
+        return alarmInform;
+    }
+
+    public void setAlarmInform(String alarmInform) {
+        this.alarmInform = alarmInform;
     }
 }

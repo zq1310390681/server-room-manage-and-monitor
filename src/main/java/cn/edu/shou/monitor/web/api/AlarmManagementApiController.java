@@ -34,10 +34,10 @@ public class AlarmManagementApiController {
         }else {
             predictAlarm=AlarmManagementRepository.findOne(recordId);
         }
-        predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName());
-        predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement());
-        predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());
-        predictAlarm.setAlarmNote(alarmForm.getAlarmNote());
+        predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName()); //设备名称
+        predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement());//告警设备监控要素
+        predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值
+        predictAlarm.setAlarmNote(alarmForm.getAlarmNote());//备注信息
 
         AlarmManagementRepository.save(predictAlarm);
         List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();

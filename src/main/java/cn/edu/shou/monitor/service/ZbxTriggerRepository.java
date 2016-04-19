@@ -24,7 +24,14 @@ import org.springframework.stereotype.Service;
  triggers表的triggerid 和functions表的functonid 对应
  functions.itemid 对应于 items.itemid
  items.itemid对应hostid
+
+ hosts_templates -->
+ hostid,itemid,key_,name_
+ functions,triggers
+ triggers,expression
  */
+
+
 @Repository
 @Service
 public class ZbxTriggerRepository {
