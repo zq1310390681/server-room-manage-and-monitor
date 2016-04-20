@@ -4,7 +4,6 @@ import cn.edu.shou.monitor.spring.TargetDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,7 +38,6 @@ import java.util.Map;
 
 
 @Repository
-@Service
 @RestController
 public class ZbxTriggerRepository {
     @Autowired
@@ -47,21 +45,31 @@ public class ZbxTriggerRepository {
 
     @RequestMapping(value = "/predict/triggers")
     @TargetDataSource(name = "zabbix")
-    public void updTrigger(){
+    public void updTrigger(String itemKeyToSearch,String thresholdNew){
         // 得到字段itemid，hostid，item_name,item_key,triggerid,expression
-        String triggerSql = "SELECT i.itemid,i.hostid,i.name,i.key_,fun.triggerid,trg.expression\n" +
-            "FROM items as i,hosts_templates as ht,functions as fun,triggers as trg\n" +
-            "where i.hostid = ht.hostid \n" +
-            "and i.key_ = 'system.cpu.load[percpu,avg1]'\n" +
-            "and i.itemid = fun.itemid\n" +
-            "and trg.triggerid = fun.triggerid\n" +
-            "and ht.hostid>10084;";
+        String triggerSql;
+        if(itemKeyToSearch.equals("memory usage is not enough")){
+            triggerSql = "SELECT i.itemid,i.hostid,i.name,i.key_,fun.triggerid,trg.expression\n" +
+                "FROM items as i,hosts_templates as ht,functions as fun,triggers as trg\n" +
+                "where i.hostid = ht.hostid \n" +
+                "and trg.description = '"+itemKeyToSearch+"'\n" +
+                "and i.itemid = fun.itemid\n" +
+                "and trg.triggerid = fun.triggerid\n" +
+                "and ht.hostid>10084;";
+        }else{
+            triggerSql = "SELECT i.itemid,i.hostid,i.name,i.key_,fun.triggerid,trg.expression\n" +
+                "FROM items as i,hosts_templates as ht,functions as fun,triggers as trg\n" +
+                "where i.hostid = ht.hostid \n" +
+                "and i.key_ = '"+itemKeyToSearch+"'\n" +
+                "and i.itemid = fun.itemid\n" +
+                "and trg.triggerid = fun.triggerid\n" +
+                "and ht.hostid>10084;";
+        }
         List<Map<String,Object>> list = jdbc.queryForList(triggerSql);
         String expression = list.get(1).get("expression").toString(); // 因为是一个模版出来的，所有操作符都一样
         int a = expression.indexOf("}");
         String operator = expression.substring(a+1,a+2); //得到运算符
 
-        String thresholdNew = "5";
         String sum = "";
         for(Map<String,Object> map : list){
             String expressionOld = map.get("expression").toString();
@@ -69,22 +77,8 @@ public class ZbxTriggerRepository {
             String expressionNew = expressionOld.replace(operator+thresholdOld,operator+thresholdNew);
             map.put("expression",expressionNew);
             String triggerid = map.get("triggerid").toString();
-            String updTriggers = "update triggers set expression = '"+ expressionNew + "'where triggerid =" + triggerid + ";\n";
-            sum = sum + updTriggers;
-//            jdbc.update(updTriggers);
+            String updTriggers = "update triggers set expression = '"+ expressionNew + "' where triggerid =" + triggerid + ";\n";
+            jdbc.update(updTriggers);
         }
-        jdbc.batchUpdate(sum);
-    }
-
-    public List<Map<String,Object>> select(){
-        String triggerSql = "SELECT i.itemid,i.hostid,i.name,i.key_,fun.triggerid,trg.expression\n" +
-            "FROM items as i,hosts_templates as ht,functions as fun,triggers as trg\n" +
-            "where i.hostid = ht.hostid \n" +
-            "and i.key_ = 'system.cpu.load[percpu,avg1]'\n" +
-            "and i.itemid = fun.itemid\n" +
-            "and trg.triggerid = fun.triggerid\n" +
-            "and ht.hostid>10084;";
-        List<Map<String,Object>> list = jdbc.queryForList(triggerSql);
-        return list;
     }
 }

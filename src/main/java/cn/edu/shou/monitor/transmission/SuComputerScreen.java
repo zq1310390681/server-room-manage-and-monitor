@@ -130,7 +130,7 @@ public class SuComputerScreen {
 
         if(command.equals("pbsnodes \n")){
             String shellResult = superComputer.sshShell("192.168.9.27", "test", "test123", -1, "", "",command); //"qstat \n"; "pbsnodes \n"
-            String[] tempArray = shellResult.split("\n"+""+"\n");
+            String[] tempArray = shellResult.split("\n\n");
             result.addAll(Arrays.asList(tempArray));
             for(int i= 0;i<result.size();i++){
                 String str = result.get(i);

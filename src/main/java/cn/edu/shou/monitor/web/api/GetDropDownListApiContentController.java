@@ -50,7 +50,6 @@ public class GetDropDownListApiContentController {
     AppGroupManagementRepository appGroupManagementRepository;
     @Autowired
     AlarmGradeRepository alarmGradeRepository;
-
     //获取所有品牌数据
     @RequestMapping(value = "/getAllBrands")
     public List<predictMmBrand>getAllBrands(){
@@ -71,7 +70,11 @@ public class GetDropDownListApiContentController {
     public List<predictMmBrandType>getAllBrandTypes(){
         return BrandTypeRepository.findAll();
     }
-
+/*    //根据品牌类型获取品牌数据
+    @RequestMapping(value = "/getBrandsByType/{type}")
+    public List<predictMmBrand>getBrandsByType(@PathVariable int type){
+        return brandRepository.findBrandByType(type);
+    }*/
     //根据品牌Id获取品牌数据
     @RequestMapping(value = "/getBrandTypeById/{id}")
     public predictMmBrandType getBrandTypeById(@PathVariable long id){
@@ -79,7 +82,7 @@ public class GetDropDownListApiContentController {
     }
     //获取所有U数据
     @RequestMapping(value = "/getAllUs")
-    public List<predictMmU> getAllUs(){
+    public List<predictMmU>getAllUs(){
         return URepository.findAll();
     }
 
@@ -101,7 +104,7 @@ public class GetDropDownListApiContentController {
     }
     //获取所有服务器的存储设备数据
     @RequestMapping(value = "/getAllStorageDevices")
-    public List<predictMmStores> getAllStorageDevices(){
+    public List<predictMmStores>getAllStorageDevices(){
         return StoresRepository.findAll();
     }
 

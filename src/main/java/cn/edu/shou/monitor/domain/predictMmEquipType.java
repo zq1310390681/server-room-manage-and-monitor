@@ -13,11 +13,16 @@ import javax.persistence.Entity;
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class predictMmEquipType extends BaseEntity {
-
     @Getter @Setter
     private String equipTypeName; //设备类型名称
     @Getter @Setter
     private long parentId; //父编号
+    @Getter @Setter
+    private String zbxItemName;//该监控项在zbx中的item检索项,从name检索
+    @Getter @Setter
+    private String zbxItemKey;//该监控项在zbx中的item搜索项，从key检索
+    @Getter @Setter
+    private String description; //报警描述信息
 
     public long getId() {
         return id;
@@ -41,5 +46,29 @@ public class predictMmEquipType extends BaseEntity {
 
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public String getZbxItemName() {
+        return zbxItemName;
+    }
+
+    public void setZbxItemName(String zbxItemName) {
+        this.zbxItemName = zbxItemName;
+    }
+
+    public String getZbxItemKey() {
+        return zbxItemKey;
+    }
+
+    public void setZbxItemKey(String zbxItemKey) {
+        this.zbxItemKey = zbxItemKey;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
