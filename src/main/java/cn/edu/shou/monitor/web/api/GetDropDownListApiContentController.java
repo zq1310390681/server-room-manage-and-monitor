@@ -48,7 +48,7 @@ public class GetDropDownListApiContentController {
     SerObjGroupManagementRepository serObjGroupManagementRepository;
     @Autowired
     AppGroupManagementRepository appGroupManagementRepository;
-    @Autowired
+    //@Autowired
     AlarmGradeRepository alarmGradeRepository;
     //获取所有品牌数据
     @RequestMapping(value = "/getAllBrands")

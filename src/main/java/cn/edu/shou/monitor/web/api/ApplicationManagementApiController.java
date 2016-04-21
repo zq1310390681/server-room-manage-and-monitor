@@ -32,22 +32,22 @@ public class ApplicationManagementApiController {
 
     //获取所有应用数据信息
     @RequestMapping(value = "/getAllApplications")
-    public List<predictMmApplications> getAllApplications(){
+    public List<predictMmApplications> getAllApplications() {
         return ApplicationManagementRepository.findAll();
     }
 
     //创建应用
-    @RequestMapping(value = "/createAndUpdateApplication",method = RequestMethod.GET)
+    @RequestMapping(value = "/createAndUpdateApplication", method = RequestMethod.GET)
     public List<predictMmApplications> createApplication(predictMmApplicationsForm applicationsForm) {
-        long recordId=applicationsForm.getId();//获取记录ID
-        predictMmApplications predictApplication=null;
+        long recordId = applicationsForm.getId();//获取记录ID
+        predictMmApplications predictApplication = null;
         predictMmServiceObjectAndApplication predictSoAndApp = null;
-        if(recordId==0){
+        if (recordId == 0) {
             predictApplication = new predictMmApplications();
             predictSoAndApp = new predictMmServiceObjectAndApplication();
-        }else {
-            predictApplication=ApplicationManagementRepository.findOne(recordId);
-            predictSoAndApp=SoAndAppRepository.getServerObjAndApp(recordId);//获取中间对象
+        } else {
+            predictApplication = ApplicationManagementRepository.findOne(recordId);
+            predictSoAndApp = SoAndAppRepository.getServerObjAndApp(recordId);//获取中间对象
         }
         predictApplication.setApplicationName(applicationsForm.getApplicationName());
         predictApplication.setAppGroup(applicationsForm.getAppGroup());
@@ -56,10 +56,10 @@ public class ApplicationManagementApiController {
         predictApplication.setApplicationMiddlewareName(applicationsForm.getApplicationMiddlewareName());
 
         String[] predictHostId = applicationsForm.getApplicationHost().split(",");
-        predictMmHost  predictHost ;
-        List<String>  nameList = new ArrayList<>();
-        List<String>  hostidList = new ArrayList<>();
-        for(String str: predictHostId ){
+        predictMmHost predictHost;
+        List<String> nameList = new ArrayList<>();
+        List<String> hostidList = new ArrayList<>();
+        for (String str : predictHostId) {
             long id = Long.valueOf(str);
             predictHost = hostRepository.findOne(id);
             String nameStr = predictHost.getHosts();
@@ -67,17 +67,17 @@ public class ApplicationManagementApiController {
             nameList.add(nameStr);
             hostidList.add(idStr);
         }
-        predictApplication.setHostName(nameList.toString().replace("[","").replace("]",""));
-        predictApplication.setHostid(hostidList.toString().replace("[","").replace("]",""));
+        predictApplication.setHostName(nameList.toString().replace("[", "").replace("]", ""));
+        predictApplication.setHostid(hostidList.toString().replace("[", "").replace("]", ""));
 
 
-        if (applicationsForm.getHostContent().isEmpty()){
+        if (applicationsForm.getHostContent().isEmpty()) {
             predictApplication.setHostContent("");//主机内容
-        }else {
+        } else {
             predictApplication.setHostContent(applicationsForm.getHostContent());//主机内容
         }
         ApplicationManagementRepository.save(predictApplication); //保存至后台
-        List<predictMmApplications> list=new ArrayList<predictMmApplications>();
+        List<predictMmApplications> list = new ArrayList<predictMmApplications>();
         list.add(predictApplication);
 
         //添加中间表
@@ -89,7 +89,7 @@ public class ApplicationManagementApiController {
         MQAsset asset = new MQAsset();
         predictMmServers predictServer;
         String appName = predictApplication.getApplicationName();
-        for(String str: predictHostId ){  //predictHostId : app所在 host的 predict id
+        for (String str : predictHostId) {  //predictHostId : app所在 host的 predict id
             long id = Long.valueOf(str);
             predictHost = hostRepository.findOne(id); // 得到host repository
             long predictServerId = Long.valueOf(predictHost.getHostServer()); //server id
@@ -100,18 +100,19 @@ public class ApplicationManagementApiController {
             asset.updApp("upd", predictServer.getId(), predictServer.getServerSerialNumber(), zbxServerHostId, predictServer.getServerSN(),
                     predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(), predictServer.getServerBrand(),
                     predictServer.getServerType(), predictServer.getServerIP(), predictServer.getServerStorageDevice(), cabinetName,
-                    predictServer.getServerU(), appName,predictServer.getServerRemark());
+                    predictServer.getServerU(), appName, predictServer.getServerRemark());
         }
         return list;
     }
+
     //删除应用
     @RequestMapping(value = "/deleteApplication/{id}")
-    public List<predictMmApplications> deleteApplication(@PathVariable long id){
-        predictMmApplications predictApplication=ApplicationManagementRepository.findOne(id);//删除应用表数据
+    public List<predictMmApplications> deleteApplication(@PathVariable long id) {
+        predictMmApplications predictApplication = ApplicationManagementRepository.findOne(id);//删除应用表数据
         ApplicationManagementRepository.delete(predictApplication);
-        predictMmServiceObjectAndApplication predictSoAndApp=SoAndAppRepository.getServerObjAndApp(id);//删除中间表数据
+        predictMmServiceObjectAndApplication predictSoAndApp = SoAndAppRepository.getServerObjAndApp(id);//删除中间表数据
         SoAndAppRepository.delete(predictSoAndApp);
-        List<predictMmApplications> list=new ArrayList<predictMmApplications>();
+        List<predictMmApplications> list = new ArrayList<predictMmApplications>();
         list.add(predictApplication);
         return list;
 

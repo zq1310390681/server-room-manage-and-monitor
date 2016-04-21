@@ -36,14 +36,11 @@ import java.util.Map;
  triggers,expression
  */
 
-
 @Repository
-@RestController
 public class ZbxTriggerRepository {
     @Autowired
     JdbcTemplate jdbc;
 
-    @RequestMapping(value = "/predict/triggers")
     @TargetDataSource(name = "zabbix")
     public void updTrigger(String itemKeyToSearch,String thresholdNew){
         // 得到字段itemid，hostid，item_name,item_key,triggerid,expression
@@ -70,7 +67,6 @@ public class ZbxTriggerRepository {
         int a = expression.indexOf("}");
         String operator = expression.substring(a+1,a+2); //得到运算符
 
-        String sum = "";
         for(Map<String,Object> map : list){
             String expressionOld = map.get("expression").toString();
             String thresholdOld = expressionOld.substring(a+2,expressionOld.length());

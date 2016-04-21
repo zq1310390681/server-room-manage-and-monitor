@@ -5,6 +5,7 @@ import cn.edu.shou.monitor.domain.PredictMmAlarm;
 import cn.edu.shou.monitor.domain.predictMmEquipType;
 import cn.edu.shou.monitor.service.EquipTypeRepository;
 import cn.edu.shou.monitor.service.ZbxTriggerRepository;
+import cn.edu.shou.monitor.service.AlarmManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequestMapping(value ="/predictCenter/api/alarm")
 public class AlarmManagementApiController {
     @Autowired
-    cn.edu.shou.monitor.service.AlarmManagementRepository AlarmManagementRepository;
+    AlarmManagementRepository alarmManagementRepository;
     @Autowired
     EquipTypeRepository alarmInfoToSearch;
     @Autowired
@@ -30,7 +31,7 @@ public class AlarmManagementApiController {
     //获取所有告警规则数据信息
     @RequestMapping(value = "/getAllAlarm")
     public List<PredictMmAlarm> getAllAlarm(){
-        return AlarmManagementRepository.findAll();
+        return alarmManagementRepository.findAll();
     }
     //创建告警规则
     @RequestMapping(value = "/createAndUpdateAlarm",method = RequestMethod.GET)
@@ -39,50 +40,80 @@ public class AlarmManagementApiController {
         PredictMmAlarm predictAlarm= null;
         if(recordId==0){
             predictAlarm=new PredictMmAlarm();
-            predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName()); //设备名称的id
-            predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement());//告警设备监控要素 id
-            predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值
-            predictAlarm.setAlarmGrade(alarmForm.getAlarmGrade());//告警等级
-            predictAlarm.setAlarmNote(alarmForm.getAlarmNote());//备注信息
 
-            long existence = predictAlarm.getEquipTypeElement();
-            if(existence !=alarmForm.getEquipTypeElement()) {
-                predictMmEquipType alarmRelate = alarmInfoToSearch.findOne(alarmForm.getEquipTypeElement());
-                String searchKey = alarmRelate.getZbxItemKey();
-                if (alarmForm.getEquipTypeName() == 33 || alarmForm.getEquipTypeName() == 38 || alarmForm.getEquipTypeName() == 5) {   //need changes
-                    zbxTrigger.updTrigger(searchKey, alarmForm.getAlarmThreshold());
-                }
-
-                AlarmManagementRepository.save(predictAlarm);
-            }
-            List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
-            list.add(predictAlarm);
-            return list;
         }else {
-            predictAlarm=AlarmManagementRepository.findOne(recordId);
-            predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName()); //设备名称的id
-            predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement());//告警设备监控要素 id
-            predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值
-            predictAlarm.setAlarmGrade(alarmForm.getAlarmGrade());//告警等级
-            predictAlarm.setAlarmNote(alarmForm.getAlarmNote());//备注信息
-
-            predictMmEquipType alarmRelate = alarmInfoToSearch.findOne(alarmForm.getEquipTypeElement());
-            String searchKey = alarmRelate.getZbxItemKey();
-            if (alarmForm.getEquipTypeName() == 33 || alarmForm.getEquipTypeName() == 38 || alarmForm.getEquipTypeName() == 5) {   //need changes
-                zbxTrigger.updTrigger(searchKey, alarmForm.getAlarmThreshold());
-            }
-            AlarmManagementRepository.save(predictAlarm);
-            List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
-            list.add(predictAlarm);
-            return list;
+            predictAlarm=alarmManagementRepository.findOne(recordId);
+//            predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName()); //设备名称的id
+//            predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement());//告警设备监控要素 id
+//            predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值
+//            predictAlarm.setAlarmGrade(alarmForm.getAlarmGrade());//告警等级
+//            predictAlarm.setAlarmNote(alarmForm.getAlarmNote());//备注信息
+//
+//            String name = alarmInfoToSearch.findOne(alarmForm.getEquipTypeName()).getEquipTypeName();
+//            predictMmEquipType alarmRelate = alarmInfoToSearch.findOne(alarmForm.getEquipTypeElement());
+//            String searchKey = alarmRelate.getZbxItemKey();
+//            if (name.contains("虚拟机") || name.contains("操作系统") || name.contains("物理主机")) {   //need changes
+//                zbxTrigger.updTrigger(searchKey, alarmForm.getAlarmThreshold());
+//            }
+//            alarmManagementRepository.save(predictAlarm);
+//            List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
+//            list.add(predictAlarm);
+//            return list;
         }
+//        predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName()); //设备名称的id
+//        predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement()); //告警设备监控要素 id
+//        predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值
+//        predictAlarm.setAlarmGrade(alarmForm.getAlarmGrade());//告警等级
+//        predictAlarm.setAlarmNote(alarmForm.getAlarmNote());//备注信息
+//
+//        String name = alarmInfoToSearch.findOne(alarmForm.getEquipTypeName()).getEquipTypeName();
+//
+//        //判断重复
+//        long equipName =0;
+//        PredictMmAlarm temp =alarmManagementRepository.getEquipName(alarmForm.getEquipTypeElement());
+//        if(!temp.toString().isEmpty()&&temp.getEquipTypeName()!= alarmForm.getEquipTypeName()) {
+////            equipName = temp.getEquipTypeName();
+////        }
+////
+//////            long existence = predictAlarm.getEquipTypeElement();
+////        if(equipName != alarmForm.getEquipTypeName()) {
+//            predictMmEquipType alarmRelate = alarmInfoToSearch.findOne(alarmForm.getEquipTypeElement());
+//            String searchKey = alarmRelate.getZbxItemKey();
+//            if (name.contains("虚拟机") || name.contains("操作系统") || name.contains("物理主机")) {   //need changes
+//                zbxTrigger.updTrigger(searchKey, alarmForm.getAlarmThreshold());
+//            }
+//
+//            alarmManagementRepository.save(predictAlarm);
+//        }
+//        List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
+//        list.add(predictAlarm);
+//        return list;
+
+
+        // 有错误，先用着
+        predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName()); //设备名称的id
+        predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement());//告警设备监控要素 id
+        predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值
+        predictAlarm.setAlarmGrade(alarmForm.getAlarmGrade());//告警等级
+        predictAlarm.setAlarmNote(alarmForm.getAlarmNote());//备注信息
+
+        String name = alarmInfoToSearch.findOne(alarmForm.getEquipTypeName()).getEquipTypeName();
+        predictMmEquipType alarmRelate = alarmInfoToSearch.findOne(alarmForm.getEquipTypeElement());
+        String searchKey = alarmRelate.getZbxItemKey();
+        if (name.contains("虚拟机") || name.contains("操作系统") || name.contains("物理主机")) {   //need changes
+            zbxTrigger.updTrigger(searchKey, alarmForm.getAlarmThreshold());
+        }
+        alarmManagementRepository.save(predictAlarm);
+        List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
+        list.add(predictAlarm);
+        return list;
     }
 
     //删除告警规则
     @RequestMapping(value = "/deleteAlarm/{id}")
     public List<PredictMmAlarm> deleteSurveillancePro(@PathVariable long id){
-        PredictMmAlarm predictAlarm=AlarmManagementRepository.findOne(id);
-        AlarmManagementRepository.delete(predictAlarm);
+        PredictMmAlarm predictAlarm = alarmManagementRepository.findOne(id);
+        alarmManagementRepository.delete(predictAlarm);
         List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
         list.add(predictAlarm);
         return list;
