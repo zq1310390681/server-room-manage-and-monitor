@@ -84,12 +84,14 @@ public class ServerManagementApiController {
         }else{
             // update
             MQAsset asset = new MQAsset();
-            String assetMQ = asset.addAndUpdAndDelAsset("upd", predictServer.getId(), predictServer.getServerSerialNumber(), predictServer.getHostId(),
-                    predictServer.getServerSN(), predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(),
-                    predictServer.getServerBrand(), predictServer.getServerType(), predictServer.getServerIP(),
-                    predictServer.getServerStorageDevice(), cabinetName, predictServer.getServerU(), predictServer.getServerRemark());
+//            String assetMQ = asset.addAndUpdAndDelAsset("upd", predictServer.getId(), predictServer.getServerSerialNumber(), predictServer.getHostId(),
+//                    predictServer.getServerSN(), predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(),
+//                    predictServer.getServerBrand(), predictServer.getServerType(), predictServer.getServerIP(),
+//                    predictServer.getServerStorageDevice(), cabinetName, predictServer.getServerU(), predictServer.getServerRemark());
 
-            MQSendMessage.sendMessages(assetMQ, "asset");
+//            MQSendMessage.sendMessages(assetMQ, "asset");
+            ServerManagementRepository.save(predictServer);
+            list.add(predictServer);
             return list;
         }
         return list;

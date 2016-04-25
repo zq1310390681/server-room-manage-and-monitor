@@ -28,10 +28,11 @@ public class PhoneMessage {
         ZbxTriggerServiceImpl trigger = new ZbxTriggerServiceImpl();
         JSONObject triggerRs = trigger.getTriggerForSms(hostid);
         JSONArray result = triggerRs.getJSONArray("result");  //结果信息
-        String description = result.getJSONObject(0).getString("description");
-        String priority = result.getJSONObject(0).getString("priority");
+
         String content = null;
         if(!result.toString().equals("[]")){
+            String description = result.getJSONObject(0).getString("description");
+            String priority = result.getJSONObject(0).getString("priority");
             String selectSqlName = "SELECT hosts FROM predict.zbx_hosts where host_id = '"+ hostid+"';";
             String selectSqlDesc = "SELECT desc_zh FROM predict.alarm_description where desc_en = '"+ description+"';";
 
