@@ -1,8 +1,14 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmHostForm;
+import cn.edu.shou.monitor.domain.predictMmApplications;
 import cn.edu.shou.monitor.domain.predictMmHost;
+import cn.edu.shou.monitor.domain.predictMmOperatingSystem;
+import cn.edu.shou.monitor.domain.predictMmServers;
+import cn.edu.shou.monitor.service.ApplicationManagementRepository;
 import cn.edu.shou.monitor.service.HostManagementRepository;
+import cn.edu.shou.monitor.service.OperatingSystemRepository;
+import cn.edu.shou.monitor.service.ServerManagementRepository;
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import cn.edu.shou.monitor.util.ChineseCharToAbc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +28,12 @@ import java.util.List;
 public class HostManagementApiController {
     @Autowired
     HostManagementRepository hostManagementRepository;
-
+    @Autowired
+    ServerManagementRepository serverManagementRepository;
+    @Autowired
+    OperatingSystemRepository operatingSystemRepository;
+    @Autowired
+    ApplicationManagementRepository applicationManagementRepository;
     //获取所有模型数据信息
     @RequestMapping(value = "/getAllHost")
     public List<predictMmHost> getAllHost() {
@@ -46,11 +57,35 @@ public class HostManagementApiController {
     //根据主机类型获得主机  hostType=1代表Vmware虚拟机， hostType=2代表物理主机
     @RequestMapping(value = "/getHost/{hostType}")
     public  List<predictMmHost> getHost(@PathVariable String hostType){
-        List hosts =hostManagementRepository.getHostsByHostType(hostType);
+        List<predictMmHost> hosts =hostManagementRepository.getHostsByHostType(hostType);
+
+        if(hosts!=null){
+            for (predictMmHost host:hosts){
+                predictMmServers serverNum=new predictMmServers();
+                List<predictMmApplications> applications=new ArrayList<predictMmApplications>();
+
+                serverNum=serverManagementRepository.findOne(Long.parseLong(host.getHostServer()));
+                host.setHostServer(serverNum.getServerSerialNumber());
+                //获取操作系统名称
+                predictMmOperatingSystem opSys=new predictMmOperatingSystem();
+                opSys = operatingSystemRepository.findOne(Long.parseLong(host.getHostOS()));
+                host.setHostOS(opSys.getOperatingSystem());
+                //获取每台主机所有的应用
+                applications=applicationManagementRepository.getApplicationsByHostId("%"+host.getId()+"%");
+                String applicationNames="";
+                //取出应用名称
+                for (predictMmApplications application:applications){
+                    applicationNames+=application.getApplicationName()+",";
+                }
+                applicationNames=applicationNames==""?"暂无数据":applicationNames.substring(0,applicationNames.length()-1);
+                host.setAppName(applicationNames);
+            }
+        }
+
         return hosts;
     }
 
-    //创建VMWare虚拟机和物理主机
+    //创建VMWare虚拟机
     @RequestMapping(value = "/createAndUpdateHost", method = RequestMethod.GET)
     public List<predictMmHost> createAndUpdateHost(predictMmHostForm hostForm) {
         long recordId = hostForm.getId();//获取记录ID
@@ -60,12 +95,17 @@ public class HostManagementApiController {
         } else {
             predictHost = hostManagementRepository.findOne(recordId);
         }
-        predictHost.setHosts(hostForm.getHosts());  //name
+        predictHost.setHosts(hostForm.getHosts());
         predictHost.setHostIP(hostForm.getHostIP());
         predictHost.setHostOS(hostForm.getHostOS());
         predictHost.setHostNote(hostForm.getHostNote());
         predictHost.setHostType(hostForm.getHostType());
         predictHost.setHostServer(hostForm.getHostServer());
+        predictHost.setHostPassword(hostForm.getHostPassword());
+        predictHost.setHostUserName(hostForm.getHostUserName());
+        predictHost.setOperational(hostForm.getOperational());
+        predictHost.setVmwareUserName(hostForm.getVmwareUserName());
+
         String zbxHostname = ChineseCharToAbc.getPinYin(hostForm.getHosts());
         predictHost.setZbxHostname(zbxHostname);
 

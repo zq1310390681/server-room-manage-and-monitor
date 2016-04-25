@@ -54,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="serObjGroupGrid" style="position: absolute"></div>
+                    <div id="serObjGroupGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--服务对象分组模板-->
@@ -359,7 +359,25 @@ function submitSerObjGroupModel(){
             groupOrder:groupOrderVal,
             serObjGroupName:serObjGroupNameVal
         };
-        submitSerObjGroupModelAjax(crudSerObjGroupBaseUrl + "/createAndUpdateSerObjGroup",submitSerObjGroupModelData);
+        //ajax请求判断组序号和组名称是否存在
+        $.ajax({
+            url:"/predictCenter/api/serObjGroup/serObjGroupExit/"+groupOrderVal+"/"+serObjGroupNameVal,
+            dataType:"json",
+            async:true,
+            type:"GET",
+            success:function(data){
+                //判断组序号和组名称是否存在
+                if(!data.order){
+                    alert("组序号已存在!");
+                    return;
+                }
+                if(!data.groupName){
+                    alert("组名称已存在!");
+                    return;
+                }
+                submitSerObjGroupModelAjax(crudSerObjGroupBaseUrl + "/createAndUpdateSerObjGroup",submitSerObjGroupModelData);
+            }
+        });
 
     }
 }

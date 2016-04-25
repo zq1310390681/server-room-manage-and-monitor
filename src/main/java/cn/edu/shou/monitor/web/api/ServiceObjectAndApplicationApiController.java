@@ -7,17 +7,16 @@ import cn.edu.shou.monitor.domain.predictVoApplicationService;
 import cn.edu.shou.monitor.service.ApplicationManagementRepository;
 import cn.edu.shou.monitor.service.ServiceObjectAndApplicationRepository;
 import cn.edu.shou.monitor.service.ServiceObjectManagementRepository;
-import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sqhe18 on 2016/3/27.

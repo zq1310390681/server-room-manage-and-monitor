@@ -8,10 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/assets/css/dropzone.css" />
     <script th:replace="header :: header"></script>
-    <!--[if lt IE 9]>
-    <script src="/assets/js/html5shiv.js"></script>
-    <script src="/assets/js/respond.min.js"></script>
-    <![endif]-->
     <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
     <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
 </head>
@@ -58,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="serverModelGrid"  ></div>
+                    <div id="serverModelGrid" style="position: absolute;width: 105%" ></div>
                 </div>
             </div>
             <!--服务器模板-->
@@ -100,6 +96,18 @@
 
                         <label style="margin-left: 65px" >服务器IP:</label>
                         <input  style="height:30px;width:400px" id="serverIP"/><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 100px" >KVM:</label>
+                        <input  style="height:30px;width:400px" id="serverKvm"/><label style="color: red;margin-left: 5px">*</label>
+
+                    </div>
+                    <div style="margin-top: 10px">
+
+                        <label style="margin-left: 85px" >Group:</label>
+                        <input  style="height:30px;width:400px" id="serverGroup"/><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
@@ -213,7 +221,7 @@
 <script src="/assets/js/flot/jquery.flot.pie.min.js"></script>
 <script src="/assets/js/flot/jquery.flot.resize.min.js"></script>
 <script src="/assets/js/dropzone.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 
 
 
@@ -254,10 +262,6 @@
                 read:  {
                     url: crudServiceBaseUrl + "/getAllServers",
                     dataType: "json"
-                },
-                create:{
-                    url:crudServiceBaseUrl+"/createAndUpdateServer",
-                    dataType:"json"
                 }
 
             },
@@ -278,19 +282,23 @@
                      {template: kendo.template($("#inputModel_toolbar").html())},
                      {template: kendo.template($("#outputModel_toolbar").html())}],
             columns:[
-                {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
-                { field:"serverSerialNumber",title:"服务器编号"},
-                { field: "serverSN", title: "服务器S/N号",width:"8%",hidden:true},
+                {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"5%"},
+                { field:"serverSerialNumber",title:"服务器编号",width:"12%"},
+                { field: "serverSN", title: "服务器S/N号",hidden:true},
                 { field: "serverPurchasingDate", title: "购买时间",hidden:true},
                 { field: "serverMaintenanceDueTime", title: "维保到期",hidden:true},
                 { field: "serverBrand", title: "服务器品牌",template:"#=getBrandNameById(serverBrand)#",hidden:true},
                 { field: "serverType", title: "服务器型号",hidden:true},
-                { field: "serverIP", title: "服务器IP"},
-                { field: "serverIPMI", title: "IPMI",width:"5%",hidden:true},
-                { field: "serverPort", title: "端口号",width:"5%",hidden:true},
+                { field: "serverIP", title: "服务器IP",width:"10%"},
+                { field: "serverKvm", title: "KVM",width:"15%"},
+                { field: "serverApp", title: "对应应用"},
+                { field: "serverGroup", title: "Group",hidden:true},
+                { field: "serverIPMI", title: "IPMI",hidden:true},
+                { field: "serverPort", title: "端口号",hidden:true},
                 { field: "serverStorageDevice", title: "存储设备",template:"#=getStorageDeviceNameById(serverStorageDevice)#",hidden:true},
                 { field: "serverEquipmentCabinet", title: "所在机柜",template:"#=getEquipmentCabinetNameById(serverEquipmentCabinet)#",hidden:true},
-                { field: "serverU", title: "所在U",width:"6%",hidden:true},
+                { field: "serverU", title: "所在U",hidden:true},
+                { field: "lastModifiedDate", title: "最后更新时间",width:"9%"},
                 { field: "serverRemark", title: "备注",hidden:true},
                 { command: [
                    {name:"view",text:"查看",
@@ -300,9 +308,16 @@
                         window.open(url);
                     }
                    },
+                    {name:"viewQr",text:"二维码",
+                        click:function(e){
+                            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            var url ="/predictCenter/servers/getServerQrCode/"+dataItem.id+".html";
+                            window.open(url);
+                        }
+                    },
                     {text: "编辑", click: showServerModel },   //编辑窗体内容
                     { text: "删除",click:delServerModel }    //删除记录
-                ] ,  title: "操作",width:"20%"}
+                ] ,  title: "操作",width:"15%"}
             ],
             pageable: {
                 buttonCount:3,
@@ -365,6 +380,8 @@
         $("#serverMaintenanceDueTime").val(dataItem.serverMaintenanceDueTime);//服务器维保到期时间
         $("#serverType").val(dataItem.serverType);//服务器型号
         $("#serverIP").val(dataItem.serverIP);//服务器IP
+        $("#serverKvm").val(dataItem.serverKvm);//服务器KVM
+        $("#serverGroup").val(dataItem.serverGroup);
         $("#serverIPMI").val(dataItem.serverIPMI);//服务器IPMI
         $("#serverPort").val(dataItem.serverPort);//服务器端口
         $("#serverRemark").val(dataItem.serverRemark);//备注
@@ -376,7 +393,6 @@
         //存储设备
         var serverStorageDevice= $("#serverStorageDevice").data("kendoDropDownList");
         serverStorageDevice.value(dataItem.serverStorageDevice);
-
         //serverU数据储存方式为123-123,需要拆分
         var serverU=dataItem.serverU;//获取服务器所在U
         var serverUs = serverU.split("-");//拆分
@@ -427,6 +443,8 @@
         $("#serverBrand").val("");
         $("#serverType").val("");
         $("#serverIP").val("");
+        $("#serverKvm").val("");
+        $("#serverGroup").val("");
         $("#serverIPMI").val("");
         $("#serverPort").val("");
         $("#serverStorageDevice").val("");
@@ -482,6 +500,8 @@
         var serverBrandVal= $("#serverBrand").val();
         var serverTypeVal= $("#serverType").val();
         var serverIPVal= $("#serverIP").val();
+        var serverKvmVal= $("#serverKvm").val();
+        var serverGroupVal= $("#serverGroup").val();
         var serverIPMIVal= $("#serverIPMI").val();
         var serverPortVal= $("#serverPort").val();
         var serverStorageDeviceVal= $("#serverStorageDevice").val();
@@ -489,7 +509,10 @@
         var serverU1Val= $("#serverU1").val();
         var serverU2Val= $("#serverU2").val();
         var serverRemarkVal= $("#serverRemark").val();
-
+        if(!validateIp(serverIPVal)){
+            alert("IP地址格式不正确！");
+            return;
+        }
         if(serverSerialNumberVal==""||serverIPVal==""||serverGroupVal==""||serverStorageDeviceVal==""||serverEquipmentCabinetVal==""||serverU1Val==""||serverU2Val==""){
             alert("带有红色标记的为必填项");
             return ;
@@ -506,6 +529,8 @@
                 serverBrand:serverBrandVal,
                 serverType:serverTypeVal,
                 serverIP:serverIPVal,
+                serverKvm:serverKvmVal,
+                serverGroup:serverGroupVal,
                 serverIPMI:serverIPMIVal,
                 serverPort:serverPortVal,
                 serverStorageDevice:serverStorageDeviceVal,

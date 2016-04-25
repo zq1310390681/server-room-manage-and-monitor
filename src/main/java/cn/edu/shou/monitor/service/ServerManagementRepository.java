@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface ServerManagementRepository extends PagingAndSortingRepository<predictMmServers, Long> {
     public List<predictMmServers> findAll();
+
 }

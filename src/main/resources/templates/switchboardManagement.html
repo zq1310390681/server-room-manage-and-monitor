@@ -7,16 +7,7 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/assets/css/dropzone.css" />
-
-
     <script th:replace="header :: header"></script>
-
-
-    <!--[if lt IE 9]>
-    <script src="/assets/js/html5shiv.js"></script>
-    <script src="/assets/js/respond.min.js"></script>
-    <![endif]-->
-
     <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
     <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
 
@@ -67,7 +58,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="switchboardModelGrid"  ></div>
+                    <div id="switchboardModelGrid" style="position: absolute;width: 105%" ></div>
                 </div>
             </div>
             <!--路由器模板-->
@@ -123,12 +114,6 @@
                         <input  style="height:30px;width:113px" id="switchboardSNMP"/>
                         <label style="margin-left: 100px" >端口号:</label>
                         <input  style="height:30px;width:119px" id="switchboardPort"/>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
-                        <label style="margin-left: 62px" >应用名称:</label>
-                        <input  style="height:30px;width:400px;margin-left:1px"  id="switchboardApplicationName" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
@@ -199,26 +184,12 @@
 <script type="text/javascript">
     window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"script>");
 </script>
-
-<!-- <![endif]-->
-
-<!--[if IE]>
-<script type="text/javascript">
-    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"script>");
-</script>
-<![endif]-->
-
 <script type="text/javascript">
     if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"script>");
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
-
-<!-- page specific plugin scripts -->
-
-<!--[if lte IE 8]>
-<script src="/assets/js/excanvas.min.js"></script>
-<![endif]-->
+<script src="/js/commonFunction.js"></script>
 
 <script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
@@ -231,12 +202,6 @@
 <script src="/assets/js/dropzone.min.js"></script>
 
 
-
-
-<!--[if lt IE 9]>
-<script type="text/javascript" src="/js/jSingnature/libs/flashcanvas.js"></script>
-<![endif]-->
-<!-- ace scripts -->
 
 <script src="/assets/js/ace-elements.min.js"></script>
 <script src="/assets/js/ace.min.js"></script>
@@ -270,31 +235,13 @@
                 read:  {
                     url: crudServiceBaseUrl + "/getAllSwitchboards",
                     dataType: "json"
-                },
-                create:{
-                    url:crudServiceBaseUrl+"/createAndUpdateSwitchboard",
-                    dataType:"json"
-                },
-                destroy:{
-                    url:crudServiceBaseUrl+"/deleteSwitchboard",
-                    dataType:"json"
                 }
             },
             batch: true,
             pageSize: 20,
             schema: {
                 model: {
-                    id: "id",
-                    fields: {
-                        id: { editable: false, nullable: true },
-                        switchboardSerialNumber:{validation:{required: { message: "必填项" } }},
-                        switchboardIP:{validation:{required: { message: "必填项" } }},
-                        switchboardGroup:{validation:{required: { message: "必填项" } }},
-                        switchboardApplicationName:{validation:{required: { message: "必填项" } }},
-                        switchboardEquipmentCabinet:{validation:{required: { message: "必填项" } }},
-                        switchboardU1:{validation:{required: { message: "必填项" } }},
-
-                    }
+                    id: "id"
                 }
             }
         });
@@ -318,7 +265,6 @@
                 { field: "switchboardGroup", title: "Group",hidden:true},
                 { field: "switchboardSNMP", title: "SNMP",width:"5%",hidden:true},
                 { field: "switchboardPort", title: "端口号",width:"5%",hidden:true},
-                {field:  "switchboardApplicationName",title: "应用名称",template:"#=getApplicationNameById(switchboardApplicationName)#"},
                 { field: "switchboardEquipmentCabinet", title: "所在机柜",template:"#=getEquipmentCabinetNameById(switchboardEquipmentCabinet)#",hidden:true},
                 { field: "switchboardU", title: "所在U",hidden:true},
                 { field: "switchboardRemark", title: "备注",hidden:true},
@@ -328,8 +274,15 @@
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                         var url ="/predictCenter/switchboards/getSwitchboardViewInfo/"+dataItem.id+".html";
                         window.open(url);
-                    }
-                },
+                        }
+                     },
+                    {name:"viewQr",text:"二维码",
+                        click:function(e){
+                            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            var url ="/predictCenter/switchboards/getSwitchboardQrCode/"+dataItem.id+".html";
+                            window.open(url);
+                        }
+                    },
                     {text: "编辑", click: showSwitchboardModel },   //编辑窗体内容
                     { text: "删除",click:delSwitchboardModel }    //删除记录
                 ] ,  title: "操作",width:"20%"}
@@ -404,9 +357,6 @@
         //交换机品牌
         var switchboardBrand= $("#switchboardBrand").data("kendoDropDownList");
         switchboardBrand.value(dataItem.switchboardBrand);
-        //应用名称
-        var switchboardApplicationName=$("#switchboardApplicationName").data("kendoDropDownList");
-        switchboardApplicationName.value(dataItem.switchboardApplicationName);
         //switchboardU数据储存方式为123-123,需要拆分
         var switchboardU=dataItem.switchboardU;//获取交换机所在U
         var switchboardUs = switchboardU.split("-");//拆分
@@ -457,7 +407,6 @@
         $("#switchboardGroup").val("");
         $("#switchboardSNMP").val("");
         $("#switchboardPort").val("");
-        $("#switchboardApplicationName").val("");
         $("#switchboardEquipmentCabinet").val("");
         $("#switchboardU1").val("");
         $("#switchboardU2").val("");
@@ -510,13 +459,15 @@
         var switchboardGroupVal= $("#switchboardGroup").val();
         var switchboardSNMPVal= $("#switchboardSNMP").val();
         var switchboardPortVal= $("#switchboardPort").val();
-        var switchboardApplicationNameVal=$("#switchboardApplicationName").val();
         var switchboardEquipmentCabinetVal= $("#switchboardEquipmentCabinet").val();
         var switchboardU1Val= $("#switchboardU1").val();
         var switchboardU2Val= $("#switchboardU2").val();
         var switchboardRemarkVal= $("#switchboardRemark").val();
-
-        if(switchboardSerialNumberVal==""||switchboardIPVal==""||switchboardGroupVal==""||switchboardEquipmentCabinetVal==""||switchboardU1Val==""||switchboardU2Val==""||switchboardApplicationNameVal==""){
+        if(!validateIp(switchboardIPVal)){
+            alert("IP地址格式不正确！");
+            return;
+        }
+        if(switchboardSerialNumberVal==""||switchboardIPVal==""||switchboardGroupVal==""||switchboardEquipmentCabinetVal==""||switchboardU1Val==""||switchboardU2Val==""){
             alert("带有红色标记的为必填项");
             return;
         }else if(!compare()){}
@@ -534,7 +485,6 @@
                 switchboardGroup:switchboardGroupVal,
                 switchboardSNMP:switchboardSNMPVal,
                 switchboardPort:switchboardPortVal,
-                switchboardApplicationName:switchboardApplicationNameVal,
                 switchboardEquipmentCabinet:switchboardEquipmentCabinetVal,
                 switchboardU:switchboardU1Val+"-"+switchboardU2Val,
                 switchboardRemark:switchboardRemarkVal
@@ -668,20 +618,6 @@
                         read:{
                             dataType:"json",
                             url:dropDownListUrl + "/getBrandsByType/3"
-                        }
-                    }
-                 }
-            });
-    //应用名称下拉列表
-            $("#switchboardApplicationName").kendoDropDownList({
-                optionLabel: "请选择...",
-                dataTextField: "applicationName",
-                dataValueField: "id",
-                dataSource: {
-                    transport:{
-                        read:{
-                            dataType:"json",
-                            url:dropDownListUrl + "/getAllApplicationNames"
                         }
                     }
                  }

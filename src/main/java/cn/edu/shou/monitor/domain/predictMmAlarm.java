@@ -12,7 +12,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class PredictMmAlarm extends BaseEntity {
+public class predictMmAlarm extends BaseEntity {
     @Getter @Setter
     private long equipTypeName;//告警设备类别名称编号
     @Getter @Setter

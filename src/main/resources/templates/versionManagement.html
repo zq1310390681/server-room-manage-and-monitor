@@ -52,7 +52,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="versionGrid" style="position: absolute"></div>
+                    <div id="versionGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--版本信息模板-->
@@ -181,13 +181,6 @@ function setVersionGrid(){
             {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"10%"},
             {field:"versions",title:"版本信息"},
             { command: [
-               /* {name:"view",text:"查看",
-                    click:function(e){
-                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                                var url ="/predictCenter/getVersionView/"+dataItem.id;
-                        window.open(url);
-                    }
-                },*/
                 {text: "编辑", click: showVersionModel },   //编辑窗体内容
                 { text: "删除",click:delVersionModel }    //删除记录
             ],
@@ -268,6 +261,7 @@ function submitFolder(){
             id:modelRecordId,
             Folder:FolderVal
         };
+
         submitFolderAjax(crudServiceBaseUrl + "/create",submitFolderData);
     }
 }
@@ -347,8 +341,20 @@ function submitVersionModel(){
             id:versionRecordId,
             versions:versionsVal
         };
-        submitVersionModelAjax(crudVersionBaseUrl + "/creatAndUpdateVersion",submitVersionModelData);
-
+        $.ajax({
+            url:"/predictCenter/api/version/versionExit/"+versionsVal,
+            dataType:"json",
+            async:true,
+            type:"GET",
+            success:function(data){
+                //判断版本号是否已存在
+                if(!data.version){
+                    alert("版本信息已存在！");
+                    return;
+                }
+                submitVersionModelAjax(crudVersionBaseUrl + "/creatAndUpdateVersion",submitVersionModelData);
+            }
+        });
     }
 }
 //提交数据至后台

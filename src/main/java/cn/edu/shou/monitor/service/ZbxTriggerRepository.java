@@ -4,14 +4,13 @@ import cn.edu.shou.monitor.spring.TargetDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by light on 2016/4/18.
+ *
 报警规则设置，从数据库直接该；两种情况，1)已经创建过的要批量该，2）为创建过的只需改template对应的trigger。
 两种情况合并，改一次两个都改
 

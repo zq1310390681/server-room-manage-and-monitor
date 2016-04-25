@@ -1,9 +1,11 @@
 package cn.edu.shou.monitor.web;
 
 import cn.edu.shou.monitor.domain.User;
-import cn.edu.shou.monitor.domain.predictMmPing;
 import cn.edu.shou.monitor.domain.predictMmServers;
-import cn.edu.shou.monitor.service.ServerManagementRepository;
+import cn.edu.shou.monitor.service.StoreManagementRepository;
+import cn.edu.shou.monitor.service.predictMmBrandRepository;
+import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.predictMmURepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,7 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/predictCenter/servers")
 public class ServerManagementController {
     @Autowired
-    ServerManagementRepository ServerManagementRepository;
+    cn.edu.shou.monitor.service.ServerManagementRepository ServerManagementRepository;
+    @Autowired
+    predictMmEquipmentCabinetRepository cabinetRepository;
+    @Autowired
+    StoreManagementRepository storeRepository;
+    @Autowired
+    predictMmURepository uRepository;
+    @Autowired
+    predictMmBrandRepository brandRepository;
     @RequestMapping(value = "/getServerInfo")
     public String getServerInfo(Model model,@AuthenticationPrincipal User currentUser){
         model.addAttribute("user", currentUser);
@@ -30,8 +40,65 @@ public class ServerManagementController {
         model.addAttribute("user", currentUser);
         //根据serverId查找数据对象信息
         predictMmServers MmServers= ServerManagementRepository.findOne(serverid);//查找服务器数据
+        //显示机柜名称
+        String cabinetName = "";
+        if (MmServers!=null){
+            cabinetName = cabinetRepository.findOne(Long.parseLong(MmServers.getServerEquipmentCabinet())).getEquipmentCabinetName();
+            MmServers.setServerEquipmentCabinet(cabinetName);
+        }
+        //显示所在U名称
+       /* String uName="";
+        if (MmServers!=null){
+            uName = uRepository.findOne(Long.parseLong(MmServers.getServerU())).getuName();
+            MmServers.setServerU(uName);
+        }*/
+        //显示品牌名称
+        String brandName = "";
+        if (MmServers != null){
+            brandName = brandRepository.findOne(Long.parseLong(MmServers.getServerBrand())).getBrandName();
+            MmServers.setServerBrand(brandName);
+        }
+        //显示存储设备名称
+        String storeName = "";
+        if (MmServers!=null){
+            storeName = storeRepository.findOne(Long.parseLong(MmServers.getServerStorageDevice())).getStoreSerialNumber();
+            MmServers.setServerSerialNumber(storeName);
+        }
         model.addAttribute("server",MmServers);
         return "serverManagementView";
+    }
+    @RequestMapping(value = "/getServerQrCode/{serid}.html")
+    public String getServerQrCode(Model model,@PathVariable Long serid,@AuthenticationPrincipal User currentUser)
+    {
+        model.addAttribute("user", currentUser);
+        //根据serverId查找数据对象信息
+        predictMmServers MmServers= ServerManagementRepository.findOne(serid);//查找服务器数据
+        //显示机柜名称
+        String cabinetName = "";
+        if (MmServers!=null){
+             cabinetName = cabinetRepository.findOne(Long.parseLong(MmServers.getServerEquipmentCabinet())).getEquipmentCabinetName();
+             MmServers.setServerEquipmentCabinet(cabinetName);
+        }
+        //显示品牌名称
+        String brandName = "";
+        if (MmServers != null){
+            brandName = brandRepository.findOne(Long.parseLong(MmServers.getServerBrand())).getBrandName();
+            MmServers.setServerBrand(brandName);
+        }
+        //显示所在U名称
+       /* String uName="";
+        if (MmServers!=null){
+            uName = uRepository.findOne(Long.parseLong(MmServers.getServerU())).getuName();
+            MmServers.setServerU(uName);
+        }*/
+        //显示存储设备名称
+        String storeName = "";
+        if (MmServers!=null){
+            storeName = storeRepository.findOne(Long.parseLong(MmServers.getServerStorageDevice())).getStoreSerialNumber();
+            MmServers.setServerSerialNumber(storeName);
+        }
+        model.addAttribute("server",MmServers);
+        return "serverQrCode";
     }
     @RequestMapping(value = "/getServerShow")
     public String getServerShow(Model model,@AuthenticationPrincipal User currentUser){

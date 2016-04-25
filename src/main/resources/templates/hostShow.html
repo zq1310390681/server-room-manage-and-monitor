@@ -58,7 +58,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="hostModelGrid"  ></div>
+                    <div id="hostModelGrid" style="position: absolute;width: 105%" ></div>
                 </div>
             </div>
         </div><!-- /.page-content -->
@@ -144,10 +144,12 @@
         $("#hostModelGrid").kendoGrid({
             dataSource:hostModelGridDataSource,
             columns:[
-                {field:"hosts",title:"主机名称"},
                 {field:"hostIP",title:"主机IP"},
+                {field:"hosts",title:"主机名称"},
+                {field:"appName",title:"对应应用"},
                 {field:"hostOS",title:"主机操作系统"},
-                { field: "routerState", title: "状态"},
+                {field:"hostServer",title:"虚拟机所在服务器"},
+                { field: "hostState", title: "状态"},
                 { command: [
                     {name:"view",text:"查看状态",
                         click:function(e){

@@ -18,4 +18,8 @@ public interface HostManagementRepository extends PagingAndSortingRepository<pre
     //获取VMWare
     @Query("select host from predictMmHost host where host.hostType=:hostType")
     public List<predictMmHost>getHostsByHostType(@Param("hostType") String hostType);
+
+    //根据服务器Id查找主机信息
+    @Query("select hosts from predictMmHost hosts where hosts.hostServer =:serverId")
+    public List<predictMmHost> getHostBySeverId(@Param("serverId") String serverId);
 }

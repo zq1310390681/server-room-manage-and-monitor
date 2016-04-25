@@ -7,7 +7,8 @@ import lombok.Setter;
  * Created by Administrator on 2016/1/14.
  */
 public class predictMmAlarmForm {
-    @Getter @Setter
+
+    @Setter @Getter
     private long id;
     @Getter @Setter
     private long equipTypeName;//告警设备类别名称编号
@@ -55,14 +56,6 @@ public class predictMmAlarmForm {
         this.alarmThreshold = alarmThreshold;
     }
 
-    public String getAlarmNote() {
-        return alarmNote;
-    }
-
-    public void setAlarmNote(String alarmNote) {
-        this.alarmNote = alarmNote;
-    }
-
     public String getAlarmGrade() {
         return alarmGrade;
     }
@@ -77,5 +70,13 @@ public class predictMmAlarmForm {
 
     public void setAlarmInform(String alarmInform) {
         this.alarmInform = alarmInform;
+    }
+
+    public String getAlarmNote() {
+        return alarmNote;
+    }
+
+    public void setAlarmNote(String alarmNote) {
+        this.alarmNote = alarmNote;
     }
 }

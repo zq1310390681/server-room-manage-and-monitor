@@ -12,11 +12,6 @@
     <script th:replace="header :: header"></script>
 
 
-    <!--[if lt IE 9]>
-    <script src="/assets/js/html5shiv.js"></script>
-    <script src="/assets/js/respond.min.js"></script>
-    <![endif]-->
-
     <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
     <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
 
@@ -67,7 +62,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="routerModelGrid"  ></div>
+                    <div id="routerModelGrid" style="position: absolute;width: 105%" ></div>
                 </div>
             </div>
             <!--路由器模板-->
@@ -123,12 +118,6 @@
                         <input  style="height:30px;width:113px" id="routerSNMP"/>
                         <label style="margin-left: 100px" >端口号:</label>
                         <input  style="height:30px;width:119px" id="routerPort"/>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
-                        <label style="margin-left: 62px" >应用名称:</label>
-                        <input  style="height:30px;width:400px;margin-left:1px"  id="routerApplicationName" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
@@ -199,25 +188,12 @@
     window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"script>");
 </script>
 
-<!-- <![endif]-->
-
-<!--[if IE]>
-<script type="text/javascript">
-    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"script>");
-</script>
-<![endif]-->
 
 <script type="text/javascript">
     if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"script>");
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
-
-<!-- page specific plugin scripts -->
-
-<!--[if lte IE 8]>
-<script src="/assets/js/excanvas.min.js"></script>
-<![endif]-->
 
 <script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script src="/assets/js/jquery.ui.touch-punch.min.js"></script>
@@ -232,14 +208,9 @@
 
 
 
-<!--[if lt IE 9]>
-<script type="text/javascript" src="/js/jSingnature/libs/flashcanvas.js"></script>
-<![endif]-->
-<!-- ace scripts -->
-
 <script src="/assets/js/ace-elements.min.js"></script>
 <script src="/assets/js/ace.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 <script src="/js/console.js"></script>
 <script src="/js/kendo.web.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
@@ -269,31 +240,13 @@
                 read:  {
                     url: crudServiceBaseUrl + "/getAllRouters",
                     dataType: "json"
-                },
-                create:{
-                    url:crudServiceBaseUrl+"/createAndUpdateRouter",
-                    dataType:"json"
-                },
-                destroy:{
-                    url:crudServiceBaseUrl+"/deleteRouter",
-                    dataType:"json"
                 }
             },
             batch: true,
             pageSize: 20,
             schema: {
                 model: {
-                    id: "id",
-                    fields: {
-                        id: { editable: false, nullable: true },
-                        routerSerialNumber:{validation:{required: { message: "必填项" } }},
-                        routerIP:{validation:{required: { message: "必填项" } }},
-                        routerGroup:{validation:{required: { message: "必填项" } }},
-                        routerApplicationName:{validation:{required: { message: "必填项" } }},
-                        routerEquipmentCabinet:{validation:{required: { message: "必填项" } }},
-                        routerU1:{validation:{required: { message: "必填项" } }},
-
-                    }
+                    id: "id"
                 }
             }
         });
@@ -317,18 +270,24 @@
                 { field: "routerGroup", title: "Group",hidden:true},
                 { field: "routerSNMP", title: "SNMP",width:"5%",hidden:true},
                 { field: "routerPort", title: "端口号",width:"5%",hidden:true},
-                {field:"routerApplicationName",title:"应用名称",template:"#=getApplicationNameById(routerApplicationName)#"},
                 { field: "routerEquipmentCabinet", title: "所在机柜",template:"#=getEquipmentCabinetNameById(routerEquipmentCabinet)#",hidden:true},
                 { field: "routerU", title: "所在U",hidden:true},
                 { field: "routerRemark", title: "备注",hidden:true},
                 { command: [
                     {name:"view",text:"查看",
-                    click:function(e){
-                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                        var url ="/predictCenter/routers/getRouterViewInfo/"+dataItem.id+".html";
-                        window.open(url);
-                    }
-                },
+                        click:function(e){
+                            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            var url ="/predictCenter/routers/getRouterViewInfo/"+dataItem.id+".html";
+                            window.open(url);
+                        }
+                    },
+                    {name:"viewQr",text:"二维码",
+                        click:function(e){
+                            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            var url ="/predictCenter/routers/getRouterQrCode/"+dataItem.id+".html";
+                            window.open(url);
+                        }
+                    },
                     {text: "编辑", click: showRouterModel },   //编辑窗体内容
                     { text: "删除",click:delRouterModel }    //删除记录
                 ] ,  title: "操作",width:"20%"}
@@ -403,9 +362,6 @@
         //路由器品牌
         var routerBrand= $("#routerBrand").data("kendoDropDownList");
         routerBrand.value(dataItem.routerBrand);
-        //应用名称
-        var routerApplicationName=$("#routerApplicationName").data("kendoDropDownList");
-        routerApplicationName.value(dataItem.routerApplicationName);
         //routerU数据储存方式为123-123,需要拆分
         var routerU=dataItem.routerU;//获取路由器所在U
         var routerUs = routerU.split("-");//拆分
@@ -456,7 +412,6 @@
         $("#routerGroup").val("");
         $("#routerSNMP").val("");
         $("#routerPort").val("");
-        $("#routerApplicationName").val("");
         $("#routerEquipmentCabinet").val("");
         $("#routerU1").val("");
         $("#routerU2").val("");
@@ -495,7 +450,6 @@
         var routerU2Val= $("#routerU2").val();
         var uHeight=routerU2Val-routerU1Val+1;
         $("#routerUHeight").html('共'+uHeight+'U高度');
-        //document.getElementById('routerUHeight').innerHTML = '共'+uHeight+'U高度';
     }
     // 添加路由器保存
     function submitRouterModel(){
@@ -509,12 +463,16 @@
         var routerGroupVal= $("#routerGroup").val();
         var routerSNMPVal= $("#routerSNMP").val();
         var routerPortVal= $("#routerPort").val();
-        var routerApplicationNameVal=$("#routerApplicationName").val();
         var routerEquipmentCabinetVal= $("#routerEquipmentCabinet").val();
         var routerU1Val= $("#routerU1").val();
         var routerU2Val= $("#routerU2").val();
         var routerRemarkVal= $("#routerRemark").val();
-        if(routerSerialNumberVal==""||routerIPVal==""||routerGroupVal==""||routerEquipmentCabinetVal==""||routerU1Val==""||routerU2Val==""||routerApplicationNameVal==""){
+        if(!validateIp(routerIPVal)){
+            alert("IP地址格式不正确！");
+            return;
+        }
+
+        if(routerSerialNumberVal==""||routerIPVal==""||routerGroupVal==""||routerEquipmentCabinetVal==""||routerU1Val==""||routerU2Val==""){
             alert("带有红色标记的为必填项");
             return;
         }else if(!compare()){}
@@ -532,7 +490,6 @@
                 routerGroup:routerGroupVal,
                 routerSNMP:routerSNMPVal,
                 routerPort:routerPortVal,
-                routerApplicationName:routerApplicationNameVal,
                 routerEquipmentCabinet:routerEquipmentCabinetVal,
                 routerU:routerU1Val+"-"+routerU2Val,
                 routerRemark:routerRemarkVal,
@@ -667,20 +624,6 @@
                         read:{
                             dataType:"json",
                             url:dropDownListUrl + "/getBrandsByType/4"
-                        }
-                    }
-                 }
-            });
-       //应用名称下拉列表
-            $("#routerApplicationName").kendoDropDownList({
-                optionLabel: "请选择...",
-                dataTextField: "applicationName",
-                dataValueField: "id",
-                dataSource: {
-                    transport:{
-                        read:{
-                            dataType:"json",
-                            url:dropDownListUrl + "/getAllApplicationNames"
                         }
                     }
                  }

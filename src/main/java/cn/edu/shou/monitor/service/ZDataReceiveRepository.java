@@ -77,25 +77,18 @@ public class ZDataReceiveRepository {
         List<Map<String,Object>> seaList = new ArrayList<Map<String,Object>>();
         if(selectSql.equals("seaReal")){ // 计算当前时间应收数 海洋站实时数据
             seaList = jdbcTemplate.queryForList(STA_REAL_SQL);
-            int sumCheckNum=0; //计算所有海洋站的应收数
-            int sumQuantity=0; //计算所有海洋站的实际接受数     rate = checkNum/quntity
+            int sumCheckNum=0;
+            int sumQuantity=0;
             for(Map<String,Object> hashMap: seaList){   //每小时60的数据
                 String timeStr = hashMap.get("real_time").toString(); //	时间格式如：04/01 10:03
-//                int indexHour = timeStr.indexOf(" ");
-//                String hourStr = timeStr.substring(indexHour+1,indexHour+3); // 得到小时
                 int index = timeStr.indexOf(":");
                 String minStr = timeStr.substring(index+1,index+3); // 得到分钟
-//                if(minStr.equals("00")){
-//                    String insert = "INSERT INTO day_total (name,time,total,type) VALUES ('"+hashMap.get("name")+"','"+hashMap.get("real_time")+"','"+hashMap.get("quantity")+"',' sea_real');";
-//                    jdbcTemplate.update(insert);
-//                }
                 int min = Integer.valueOf(minStr);// 标准为1分钟1个数据
                 hashMap.put("checkNum", min+1);
                 sumCheckNum = sumCheckNum+min;
                 int qutyGot = Integer.valueOf(hashMap.get("quantity").toString());
                 sumQuantity = qutyGot + sumQuantity;
             }
-
             Map<String,Object> sumCheck = new HashMap<String,Object>();
             sumCheck.put("sumCheckNum",sumCheckNum);
             sumCheck.put("sumQuantity",sumQuantity);

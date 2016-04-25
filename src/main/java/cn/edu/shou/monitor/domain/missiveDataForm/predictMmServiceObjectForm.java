@@ -15,6 +15,26 @@ public class predictMmServiceObjectForm {
     private  String serviceObjectIp;//服务IP
     @Getter @Setter
     private String serviceObjectGroup;//服务对象所在组
+    @Getter @Setter
+    private String keySerObj;//重点服务对象
+    @Getter @Setter
+    private String serviceObjectState;//服务对象状态
+
+    public String getServiceObjectState() {
+        return serviceObjectState;
+    }
+
+    public void setServiceObjectState(String serviceObjectState) {
+        this.serviceObjectState = serviceObjectState;
+    }
+
+    public String getKeySerObj() {
+        return keySerObj;
+    }
+
+    public void setKeySerObj(String keySerObj) {
+        this.keySerObj = keySerObj;
+    }
 
     public String getServiceObjectGroup() {
         return serviceObjectGroup;

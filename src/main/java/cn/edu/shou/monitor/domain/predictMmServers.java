@@ -30,6 +30,8 @@ public class predictMmServers extends BaseEntity {
     @Getter @Setter
     private String serverIP;//服务器IP
     @Getter @Setter
+    private String serverGroup;
+    @Getter @Setter
     private String serverIPMI;//服务器IPMI
     @Getter @Setter
     private String serverPort;//服务器端口
@@ -41,6 +43,18 @@ public class predictMmServers extends BaseEntity {
     private String serverU;//所在U
     @Getter @Setter
     private String serverRemark;//备注
+    @Getter @Setter
+    private String serverApp;//应用名称
+    @Getter @Setter
+    private String  serverKvm; //服务器KVM
+
+    public String getServerKvm() {
+        return serverKvm;
+    }
+
+    public void setServerKvm(String serverKvm) {
+        this.serverKvm = serverKvm;
+    }
 
     public String getHostId() {
         return hostId;
@@ -106,6 +120,14 @@ public class predictMmServers extends BaseEntity {
         this.serverIP = serverIP;
     }
 
+    public String getServerGroup() {
+        return serverGroup;
+    }
+
+    public void setServerGroup(String serverGroup) {
+        this.serverGroup = serverGroup;
+    }
+
     public String getServerIPMI() {
         return serverIPMI;
     }
@@ -154,4 +176,11 @@ public class predictMmServers extends BaseEntity {
         this.serverRemark = serverRemark;
     }
 
+    public String getServerApp() {
+        return serverApp;
+    }
+
+    public void setServerApp(String serverApp) {
+        this.serverApp = serverApp;
+    }
 }

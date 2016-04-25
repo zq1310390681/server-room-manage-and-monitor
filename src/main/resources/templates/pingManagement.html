@@ -54,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="pingGrid" style="position: absolute"></div>
+                    <div id="pingGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--ping模板-->
@@ -148,6 +148,7 @@
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
+<script src="/js/commonFunction.js"></script>
 
 <!-- page specific plugin scripts -->
 
@@ -342,7 +343,6 @@ function delPingModel(e){
                     async: true,//同步，这也是ajax重要特性
                     type: "GET",   //请求方式
                     success:function(data){
-                        //alert("记录删除成功！");
                         setPingGridDataSource();//获取Ping数据源
                         setPingGrid();//重新生成表单
                     }
@@ -366,7 +366,14 @@ function submitPingModel(){
     var oneIPVal= $("#oneIP").val();
     var twoIPVal= $("#twoIP").val();
     var pingNoteVal= $("#pingNote").val();
-
+    if(!validateIp(oneIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
+    if(!validateIp(twoIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(pingNameVal==""||twoIPVal==""||oneIPVal==""){
         alert("带有红色标记的为必填项");
         return;
@@ -379,8 +386,19 @@ function submitPingModel(){
             twoIP:twoIPVal,
             pingNote:pingNoteVal
         };
-        submitPingModelAjax(crudPingBaseUrl + "/createAndUpdatePing",submitPingModelData);
-
+        $.ajax({
+            url:"/predictCenter/api/ping/cabinetExit/"+pingNameVal,
+            dataType:"json",
+            type: "GET",
+            async:true,
+            success:function(data){
+                if(!data.name){
+                    alert("网络名称已存在！");
+                    return;
+                }
+                submitPingModelAjax(crudPingBaseUrl + "/createAndUpdatePing",submitPingModelData);
+            }
+        });
     }
 }
 //提交数据至后台
@@ -403,6 +421,7 @@ $("#closePingModel").click( function (e) {
     $("#pingModelWnd").data("kendoWindow").close();
 });
 </script>
+
 <script id="pingModel_toolbar" type="text/x-kendo-template">
     <button class="k-button k-button-icontext k-grid-add" id="pingModel_toolbar_queryBtn" onclick="addPingModel();"><span class="k-icon k-add"></span>添加Ping</button>   <!--添加证书-->
 </script>

@@ -54,39 +54,51 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="hostGrid" style="position: absolute"></div>
+                    <div id="hostGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--主机模板-->
             <div id="hostModelWnd" style="display:none">
                 <div>
                     <div style="margin:10px">
-                        <label style="margin-left: 76px" >主机名称:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="hosts"/>
+                        <label style="margin-left: 59px" >主机IP:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="hostIP" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin:10px">
-                        <label style="margin-left: 90px" >主机IP:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="hostIP" />
+                        <label style="margin-left: 45px" >主机名称:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="hosts"/>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 58px" >主机操作系统:</label>
-                        <input  style="margin-left: 9px;height:30px;width:345px"  id="hostOS" />
+                        <label style="margin-left: 55px" >操作系统:</label>
+                        <input  style="margin-left: 9px;height:30px;width:405px"  id="hostOS" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 44px" >主机所在服务器:</label>
-                        <input  style="margin-left: 9px;height:30px;width:345px"  id="hostServer" />
+                        <label style="margin-left: 40px" >所在服务器:</label>
+                        <input  style="margin-left: 9px;height:30px;width:405px"  id="hostServer" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
+                    <div  style="margin-top: 10px">
+                        <label style="margin-left: 67px" >业务化:</label>
+                        <input type="checkbox" id="operational" style="margin-left: 10px;height:15px;width:15px;margin-top: 10px"/>
+                    </div>
+                    <div  style="margin-top: 10px">
+                        <label style="margin-left: 66px" >用户名:</label>
+                        <input  style="margin-left: 9px;height:30px;width:400px"  id="hostUserName" />
+                    </di>
+                     <div  style="margin-top: 10px">
+                         <label style="margin-left: 80px" >密码:</label>
+                         <input  style="margin-left: 9px;height:30px;width:400px"  id="hostPassword" />
+                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 112px">备注:</label>
-                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:335px"  id="hostNote" ></textarea>
-                        <label style="color: red;margin-left: 5px">*</label>
+                        <label style="margin-left: 78px">备注:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:395px"  id="hostNote" ></textarea>
+
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 80px;"onclick="submitVmwareModel()">
+                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 110px;"onclick="submitVmwareModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
@@ -134,7 +146,7 @@
 <!--[if IE]>
 <script src="/assets/js/jquery.1.10.2.min.js"></script>
 <![endif]-->
-
+<script src="/js/commonFunction.js"></script>
 <!--[if !IE]> -->
 
 <script type="text/javascript">
@@ -236,24 +248,29 @@ function setHostGrid(){
             {template: kendo.template($("#inputModel_toolbar").html())},
             {template: kendo.template($("#outputModel_toolbar").html())}],
         columns:[
-            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
-            {field:"hosts",title:"主机名称"},
+            {title: "<input type='checkbox'onclick='checkAll()'/>全选",template: '<input type="checkbox"/>',width:"5%"},
             {field:"hostIP",title:"主机IP"},
-            {field:"hostOS",title:"主机操作系统",template:"#=getHostOS(hostOS)#"},
-            {field:"hostServer",title:"主机所在服务器",template:"#=getHostServer(hostServer)#"},
+            {field:"hosts",title:"主机名称"},
+            {field:"appName",title:"对应应用"},
+            {field:"hostOS",title:"操作系统"},
+            {field:"hostServer",title:"所在服务器"},
+            {field:"operational",title:"业务化"},
+            {field:"hostUserName",title:"用户名",hidden:true},
+            {field:"hostPassword",title:"密码",hidden:true},
             {field:"hostNote",title:"备注",hidden:true},
-            { command: [ {name:"view",text:"查看",
-                click:function(e){
-                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                    var url ="/predictCenter/getHostViewInfo/"+dataItem.id+".html";
-                    window.open(url);
-                }
-            },
+            { command: [
+                {name:"view",text:"查看",
+                    click:function(e){
+                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        var url ="/predictCenter/getHostViewInfo/"+dataItem.id+".html";
+                        window.open(url);
+                    }
+                },
                 {text: "编辑", click: showHostModel },   //编辑窗体内容
                 { text: "删除",click:delHostModel }    //删除记录
 
             ],
-                title: "操作"
+                title: "操作",width:"20%"
             }
         ],
         pageable: {
@@ -281,7 +298,7 @@ function setHostGrid(){
         visible: false,
         resizable: false,
         width: 630,
-        height:350
+        height:550
     }).data("kendoWindow");
     //导入模板窗体
     inputWnd = $("#inputWnd").kendoWindow({
@@ -301,6 +318,18 @@ function setHostGrid(){
         width: 600,
         height:200
     }).data("kendoWindow");
+}
+//全选
+function checkAll(){
+    var trs = $("#hostGrid").find('tr');
+    for (var i = 1; i < trs.length; i++) {
+        var chk=$(trs[i]).find(":checkbox");
+        if (!chk.is(":checked")) {
+            chk.prop("checked",true);
+        }else{
+            chk.prop("checked",false);
+        }
+    }
 }
 //导入
 function addInputModel(){
@@ -385,12 +414,18 @@ function showHostModel(e) {
     $("#hostNote").val(dataItem.hostNote);    //备注
     $("#hosts").val(dataItem.hosts);    //主机名称
     $("#hostIP").val(dataItem.hostIP);    //主机IP
-
+    $("#hostUserName").val(dataItem.hostUserName);    //主机用户名
+    $("#hostPassword").val(dataItem.hostPassword);    //主机
+    if(dataItem.operational=="是"){
+        $("#operational").prop("checked",true);//是否业务化
+    }else{
+        $("#operational").prop("checked",false);//是否业务化
+    }
     /*声明为 下拉 输入框样式并赋值*/
     var hostOSDrop= $("#hostOS").data("kendoDropDownList");//主机操作系统
-    hostOSDrop.value(dataItem.hostOS);
+    hostOSDrop.text(dataItem.hostOS);
     var hostServerDrop= $("#hostServer").data("kendoDropDownList");//主机所在服务器
-    hostServerDrop.value(dataItem.hostServer);
+    hostServerDrop.text(dataItem.hostServer);
     hostModelWnd.center().open();
 }
 //删除数据
@@ -434,6 +469,10 @@ function addHostModel(){
     $("#hosts").val("");
     $("#hostIP").val("");
     $("#hostNote").val("");
+    $("#kvmNum").val("");    //主机KVM编号
+    $("#hostUserName").val("");    //主机用户名
+    $("#hostPassword").val("");    //主机
+    var keyApp=$("#keyApp").is(':checked')==true?"是":"否";//判断是否业务化
     hostRecordId=0;//添加主机，模板id设为0.
     hostModelWnd.center().open();
 }
@@ -443,8 +482,14 @@ function submitVmwareModel(){
     var hostIPVal= $("#hostIP").val();
     var hostOSVal= $("#hostOS").val();
     var hostServerVal= $("#hostServer").val();
+    var hostUserNameVal=$("#hostUserName").val();    //主机用户名
+    var hostPasswordVal=$("#hostPassword").val();    //主机
+    var operationalVal=$("#operational").is(':checked')==true?"是":"否";//判断是否重点应用
     var hostNoteVal= $("#hostNote").val();
-
+    if(!validateIp(hostIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(hostsVal==""||hostOSVal==""||hostIPVal==""||hostServerVal==""){
         alert("带有红色标记的为必填项");
         return;
@@ -456,6 +501,9 @@ function submitVmwareModel(){
             hostIP:hostIPVal,
             hostOS:hostOSVal,
             hostServer:hostServerVal,
+            operational:operationalVal,
+            hostUserName:hostUserNameVal,
+            hostPassword:hostPasswordVal,
             hostNote:hostNoteVal,
             hostType:'2'
         };

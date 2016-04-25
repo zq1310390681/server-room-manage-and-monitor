@@ -2,6 +2,9 @@ package cn.edu.shou.monitor.web;
 
 import cn.edu.shou.monitor.domain.User;
 import cn.edu.shou.monitor.domain.predictMmSwitchboards;
+import cn.edu.shou.monitor.service.predictMmBrandRepository;
+import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.predictMmURepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,19 +20,70 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SwitchboardManagementController {
     @Autowired
     cn.edu.shou.monitor.service.SwitchboardManagementRepository SwitchboardManagementRepository;
+    @Autowired
+    predictMmURepository uRepository;
+    @Autowired
+    predictMmBrandRepository brandRepository;
+    @Autowired
+    predictMmEquipmentCabinetRepository cabinetRepository;
     @RequestMapping(value = "/getSwitchboardInfo")
     public String getSwitchboardInfo(Model model,@AuthenticationPrincipal User currentUser){
         model.addAttribute("user", currentUser);
         return "switchboardManagement";
     }
     @RequestMapping(value = "/getSwitchboardViewInfo/{switchboardid}.html")
-    public String getSwitchboardViewInfo(Model model,@PathVariable Long switchboardid,@AuthenticationPrincipal User currentUser)
+      public String getSwitchboardViewInfo(Model model,@PathVariable Long switchboardid,@AuthenticationPrincipal User currentUser)
     {
         model.addAttribute("user", currentUser);
         //根据switchboardId查找数据对象信息
         predictMmSwitchboards mmSwitchboard= SwitchboardManagementRepository.findOne(switchboardid);//查找switchboard数据
+        //显示机柜名称
+        String cabinetName = "";
+        if (mmSwitchboard!=null){
+            cabinetName = cabinetRepository.findOne(Long.parseLong(mmSwitchboard.getSwitchboardEquipmentCabinet())).getEquipmentCabinetName();
+            mmSwitchboard.setSwitchboardEquipmentCabinet(cabinetName);
+        }
+        //显示所在U名称
+       /* String uName="";
+        if (mmSwitchboard!=null){
+            uName = uRepository.findOne(Long.parseLong(mmSwitchboard.getSwitchboardU())).getuName();
+            mmSwitchboard.setSwitchboardU(uName);
+        }*/
+        //显示品牌名称
+        String brandName = "";
+        if (mmSwitchboard != null){
+            brandName = brandRepository.findOne(Long.parseLong(mmSwitchboard.getSwitchboardBrand())).getBrandName();
+            mmSwitchboard.setSwitchboardBrand(brandName);
+        }
         model.addAttribute("switchboard",mmSwitchboard);
         return "switchboardManagementView";
+    }
+    @RequestMapping(value = "/getSwitchboardQrCode/{switchid}.html")
+    public String getSwitchboardQrCode(Model model,@PathVariable Long switchid,@AuthenticationPrincipal User currentUser)
+    {
+        model.addAttribute("user", currentUser);
+        //根据switchid查找数据对象信息
+        predictMmSwitchboards mmSwitchboard= SwitchboardManagementRepository.findOne(switchid);//查找switchboard数据
+        //显示机柜名称
+        String cabinetName = "";
+        if (mmSwitchboard!=null){
+            cabinetName = cabinetRepository.findOne(Long.parseLong(mmSwitchboard.getSwitchboardEquipmentCabinet())).getEquipmentCabinetName();
+            mmSwitchboard.setSwitchboardEquipmentCabinet(cabinetName);
+        }
+        //显示所在U名称
+       /* String uName="";
+        if (mmSwitchboard!=null){
+            uName = uRepository.findOne(Long.parseLong(mmSwitchboard.getSwitchboardU())).getuName();
+            mmSwitchboard.setSwitchboardU(uName);
+        }*/
+        //显示品牌名称
+        String brandName = "";
+        if (mmSwitchboard != null){
+            brandName = brandRepository.findOne(Long.parseLong(mmSwitchboard.getSwitchboardBrand())).getBrandName();
+            mmSwitchboard.setSwitchboardBrand(brandName);
+        }
+        model.addAttribute("switchboard",mmSwitchboard);
+        return "switchQrCode";
     }
     //获取监控展示页面列表
     @RequestMapping(value = "/getSwitchShow")
@@ -42,7 +96,7 @@ public class SwitchboardManagementController {
     public String getSwitchShowView(Model model,@PathVariable  String hostname,String hostid,@AuthenticationPrincipal User currentUser){
         model.addAttribute("user", currentUser);
         model.addAttribute("switchHostname",hostname);
-        model.addAttribute("switchHostname",hostid);
+        model.addAttribute("hostid",hostid);
         return "switchShowView";
     }
 }

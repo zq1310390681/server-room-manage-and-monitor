@@ -2,7 +2,7 @@ package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmServiceObjectForm;
 import cn.edu.shou.monitor.domain.predictMmServiceObject;
-import cn.edu.shou.monitor.service.PredictMmServiceObjectRepository;
+import cn.edu.shou.monitor.service.predictMmServiceObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping(value ="/predictCenter/api/serviceObject" )
 public class ServiceObjectManagementApiController {
     @Autowired
-    PredictMmServiceObjectRepository serviceObjectManagementRepository;
+    predictMmServiceObjectRepository serviceObjectManagementRepository;
     //获取所有服务对象数据信息
     @RequestMapping(value = "/getAllServiceObject")
     public List<predictMmServiceObject> getAllServiceObject(){
@@ -29,7 +29,7 @@ public class ServiceObjectManagementApiController {
     @RequestMapping(value = "/getSerObjByIds/{ids}")
     public List<predictMmServiceObject>getSerObjByIds(@PathVariable String ids){
         List<predictMmServiceObject> serObjs=new ArrayList<predictMmServiceObject>();
-        if (ids.equals("")&&!ids.contains("null")){
+        if (ids!=null&&ids!=""&&!ids.contains("null")){
             String [] serviceObjIds=ids.split(",");//拆分服务对象IDS
             for (String id:serviceObjIds){
                 predictMmServiceObject serviceObject=new predictMmServiceObject();
@@ -52,6 +52,7 @@ public class ServiceObjectManagementApiController {
         predictServiceObject.setServiceObjectName(serviceObjectForm.getServiceObjectName());
         predictServiceObject.setServiceObjectIp(serviceObjectForm.getServiceObjectIp());
         predictServiceObject.setServiceObjectGroup(serviceObjectForm.getServiceObjectGroup());
+        predictServiceObject.setKeySerObj(serviceObjectForm.getKeySerObj());
         serviceObjectManagementRepository.save(predictServiceObject);
         List<predictMmServiceObject> list=new ArrayList<predictMmServiceObject>();
         list.add(predictServiceObject);

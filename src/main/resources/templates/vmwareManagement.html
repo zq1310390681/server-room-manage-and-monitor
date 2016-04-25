@@ -54,39 +54,54 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="hostGrid" style="position: absolute"></div>
+                    <div id="hostGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--VMWare虚拟机模板-->
             <div id="hostModelWnd" style="display:none">
                 <div>
                     <div style="margin:10px">
-                        <label style="margin-left: 76px" >VMWare虚拟机名称:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="hosts"/>
+                        <label style="margin-left: 30px" >虚拟机名称:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="hosts"/>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin:10px">
-                        <label style="margin-left: 90px" >VMWare虚拟机IP:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="hostIP" />
+                        <label style="margin-left: 44px" >虚拟机IP:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="hostIP" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 16px" >虚拟机用户名:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="vmwareUserName" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 57px" >用户名:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="hostUserName" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 70px" >密码:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="hostPassword" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 58px" >VMWare虚拟机操作系统:</label>
-                        <input  style="margin-left: 9px;height:30px;width:345px"  id="hostOS" />
+                        <label style="margin-left: 52px" >操作系统:</label>
+                        <input  style="margin-left: 9px;height:30px;width:405px"  id="hostOS" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 44px" >VMWare虚拟机所在服务器:</label>
-                        <input  style="margin-left: 9px;height:30px;width:345px"  id="hostServer" />
+                        <label style="margin-left: 38px" >所在服务器:</label>
+                        <input  style="margin-left: 9px;height:30px;width:405px"  id="hostServer" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 112px">备注:</label>
-                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:335px"  id="hostNote" ></textarea>
+                        <label style="margin-left: 79px">备注:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:395px"  id="hostNote" ></textarea>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 80px;"onclick="submitVmwareModel()">
+                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 110px;"onclick="submitVmwareModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
@@ -154,7 +169,7 @@
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 <!-- page specific plugin scripts -->
 
 <!-- ace scripts -->
@@ -236,18 +251,30 @@ function setHostGrid(){
             {template: kendo.template($("#inputModel_toolbar").html())},
             {template: kendo.template($("#outputModel_toolbar").html())}],
         columns:[
-            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
-            {field:"hosts",title:"VMWare虚拟机名称"},
+            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"5%"},
             {field:"hostIP",title:"虚拟机IP"},
-            {field:"hostOS",title:"虚拟机操作系统",template:"#=getHostOS(hostOS)#"},
-            {field:"hostServer",title:"虚拟机所在服务器",template:"#=getHostServer(hostServer)#"},
+            {field:"hosts",title:"VMWare虚拟机名称"},
+            {field:"appName",title:"对应应用"},
+            {field:"vmwareUserName",title:"虚拟机用户名",hidden:true},
+            {field:"hostUserName",title:"用户名",hidden:true},
+            {field:"hostPassword",title:"密码",hidden:true},
+            {field:"hostOS",title:"虚拟机操作系统"},
+            {field:"hostServer",title:"虚拟机所在服务器"},
             {field:"hostNote",title:"备注",hidden:true},
             { command: [
+
+                {name:"view",text:"查看",
+                    click:function(e){
+                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                    var url ="/predictCenter/getVmwareView/"+dataItem.id+".html";
+                    window.open(url);
+                    }
+                },
                 {text: "编辑", click: showHostModel },   //编辑窗体内容
                 { text: "删除",click:delHostModel }    //删除记录
 
             ],
-                title: "操作"
+                title: "操作",width:"20%"
             }
         ],
         pageable: {
@@ -275,7 +302,7 @@ function setHostGrid(){
         visible: false,
         resizable: false,
         width: 630,
-        height:350
+        height:550
     }).data("kendoWindow");
     //导入模板窗体
     inputWnd = $("#inputWnd").kendoWindow({
@@ -379,12 +406,15 @@ function showHostModel(e) {
     $("#hostNote").val(dataItem.hostNote);    //备注
     $("#hosts").val(dataItem.hosts);    //主机名称
     $("#hostIP").val(dataItem.hostIP);    //主机IP
+    $("#vmwareUserName").val(dataItem.vmwareUserName);
+    $("#hostUserName").val(dataItem.hostUserName);
+    $("#hostPassword").val(dataItem.hostPassword);
 
     /*声明为 下拉 输入框样式并赋值*/
     var hostOSDrop= $("#hostOS").data("kendoDropDownList");//主机操作系统
-    hostOSDrop.value(dataItem.hostOS);
+    hostOSDrop.text(dataItem.hostOS);
     var hostServerDrop= $("#hostServer").data("kendoDropDownList");//主机所在服务器
-    hostServerDrop.value(dataItem.hostServer);
+    hostServerDrop.text(dataItem.hostServer);
     hostModelWnd.center().open();
 }
 //删除数据
@@ -428,6 +458,9 @@ function addHostModel(){
     $("#hosts").val("");
     $("#hostIP").val("");
     $("#hostNote").val("");
+    $("#vmwareUserName").val("");
+    $("#hostUserName").val("");
+    $("#hostPassword").val("");
     hostRecordId=0;//添加主机，模板id设为0.
     hostModelWnd.center().open();
 }
@@ -437,8 +470,14 @@ function submitVmwareModel(){
     var hostIPVal= $("#hostIP").val();
     var hostOSVal= $("#hostOS").val();
     var hostServerVal= $("#hostServer").val();
+    var vmwareUserNameVal=$("#vmwareUserName").val();
+    var hostUserNameVal=$("#hostUserName").val();
+    var hostPasswordVal=$("#hostPassword").val();
     var hostNoteVal= $("#hostNote").val();
-
+    if(!validateIp(hostIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(hostsVal==""||hostOSVal==""||hostIPVal==""||hostServerVal==""){
         alert("带有红色标记的为必填项");
         return;
@@ -449,6 +488,9 @@ function submitVmwareModel(){
             hosts:hostsVal,
             hostIP:hostIPVal,
             hostOS:hostOSVal,
+            vmwareUserName:vmwareUserNameVal,
+            hostUserName:hostUserNameVal,
+            hostPassword:hostPasswordVal,
             hostServer:hostServerVal,
             hostNote:hostNoteVal,
             hostType:'1'

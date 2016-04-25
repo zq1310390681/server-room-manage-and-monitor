@@ -1,15 +1,13 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.service.ZbxScreenRepository;
-import cn.edu.shou.monitor.transmission.PhoneMessage;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +17,9 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/predictCenter/screen", method= RequestMethod.GET,produces={"application/xml", "application/json"})
 public class ZbxScreenApiController {
+    private static Logger log = Logger.getLogger(ZbxScreenApiController.class);
     @Autowired
     ZbxScreenRepository zbx;
-    @Autowired
-    JdbcTemplate jdbcTemplate;
-    @Autowired
-    PhoneMessage phoneMessage;
-
     @RequestMapping(value = "/cpu")
     public List<Map<String,Object>> getCpu(){
         List<Map<String,Object>> list=zbx.getCpu();
@@ -46,22 +40,38 @@ public class ZbxScreenApiController {
 
     @RequestMapping(value = "/union")
     public String unionSend(){
+        long time = System.currentTimeMillis();
+        log.debug("start send union "+time);
         List<Map<String,Object>> cpu = zbx.getCpu();
+        log.debug("disk end "+ (System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
         List<Map<String,Object>> disk = zbx.getDisk();
+        log.debug("cpu end "+(System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
         List<Map<String,Object>> ram = zbx.getRam();
+        log.debug("menory end "+(System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
         JSONObject union = new JSONObject();
         union.put("disk",disk);
         union.put("ram",ram);
         union.put("cpu",cpu);
         union.put("dateTime",System.currentTimeMillis());
+        log.debug("end send union "+(System.currentTimeMillis()-time));
         return union.toString();
 
     }
 
-    @RequestMapping(value = "/testSms")
-    public String testSms(){
-        String name = phoneMessage.testSendSms("10212");
-        return name;
-    }
-
 }
+
+//long time = System.currentTimeMillis();
+////log.debug("start send union "+time);
+//JSONArray disk = frontScreen.sendDisk();
+////log.debug("disk end "+ (System.currentTimeMillis()-time));
+//time = System.currentTimeMillis();
+//        JSONArray cpu = frontScreen.sendCpu();
+//        //log.debug("cpu end "+(System.currentTimeMillis()-time));
+//        time = System.currentTimeMillis();
+//        JSONArray ram = frontScreen.sendMemory();
+//        //log.debug("menory end "+(System.currentTimeMillis()-time));
+//        time = System.currentTimeMillis();
+//        JSONObject union = new JSONObject();

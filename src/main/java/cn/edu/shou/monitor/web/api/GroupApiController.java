@@ -39,6 +39,9 @@ public class GroupApiController {
     @Autowired
     private UserRepository ur;
 
+
+
+
     @Autowired
     private GroupRepository gr;
 
@@ -75,8 +78,8 @@ public class GroupApiController {
 
         List<Object> nodeValue=new ArrayList<Object>();
 
-        //Group parentGroup=groupDAO.findOne((long) 1);  //父节点
-        List<Group>twoGroupList=groupDAO.getGroupListByGroup("分局"); //第二级节点
+        //Group parentGroup=groupDAO.findOne((long) 1);  //父节点，东海分局
+        List<Group>twoGroupList=groupDAO.getGroupListByGroup("东海分局"); //第二级节点
 
         //List<Group>parentGroup=this.groupDAO.findAll();
         List<Group>leafGroupList = groupDAO.getAllLeafGroup();   //所有叶子节点
@@ -109,7 +112,7 @@ public class GroupApiController {
 
         List<Object> leafValue=new ArrayList<Object>();
 
-        List<Group>twoGroupList=groupDAO.getGroupListByGroup("分局");
+        List<Group>twoGroupList=groupDAO.getGroupListByGroup("东海分局");
         List<Group>leafGroupList = groupDAO.getAllLeafGroup();
 
         for(Group tempgroup:leafGroupList)

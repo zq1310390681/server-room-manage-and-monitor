@@ -52,7 +52,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="cabinetGrid" style="position: absolute"></div>
+                    <div id="cabinetGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--机柜模板-->
@@ -340,8 +340,20 @@ function submitCabinetModel(){
             id:cabinetRecordId,
             equipmentCabinetName:equipmentCabinetNameVal
         };
-        submitCabinetModelAjax(crudCabinetBaseUrl + "/createAndUpdateCabinet",submitCabinetModelData);
-
+        $.ajax({
+            url:"/predictCenter/api/cabinet/cabinetExit/"+equipmentCabinetNameVal,
+            dataType:"json",
+            async:true,
+            type:"GET",
+            success:function(data){
+                //机柜是否存在
+                if(!data.cabinet){
+                    alert("机柜已存在！");
+                    return;
+                }
+                submitCabinetModelAjax(crudCabinetBaseUrl + "/createAndUpdateCabinet",submitCabinetModelData);
+            }
+        });
     }
 }
 //提交数据至后台

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/1/12.
@@ -57,7 +59,7 @@ public class PingManagementApiController {
         }
         return list;
     }
-    //删除Tomcat
+    //删除
     @RequestMapping(value = "/deletePing/{id}")
     public List<predictMmPing> deleteSurveillancePro(@PathVariable long id){
         predictMmPing predictPing=PingManagementRepository.findOne(id);
@@ -71,6 +73,19 @@ public class PingManagementApiController {
         List<predictMmPing> list=new ArrayList<predictMmPing>();
         list.add(predictPing);
         return list;
-
+    }
+    @RequestMapping(value = "/cabinetExit/{name}")
+    public Map<String,Boolean> cabinetExit(@PathVariable String name){
+        predictMmPing ping = new predictMmPing();
+        Map<String,Boolean> results = new HashMap<String ,Boolean>();
+        boolean nameExist = false;// 网络名称是否存在
+        ping = PingManagementRepository.getPingByName(name);
+        if(ping == null){
+            nameExist=true;
+            results.put("name",nameExist);
+        }else{
+            results.put("name",false);
+        }
+        return results;
     }
 }

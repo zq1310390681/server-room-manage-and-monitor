@@ -79,23 +79,9 @@
                                 <button id="switchboardMangeViewClose" class="btn btn-primary btn-sm" style=" float:right  " >
                                     <i class="icon-reply icon-only"></i>
                                 </button>
-                                <!--//<a class="fa fa-close" style="height:26px "></a>-->
                             </div>
-                           <!-- <div class="row">
-                                <div align="center" style="background-color:#428bca!important;height: 45px;width:700px;">
-                                    <b style="color:#ffffff;font-size:25px;font-family:Microsoft YaHei">监控详细信息</b>
-                                    <b style="color:#ffffff;font-size:25px;font-family:Microsoft YaHei">监控详细信息</b>
-                                </div>
-                            </div>-->
                             <div class="row ">
                                 <div class="col-xs-12 col-sm-9 header blue" style="width:530px;left:10px">
-                                    <!--<h4 class="blue">
-                                            <span class="middle"></span>
-                                            <span class="label label-purple arrowed-in-right">
-                                                <i class="icon-circle smaller-80 align-middle"></i>
-                                                在线
-                                            </span>
-                                    </h4>-->
                                     <div class="profile-user-info">
                                         <input name="id" type="hidden" th:value="*{switchboard} ? *{switchboard.id} : '0'"/>
                                         <div class="profile-info-row">
@@ -116,13 +102,10 @@
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardSN} : '(no user specified)'"></label>
                                             </div>
                                         </div>
-
-
                                         <div class="profile-info-row">
                                             <div class="profile-info-name">
                                                 购买时间：
                                             </div>
-
                                             <div class="profile-info-value">
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardPurchasingDate} : '(no user specified)'"></label>
                                             </div>
@@ -131,7 +114,6 @@
                                             <div class="profile-info-name">
                                                 维保到期时间：
                                             </div>
-
                                             <div class="profile-info-value">
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardMaintenanceDueTime} : '(no user specified)'"></label>
                                             </div>
@@ -140,7 +122,6 @@
                                             <div class="profile-info-name">
                                                 交换机品牌：
                                             </div>
-
                                             <div class="profile-info-value">
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardBrand} : '(no user specified)'"></label>
                                             </div>
@@ -158,7 +139,6 @@
                                             <div class="profile-info-name">
                                                 交换机IP：
                                             </div>
-
                                             <div class="profile-info-value">
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardIP} : '(no user specified)'"></label>
                                             </div>
@@ -172,23 +152,10 @@
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardSNMP} : '(no user specified)'"></label>
                                             </div>
                                         </div>
-                                        <!--<div class="profile-info-row">
-                                            <div class="profile-info-name">
-                                                应用名称：
-                                            </div>
-
-                                            <div class="profile-info-value">
-                                                <label th:text="*{switchboard} ? *{switchboardr.switchboardApplicationName} : '(no user specified)'"></label>
-                                            </div>
-                                        </div>
-
--->
-
                                         <div class="profile-info-row">
                                             <div class="profile-info-name">
                                                 所在机柜：
                                             </div>
-
                                             <div class="profile-info-value">
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardEquipmentCabinet} : '(no user specified)'"></label>
                                             </div>
@@ -197,7 +164,6 @@
                                             <div class="profile-info-name">
                                                 所在U：
                                             </div>
-
                                             <div class="profile-info-value">
                                                 <label th:text="*{switchboard} ? *{switchboard.switchboardU} : '(no user specified)'"></label>
                                             </div>
@@ -206,16 +172,11 @@
                                             <div class="profile-info-name">
                                                 备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：
                                             </div>
-
                                             <div class="profile-info-value">
-                                                <!--<label th:text="*{ping} ? *{ping.pingNote} : '(no user specified)'"></label>-->
                                                 <textarea style="color: #478fca!important" readonly="true" th:text="*{switchboard} ? *{switchboard.switchboardRemark} : '(no user specified)'" cols="45" rows="10"></textarea>
                                             </div>
                                         </div>
                                     </div>
-                                    <!--<div style="margin-left: 10px">-->
-                                        <!--<a class="btn btn-primary">返回</a>-->
-                                    <!--</div>-->
                                 </div><!-- /span -->
                             </div><!-- /row-fluid -->
                         </div>

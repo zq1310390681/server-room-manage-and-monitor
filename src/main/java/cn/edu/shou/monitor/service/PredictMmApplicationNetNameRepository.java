@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Administrator on 2016/1/15 0015.
  */
 @Repository
-public interface PredictMmApplicationNetNameRepository extends PagingAndSortingRepository<predictMmApplicationNetName, Long> {
+public interface predictMmApplicationNetNameRepository extends PagingAndSortingRepository<predictMmApplicationNetName, Long> {
     public List<predictMmApplicationNetName> findAll();//获取所有网络
 
 }

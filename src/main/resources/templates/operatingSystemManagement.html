@@ -51,7 +51,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="operatingSystemGrid" style="position: absolute"></div>
+                    <div id="operatingSystemGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--操作系统模板-->
@@ -59,19 +59,19 @@
                 <div>
                     <div style="margin:10px">
                         <label style="margin-left: 20px" >操作系统名称:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="operatingSystem"/>
+                        <input  style="margin-left: 10px;height:30px;width:370px"  id="operatingSystem"/>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left:87px">备注:</label>
-                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:335px"  id="operatingSystemNote" ></textarea>
+                        <label style="margin-left:86px">备注:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:365px"  id="operatingSystemNote" ></textarea>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 60px;"onclick="submitOperatingSystemModel()">
+                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 138px;"onclick="submitOperatingSystemModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeOperatingSystemModel" class="k-button" style="margin-left: 60px;" >
+                        <button id="closeOperatingSystemModel" class="k-button" style="margin-left: 30px;" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -152,11 +152,7 @@
             pageSize: 20,
             schema: {
                 model: {
-                    id: "id",
-                    fields: {
-                        id: { editable: false, nullable: true },
-                        operatingSystem: {validation: { required: { message: "必填项" } }  }
-                    }
+                    id: "id"
                 }
             }
         });
@@ -202,7 +198,7 @@
             visible: false,
             resizable: false,
             width: 570,
-            height:330
+            height:230
         }).data("kendoWindow");
     }
     //查看弹窗
@@ -269,8 +265,20 @@
                 operatingSystem:operatingSystemVal,
                 operatingSystemNote:operatingSystemNoteVal
             };
-            submitOperatingSystemModelAjax(crudOperatingSystemBaseUrl + "/createAndUpdateOperatingSystem",submitOperatingSystemModelData);
-
+            $.ajax({
+                url:"/predictCenter/api/operatingSystem/osExit/"+operatingSystemVal,
+                dataType:"json",
+                async:true,
+                type:"GET",
+                success:function(data){
+                    //判断操作系统是否存在
+                    if(!data.os){
+                        alert("操作系统已存在！");
+                        return;
+                    }
+                    submitOperatingSystemModelAjax(crudOperatingSystemBaseUrl + "/createAndUpdateOperatingSystem",submitOperatingSystemModelData);
+                }
+            });
         }
     }
     //提交数据至后台

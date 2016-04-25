@@ -2,7 +2,7 @@ package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmEquipmentCabinetForm;
 import cn.edu.shou.monitor.domain.predictMmEquipmentCabinet;
-import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sqhe18 on 2016/4/5.
@@ -19,7 +21,7 @@ import java.util.List;
 @RequestMapping(value = "/predictCenter/api/cabinet")
 public class EquipmentCabinetApiController {
     @Autowired
-    PredictMmEquipmentCabinetRepository equipmentCabinetRepository;
+    predictMmEquipmentCabinetRepository equipmentCabinetRepository;
     @RequestMapping(value = "/getAllCabinet")
     public List<predictMmEquipmentCabinet> getAllCabinet(){
         return equipmentCabinetRepository.findAll();
@@ -48,5 +50,19 @@ public class EquipmentCabinetApiController {
         List<predictMmEquipmentCabinet> list = new ArrayList<predictMmEquipmentCabinet>();
         list.add(equipmentCabinet);
         return list;
+    }
+    @RequestMapping(value = "/cabinetExit/{cabinet}")
+    public Map<String,Boolean>cabinetExit(@PathVariable String cabinet){
+        predictMmEquipmentCabinet equCabinet = new predictMmEquipmentCabinet();
+        Map<String,Boolean> results = new HashMap<String ,Boolean>();
+        boolean cabinetExit = false;// 机柜是否存在
+        equCabinet = equipmentCabinetRepository.getCabByName(cabinet);
+        if(equCabinet == null){
+            cabinetExit=true;
+            results.put("cabinet",cabinetExit);
+        }else{
+            results.put("cabinet",false);
+        }
+        return results;
     }
 }

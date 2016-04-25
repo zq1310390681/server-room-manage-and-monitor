@@ -60,7 +60,7 @@
         <div class="page-content" >
             <div style="width: 100%">
                 <div style="float: left;width: 15%;display: inline">
-                   <div style="font-size: 25px">
+                   <div style="font-size: 23px">
                        <input name="id" type="hidden" th:value="*{apps} ? *{apps.id} : '0'"/>
                         <div style="margin: 40px 40px">
                             <div >
@@ -240,7 +240,7 @@
                     {name:"view",text:"查看状态",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                            var url ="/predictCenter/getHostShowView/"+dataItem.hosts+"/"+dataItem.hostId+"/";
+                            var url ="/predictCenter/getOracleShowView/"+dataItem.middleName+"/"+dataItem.hostId+"/";
                             window.open(url);
                         }
                     }
@@ -289,7 +289,7 @@
                     {name:"view",text:"查看状态",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                            var url ="/predictCenter/getHostShowView/"+dataItem.hosts+"/"+dataItem.hostId+"/";
+                            var url ="/predictCenter/getSerObjShowView/"+dataItem.serviceObjectName+"/"+dataItem.hostId+"/";
                             window.open(url);
                         }
                     }

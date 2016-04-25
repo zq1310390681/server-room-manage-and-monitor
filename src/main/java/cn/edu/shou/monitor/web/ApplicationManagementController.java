@@ -5,7 +5,7 @@ import cn.edu.shou.monitor.domain.predictMmApplications;
 import cn.edu.shou.monitor.service.ApplicationManagementRepository;
 import cn.edu.shou.monitor.service.HostManagementRepository;
 import cn.edu.shou.monitor.service.MiddleRepository;
-import cn.edu.shou.monitor.service.PredictMmServiceObjectRepository;
+import cn.edu.shou.monitor.service.predictMmServiceObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ public class ApplicationManagementController {
     @Autowired
     ApplicationManagementRepository applicationManagementRepository;
     @Autowired
-    PredictMmServiceObjectRepository serviceObjectRepository;
+    predictMmServiceObjectRepository serviceObjectRepository;
     @Autowired
     HostManagementRepository hostManagementRepository;
     @Autowired
@@ -104,6 +104,7 @@ public class ApplicationManagementController {
     @RequestMapping(value = "/getAppShow")
     public String getAppShow(Model model,@AuthenticationPrincipal User currentUser){
         model.addAttribute("user",currentUser);
+
         return  "appShow";
     }
     @RequestMapping(value = "/getAppShowView/{id}")

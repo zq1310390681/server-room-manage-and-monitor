@@ -28,8 +28,6 @@ public class predictMmRouters extends BaseEntity {
     @Getter @Setter
     private String routerIP;//路由器IP
     @Getter @Setter
-    private String routerGroup;
-    @Getter @Setter
     private String routerSNMP;//路由器SNMP
     @Getter @Setter
     private String routerPort;//路由器端口
@@ -98,14 +96,6 @@ public class predictMmRouters extends BaseEntity {
 
     public void setRouterIP(String routerIP) {
         this.routerIP = routerIP;
-    }
-
-    public String getRouterGroup() {
-        return routerGroup;
-    }
-
-    public void setRouterGroup(String routerGroup) {
-        this.routerGroup = routerGroup;
     }
 
     public String getRouterSNMP() {

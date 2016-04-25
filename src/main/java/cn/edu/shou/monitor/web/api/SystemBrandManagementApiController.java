@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping(value ="/predictCenter/api/systemBrand" )
 public class SystemBrandManagementApiController {
     @Autowired
-    cn.edu.shou.monitor.service.PredictMmBrandRepository predictMmBrandRepository;
+    cn.edu.shou.monitor.service.predictMmBrandRepository predictMmBrandRepository;
     //获取所有品牌数据信息
     @RequestMapping(value = "/getAllSystemBrands")
     public List<predictMmBrand> getAllSystemBrands(){

@@ -39,6 +39,18 @@ public class predictMmServersForm {
     private String serverU;//所在U
     @Getter @Setter
     private String serverRemark;//备注
+    @Getter @Setter
+    private String serverApp;//应用名称
+    @Getter @Setter
+    private String  serverKvm; //服务器KVM
+
+    public String getServerKvm() {
+        return serverKvm;
+    }
+
+    public void setServerKvm(String serverKvm) {
+        this.serverKvm = serverKvm;
+    }
 
     public String getHostId() {
         return hostId;
@@ -168,4 +180,11 @@ public class predictMmServersForm {
         this.serverRemark = serverRemark;
     }
 
+    public String getServerApp() {
+        return serverApp;
+    }
+
+    public void setServerApp(String serverApp) {
+        this.serverApp = serverApp;
+    }
 }

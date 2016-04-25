@@ -54,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="oracleGrid" style="position: absolute"></div>
+                    <div id="oracleGrid" style="position: absolute;width: 105%"></div>
 
                 </div>
 
@@ -161,9 +161,8 @@
     if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
-<!--<script src="/assets/js/jszip.min.js"></script>-->
 <script src="/assets/js/typeahead-bs2.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 <!-- page specific plugin scripts -->
 
 <!-- ace scripts -->
@@ -217,15 +216,7 @@ function setOracleGridDataSource(){
         pageSize: 20,
         schema: {
             model: {
-                id: "id",
-                fields: {
-                    id: { editable: false, nullable: true },
-                    middleName: {validation: { required: { message: "必填项" } }  },
-                    middleIP: {validation: { required: { message: "必填项" } }  },
-                    middleUserName: { validation: { required: { message: "必填项" }} },
-                    middlePassword: { validation: { required: { message: "必填项" }} },
-                    middleHost: { validation: { required: { message: "必填项" } } }
-                }
+                id: "id"
             }
         }
     });
@@ -244,16 +235,16 @@ function setOracleGrid(){
             {field:"middleIP",title:"Oracle数据库IP"},
             {field:"middleUserName",title:"Oracle数据库用户名"},
             {field:"middlePassword",title:"Oracle数据库密码"},
-            {field:"middleHost",title:"Oracle数据库所在主机",template:"#=getOracleHost(middleHost)#"},
+            {field:"middleHost",title:"Oracle数据库所在主机"},
             {field:"middleNote",title:"备注",hidden:true},
             { command: [
-                /* {name:"view",text:"查看",
+                {name:"view",text:"查看",
                     click:function(e) {
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                        var url = "/predictCenter/getOracleInfoView/" + dataItem.id + ".html";
+                        var url = "/predictCenter/getOracleView/" + dataItem.id;
                         window.open(url);
                          }
-                    }, */
+                },
                 {text: "编辑", click: showOracleModel },   //编辑窗体内容
                 { text: "删除",click:delOracleModel }    //删除记录
 
@@ -433,7 +424,7 @@ function showOracleModel(e) {
     $("#middlePassword").val(dataItem.middlePassword);    //Oracle数据库密码
     /*声明为 下拉 输入框样式并赋值*/
     var middleHostDrop= $("#middleHost").data("kendoDropDownList");//Oracle数据库所在主机
-    middleHostDrop.value(dataItem.middleHost);
+    middleHostDrop.text(dataItem.middleHost);
     oracleModelWnd.center().open();
 }
 //删除数据
@@ -487,7 +478,10 @@ function submitOracleModel(){
     var middlePasswordVal= $("#middlePassword").val();
     var middleHostVal= $("#middleHost").val();
     var middleNoteVal= $("#middleNote").val();
-
+    if(!validateIp(middleIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(middleNameVal==""||middleUserNameVal==""||middlePasswordVal==""||middleIPVal==""||middleHostVal==""){
         alert("带有红色标记的为必填项");
         return;

@@ -20,15 +20,21 @@ public class UserRelationApiController {
     JdbcTemplate jdbcTemplate;
     @RequestMapping(value ="/test")
     public String getMatrix(){
-        String selectApp = "select id,application_name as name,app_group as 'group'\n" +
+        String selectApp = "select id,application_name as name,app_group as 'group',key_app as 'key',host_content as 'subSystem'\n" +
                 "from predict_mm_applications;";
         List<Map<String,Object>> listApp;
         listApp = jdbcTemplate.queryForList(selectApp);
+        for(Map<String,Object> map : listApp){
+            map.put("type","app");
+        }
 
-        String selectSo = "select id,service_object_name as name,service_object_group as 'group'\n" +
+        String selectSo = "select id,service_object_name as name,service_object_group as 'group',key_ser_obj as 'key'\n" +
                 "from predict_mm_service_object;";
         List<Map<String,Object>> listSo;
         listSo = jdbcTemplate.queryForList(selectSo);
+        for(Map<String,Object> map:listSo){
+            map.put("type","user");
+        }
 
         List<Map<String,Object>> listNodes = new ArrayList<Map<String, Object>>();
         listNodes.addAll(listApp);
@@ -43,7 +49,7 @@ public class UserRelationApiController {
 
 
         int d = listSoAndApp.size();
-        List<String> temp =  new ArrayList<String>(); //用来存key
+        List<String> temp =  new ArrayList<String>(); //用来存判断的key
         List<JSONObject> links = new ArrayList<JSONObject>();
 
         for(int n=0;n< d;n++) {
@@ -73,6 +79,27 @@ public class UserRelationApiController {
 
         }
         matrix.put("links",links);
-        return matrix.toString();
+
+
+        String selectAppGroup = "select id,app_group_name as 'groupName' from predict_mm_app_group;";
+        List<Map<String,Object>>listAppGroup;
+        listAppGroup = jdbcTemplate.queryForList(selectAppGroup);
+        for(Map<String,Object>map:listAppGroup){
+            map.put("type","appGroup");
+        }
+
+        String selectSoGroup = "select id,ser_obj_group_name as 'groupName' from predict_mm_service_obj_group;";
+        List<Map<String,Object>>listSoGroup;
+        listSoGroup = jdbcTemplate.queryForList(selectSoGroup);
+        for(Map<String,Object>map:listSoGroup){
+            map.put("type","soGroup");
+        }
+        List<Map<String,Object>> listGroup = new ArrayList<Map<String, Object>>();
+        listGroup.addAll(listAppGroup);
+        listGroup.addAll(listSoGroup);
+
+        matrix.put("group",listGroup); // 得到了group的所有数据
+
+        return matrix.toString().replace("是","true").replace("否","false");
     }
 }

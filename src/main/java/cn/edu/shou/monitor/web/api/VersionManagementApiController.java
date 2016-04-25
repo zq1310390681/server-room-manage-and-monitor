@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sqhe18 on 2016/4/5.
@@ -47,5 +49,19 @@ public class VersionManagementApiController {
         List<predictMmVersion> list = new ArrayList<predictMmVersion>();
         list.add(predictVersion);
         return list;
+    }
+    @RequestMapping(value = "/versionExit/{version}")
+    public Map<String ,Boolean> versionExit(@PathVariable String version){
+        predictMmVersion versions = new predictMmVersion();
+        Map<String ,Boolean> results = new HashMap<String ,Boolean>();
+        boolean versionExit = false;//版本是否已经存在
+        versions = versionRepository.getVersionByVer(version);
+        if (versions == null){
+            versionExit = true;
+            results.put("version",versionExit);
+        }else {
+            results.put("version",false);
+        }
+        return results;
     }
 }

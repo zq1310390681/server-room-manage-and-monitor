@@ -22,13 +22,65 @@ public class predictMmHost extends BaseEntity {
     @Getter  @Setter
     private String hostNote; //备注
     @Getter  @Setter
+    private String hostServer;  //主机所在服务器
+    @Getter  @Setter
     private String hostId;
     @Getter  @Setter
     private String hostType; //主机类型
     @Getter  @Setter
-    private String hostServer; //主机所在服务器
+    private String appName;//应用名称
     @Getter  @Setter
-    private String zbxHostname; //主机所在服务器
+    private String hostUserName;//主机用户名
+    @Getter  @Setter
+    private String hostPassword;//主机密码
+    @Getter  @Setter
+    private String operational;//是否业务化
+    @Getter  @Setter
+    private String vmwareUserName;// 虚拟机用户名
+    @Getter  @Setter
+    private String zbxHostname;
+    @Getter  @Setter
+    private String  hostState;//主机状态
+
+    public String getHostState() {
+        return hostState;
+    }
+
+    public void setHostState(String hostState) {
+        this.hostState = hostState;
+    }
+
+    public String getHostUserName() {
+        return hostUserName;
+    }
+
+    public void setHostUserName(String hostUserName) {
+        this.hostUserName = hostUserName;
+    }
+
+    public String getHostPassword() {
+        return hostPassword;
+    }
+
+    public void setHostPassword(String hostPassword) {
+        this.hostPassword = hostPassword;
+    }
+
+    public String getOperational() {
+        return operational;
+    }
+
+    public void setOperational(String operational) {
+        this.operational = operational;
+    }
+
+    public String getHostServer() {
+        return hostServer;
+    }
+
+    public void setHostServer(String hostServer) {
+        this.hostServer = hostServer;
+    }
 
     public String getHostType() {
         return hostType;
@@ -36,6 +88,14 @@ public class predictMmHost extends BaseEntity {
 
     public void setHostType(String hostType) {
         this.hostType = hostType;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public String getHosts() {
@@ -78,19 +138,19 @@ public class predictMmHost extends BaseEntity {
         this.hostId = hostId;
     }
 
-    public String getHostServer() {
-        return hostServer;
-    }
-
-    public void setHostServer(String hostServer) {
-        this.hostServer = hostServer;
-    }
-
     public String getZbxHostname() {
         return zbxHostname;
     }
 
     public void setZbxHostname(String zbxHostname) {
         this.zbxHostname = zbxHostname;
+    }
+
+    public String getVmwareUserName() {
+        return vmwareUserName;
+    }
+
+    public void setVmwareUserName(String vmwareUserName) {
+        this.vmwareUserName = vmwareUserName;
     }
 }

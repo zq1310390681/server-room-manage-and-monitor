@@ -30,8 +30,6 @@ public class predictMmSwitchboards extends BaseEntity {
     @Getter @Setter
     private String switchboardIP;//交换机IP
     @Getter @Setter
-    private String switchboardGroup;
-    @Getter @Setter
     private String switchboardSNMP;//交换机SNMP
     @Getter @Setter
     private String switchboardPort;//交换机端口
@@ -96,14 +94,6 @@ public class predictMmSwitchboards extends BaseEntity {
 
     public void setSwitchboardIP(String switchboardIP) {
         this.switchboardIP = switchboardIP;
-    }
-
-    public String getSwitchboardGroup() {
-        return switchboardGroup;
-    }
-
-    public void setSwitchboardGroup(String switchboardGroup) {
-        this.switchboardGroup = switchboardGroup;
     }
 
     public String getSwitchboardSNMP() {

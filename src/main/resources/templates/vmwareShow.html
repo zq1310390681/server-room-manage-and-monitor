@@ -58,7 +58,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="vmwareModelGrid"  ></div>
+                    <div id="vmwareModelGrid" style="position: absolute;width: 105%" ></div>
                 </div>
             </div>
         </div><!-- /.page-content -->
@@ -144,8 +144,9 @@
         $("#vmwareModelGrid").kendoGrid({
             dataSource:vmwareModelGridDataSource,
             columns:[
-                {field:"hosts",title:"VMWare虚拟机名称"},
                 {field:"hostIP",title:"虚拟机IP"},
+                {field:"hosts",title:"VMWare虚拟机名称"},
+                {field:"appName",title:"对应应用"},
                 {field:"hostOS",title:"虚拟机操作系统"},
                 {field:"hostServer",title:"虚拟机所在服务器"},
                 {field:"hoststate",title:"状态"},

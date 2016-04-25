@@ -51,7 +51,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="serviceObjectGrid" style="position: absolute"></div>
+                    <div id="serviceObjectGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--服务对象模板-->
@@ -67,6 +67,10 @@
                         <input  style="margin-left: 10px;height:30px;width:400px"  id="serviceObjectName"/>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 52px" >重点服务对象:</label>
+                        <input type="checkbox" id="keySerObj" style="margin-left: 10px;height:15px;width:15px;margin-top: 10px"/>
+                    </div>
                     <div style="margin:10px">
                         <label style="margin-left: 60px" >服务对象IP:</label>
                         <input  style="margin-left: 10px;height:30px;width:400px"  id="serviceObjectIp" />
@@ -74,7 +78,7 @@
                     </div>
 
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 192px;color:#55c6dc"onclick="submitVmwareModel()">
+                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 192px;color:#55c6dc"onclick="submitSerObjModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
@@ -116,7 +120,7 @@
 <!--[if !IE]> -->
 
 <script src="/assets/js/jquery-2.0.3.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 <!-- <![endif]-->
 
 <!--[if IE]>
@@ -210,6 +214,7 @@ function setServiceObjectGrid(){
         columns:[
             {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"10%"},
             {field:"serviceObjectName",title:"服务对象名称"},
+            {field:"keySerObj",title:"重点服务对象"},
             {field:"serviceObjectIp",title:"服务对象IP"},
             {field:"serviceObjectGroup",title:"服务对象所在组",template:"#=getServiceObjectGroup(serviceObjectGroup)#"},
             { command: [
@@ -337,10 +342,16 @@ function showServiceObjectModel(e) {
     /*声明为 下拉 输入框样式并赋值*/
     var serviceObjectGroupDrop= $("#serviceObjectGroup").data("kendoDropDownList");//服务对象所在组
     serviceObjectGroupDrop.value(dataItem.serviceObjectGroup);
+    if(dataItem.keySerObj=="是"){
+        $("#keySerObj").prop("checked",true);//是否为重点服务对象
+    }else{
+        $("#keySerObj").prop("checked",false);//是否为重点服务对象
+    }
 
     //文本框
     $("#serviceObjectName").val(dataItem.serviceObjectName);    //服务对象名称
     $("#serviceObjectIp").val(dataItem.serviceObjectIp);    //服务对象IP
+
     serviceObjectModelWnd.center().open();
 }
 //删除数据
@@ -384,10 +395,15 @@ function addServiceObjectModel(){
     serviceObjectModelWnd.center().open();
 }
 // 保存
-function submitVmwareModel(){
+function submitSerObjModel(){
     var serviceObjectNameVal= $("#serviceObjectName").val();
     var serviceObjectIpVal= $("#serviceObjectIp").val();
     var serviceObjectGroupVal= $("#serviceObjectGroup").val();
+    var keySerObj=$("#keySerObj").is(':checked')==true?"是":"否";//判断是否重点服务对象
+    if(!validateIp(serviceObjectIpVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(serviceObjectNameVal==""||serviceObjectIpVal==""||serviceObjectGroupVal==""){
         alert("带有红色标记的为必填项");
         return;
@@ -397,7 +413,8 @@ function submitVmwareModel(){
             id:serviceObjectRecordId,
             serviceObjectName:serviceObjectNameVal,
             serviceObjectIp:serviceObjectIpVal,
-            serviceObjectGroup:serviceObjectGroupVal
+            serviceObjectGroup:serviceObjectGroupVal,
+            keySerObj:keySerObj
         };
         submitServiceObjectModelAjax(crudServiceObjectBaseUrl + "/createAndUpdateServiceObject",submitServiceObjectModelData);
     }

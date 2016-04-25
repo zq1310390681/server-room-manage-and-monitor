@@ -12,10 +12,6 @@
     <script th:replace="header :: header"></script>
 
 
-    <!--[if lt IE 9]>
-    <script src="/assets/js/html5shiv.js"></script>
-    <script src="/assets/js/respond.min.js"></script>
-    <![endif]-->
 
     <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
     <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
@@ -67,7 +63,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="storeModelGrid"  ></div>
+                    <div id="storeModelGrid"  style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--存储设备模板-->
@@ -115,12 +111,6 @@
 
                         <label style="margin-left: 87px" >Group:</label>
                         <input  style="height:30px;width:398px" id="storeGroup"/><label style="color: red;margin-left: 5px">*</label>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
-                        <label style="margin-left: 62px" >应用名称:</label>
-                        <input  style="height:30px;width:400px;margin-left:1px"  id="storeApplicationName" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
@@ -204,7 +194,7 @@
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 <!-- page specific plugin scripts -->
 
 <!--[if lte IE 8]>
@@ -266,31 +256,13 @@
                 read:  {
                     url: crudServiceBaseUrl + "/getAllStores",
                     dataType: "json"
-                },
-                create:{
-                    url:crudServiceBaseUrl+"/createAndUpdateStore",
-                    dataType:"json"
-                },
-                destroy:{
-                    url:crudServiceBaseUrl+"/deleteStore",
-                    dataType:"json"
                 }
             },
             batch: true,
             pageSize: 20,
             schema: {
                 model: {
-                    id: "id",
-                    fields: {
-                        id: { editable: false, nullable: true },
-                        storeSerialNumber:{validation:{required: { message: "必填项" } }},
-                        storeIP:{validation:{required: { message: "必填项" } }},
-                        storeGroup:{validation:{required: { message: "必填项" } }},
-                        storeApplicationName:{validation:{required: { message: "必填项" } }},
-                        storeEquipmentCabinet:{validation:{required: { message: "必填项" } }},
-                        storeU1:{validation:{required: { message: "必填项" } }},
-
-                    }
+                    id: "id"
                 }
             }
         });
@@ -312,7 +284,6 @@
                 { field: "storeType", title: "存储设备型号",hidden:true},
                 { field: "storeIP", title: "存储设备IP"},
                 { field: "storeGroup", title: "Group",hidden:true},
-                {field:  "storeApplicationName",title:"应用名称",template:"#=getApplicationNameById(storeApplicationName)#"},
                 { field: "storeEquipmentCabinet", title: "所在机柜",template: "#=getEquipmentCabinetNameById(storeEquipmentCabinet)#",hidden:true},
                 { field: "storeU", title: "所在U",hidden:true},
                 { field: "storeRemark", title: "备注",hidden:true},
@@ -324,6 +295,13 @@
                         window.open(url);
                     }
                    },
+                    {name:"viewQr",text:"二维码",
+                        click:function(e){
+                            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            var url ="/predictCenter/stores/getStoreQrCode/"+dataItem.id+".html";
+                            window.open(url);
+                        }
+                    },
                     {text: "编辑", click: showStoreModel },   //编辑窗体内容
                     { text: "删除",click:delStoreModel }    //删除记录
                 ] ,  title: "操作",width:"20%"}
@@ -396,9 +374,6 @@
         //存储设备品牌
         var storeBrand= $("#storeBrand").data("kendoDropDownList");
         storeBrand.value(dataItem.storeBrand);
-        //应用名称
-        var storeApplicationName=$("#storeApplicationName").data("kendoDropDownList");
-        storeApplicationName.value(dataItem.storeApplicationName);
         //storeU数据储存方式为123-123,需要拆分
         var storeU=dataItem.storeU;//获取存储设备所在U
         var storeUs = storeU.split("-");//拆分
@@ -447,7 +422,6 @@
         $("#storeType").val("");
         $("#storeIP").val("");
         $("#storeGroup").val("");
-        $("#storeApplicationName").val("");
         $("#storeEquipmentCabinet").val("");
         $("#storeU1").val("");
         $("#storeU2").val("");
@@ -498,13 +472,15 @@
         var storeTypeVal= $("#storeType").val();
         var storeIPVal= $("#storeIP").val();
         var storeGroupVal= $("#storeGroup").val();
-        var storeApplicationNameVal=$("#storeApplicationName").val();
         var storeEquipmentCabinetVal= $("#storeEquipmentCabinet").val();
         var storeU1Val= $("#storeU1").val();
         var storeU2Val= $("#storeU2").val();
         var storeRemarkVal= $("#storeRemark").val();
-
-        if(storeSerialNumberVal==""||storeIPVal==""||storeGroupVal==""||storeEquipmentCabinetVal==""||storeU1Val==""||storeU2Val==""||storeApplicationNameVal==""){
+        if(!validateIp(storeIPVal)){
+            alert("IP地址格式不正确！");
+            return;
+        }
+        if(storeSerialNumberVal==""||storeIPVal==""||storeGroupVal==""||storeEquipmentCabinetVal==""||storeU1Val==""||storeU2Val==""){
             alert("带有红色标记的为必填项");
             return;
         }else if(!compare()){}
@@ -520,7 +496,6 @@
                 storeType:storeTypeVal,
                 storeIP:storeIPVal,
                 storeGroup:storeGroupVal,
-                storeApplicationName:storeApplicationNameVal,
                 storeEquipmentCabinet:storeEquipmentCabinetVal,
                 storeU:storeU1Val+"-"+storeU2Val,
                 storeRemark:storeRemarkVal
@@ -657,20 +632,7 @@
                     }
                  }
             });
-    //应用名称下拉列表
-            $("#storeApplicationName").kendoDropDownList({
-                optionLabel: "请选择...",
-                dataTextField: "applicationName",
-                dataValueField: "id",
-                dataSource: {
-                    transport:{
-                        read:{
-                            dataType:"json",
-                            url:dropDownListUrl + "/getAllApplicationNames"
-                        }
-                    }
-                 }
-            });
+
         //所在机柜数据源
             $("#storeEquipmentCabinet").kendoDropDownList({
                 optionLabel: "请选择...",

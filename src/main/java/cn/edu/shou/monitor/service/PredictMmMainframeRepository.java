@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Administrator on 2016/1/15 0015.
  */
 @Repository
-public interface PredictMmMainframeRepository extends PagingAndSortingRepository<predictMmMainframe, Long> {
+public interface predictMmMainframeRepository extends PagingAndSortingRepository<predictMmMainframe, Long> {
     public List<predictMmMainframe> findAll();//获取所有主机
 
 }

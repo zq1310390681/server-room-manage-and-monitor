@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web;
 
 import cn.edu.shou.monitor.domain.User;
-import cn.edu.shou.monitor.domain.PredictMmAlarm;
+import cn.edu.shou.monitor.domain.predictMmAlarm;
 import cn.edu.shou.monitor.service.AlarmManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -29,7 +29,7 @@ public class AlarmManagementController {
     {
         model.addAttribute("user", currentUser);
         //根据alarmid查找数据对象信息
-        PredictMmAlarm mmAlarm= alarmManagementRepository.findOne(alarmid);//查找告警规则数据
+        predictMmAlarm mmAlarm= alarmManagementRepository.findOne(alarmid);//查找告警规则数据
         model.addAttribute("alarm",mmAlarm);
         return "alarmManagementView";
     }

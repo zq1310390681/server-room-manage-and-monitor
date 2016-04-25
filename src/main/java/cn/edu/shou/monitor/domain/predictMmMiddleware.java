@@ -12,7 +12,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class predictMmMiddleware extends BaseEntity{
+public class predictMmMiddleware extends BaseEntity {
     @Getter @Setter
     private  String middlewareTypeName;//中间件类型名称
     @Getter @Setter

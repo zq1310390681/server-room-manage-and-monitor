@@ -1,15 +1,22 @@
 package cn.edu.shou.monitor.web.api;
 
-import cn.edu.shou.monitor.transmission.MQAsset;
-import cn.edu.shou.monitor.transmission.MQSendMessage;
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmServersForm;
+import cn.edu.shou.monitor.domain.predictMmApplications;
+import cn.edu.shou.monitor.domain.predictMmHost;
 import cn.edu.shou.monitor.domain.predictMmServers;
+import cn.edu.shou.monitor.service.ApplicationManagementRepository;
+import cn.edu.shou.monitor.service.HostManagementRepository;
 import cn.edu.shou.monitor.service.ServerManagementRepository;
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
-import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.transmission.MQAsset;
+import cn.edu.shou.monitor.transmission.MQSendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +29,40 @@ import java.util.List;
 @RequestMapping(value ="/predictCenter/api/server" )
 public class ServerManagementApiController {
     @Autowired
-    ServerManagementRepository ServerManagementRepository;
+    ServerManagementRepository serverManagementRepository;
     @Autowired
-    PredictMmEquipmentCabinetRepository pmecDAO;
+    predictMmEquipmentCabinetRepository pmecDAO;
+    @Autowired
+    HostManagementRepository hostManagementRepository;
+    @Autowired
+    ApplicationManagementRepository applicationManagementRepository;
 
 
-    //获取所有服务器数据信息
+    //获取所有服务器数据信息 20160421 张倩写的 郑小罗不负责的
     @RequestMapping(value = "/getAllServers")
     public List<predictMmServers> getAllServers(){
-        return ServerManagementRepository.findAll();
+        List<predictMmServers>serverses=serverManagementRepository.findAll();
+        List<predictMmServers>results=serverses;
+
+        if (serverses!=null){
+            for (int i=0;i<serverses.size();++i){
+                String appNames="";
+                List<predictMmHost>hosts=hostManagementRepository.getHostBySeverId(String.valueOf(serverses.get(i).getId()));//获取到服务对应的主机信息
+                for (predictMmHost host:hosts){
+                    //执行查找主机对应的应用 20160421 张倩写的 郑小罗不负责的
+                     List<predictMmApplications> applicationses=applicationManagementRepository.getApplicationsByHostId("%"+host.getId()+"%");
+                    for (predictMmApplications app:applicationses){
+                        appNames+=app.getApplicationName()+",";
+                    }//end three for
+                    if(appNames!=""){
+                        appNames=appNames.substring(0,appNames.length()-1);//去掉最后逗号
+                    }
+                    results.get(i).setServerApp(appNames);
+                }//end second for
+
+            }//end first for
+        }
+        return results;
     }
     //创建服务器
     @RequestMapping(value = "/createAndUpdateServer",method = RequestMethod.GET)
@@ -40,12 +72,12 @@ public class ServerManagementApiController {
         if(recordId==0){
             predictServer=new predictMmServers();
         }else {
-            predictServer=ServerManagementRepository.findOne(recordId);
+            predictServer=serverManagementRepository.findOne(recordId);
         }
         predictServer.setServerSN(serversForm.getServerSN());
         predictServer.setServerPurchasingDate(serversForm.getServerPurchasingDate());
         predictServer.setServerMaintenanceDueTime(serversForm.getServerMaintenanceDueTime());
-        predictServer.setServerSerialNumber(serversForm.getServerSerialNumber()); // this val is name
+        predictServer.setServerSerialNumber(serversForm.getServerSerialNumber());
         predictServer.setServerBrand(serversForm.getServerBrand());
         predictServer.setServerType(serversForm.getServerType());
         predictServer.setServerIP(serversForm.getServerIP());
@@ -55,8 +87,7 @@ public class ServerManagementApiController {
         predictServer.setServerEquipmentCabinet(serversForm.getServerEquipmentCabinet());
         predictServer.setServerU(serversForm.getServerU());
         predictServer.setServerRemark(serversForm.getServerRemark());
-
-
+        predictServer.setServerKvm(serversForm.getServerKvm());
 
         String createResult;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
@@ -67,7 +98,7 @@ public class ServerManagementApiController {
             String hostId = createResult.replaceAll("[^0-9]","");
             predictServer.setHostId(hostId);
             if(createResult.contains("success")){
-                ServerManagementRepository.save(predictServer);
+                serverManagementRepository.save(predictServer);
                 list.add(predictServer);
 
                 MQAsset asset = new MQAsset();
@@ -84,14 +115,12 @@ public class ServerManagementApiController {
         }else{
             // update
             MQAsset asset = new MQAsset();
-//            String assetMQ = asset.addAndUpdAndDelAsset("upd", predictServer.getId(), predictServer.getServerSerialNumber(), predictServer.getHostId(),
-//                    predictServer.getServerSN(), predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(),
-//                    predictServer.getServerBrand(), predictServer.getServerType(), predictServer.getServerIP(),
-//                    predictServer.getServerStorageDevice(), cabinetName, predictServer.getServerU(), predictServer.getServerRemark());
+            String assetMQ = asset.addAndUpdAndDelAsset("upd", predictServer.getId(), predictServer.getServerSerialNumber(), predictServer.getHostId(),
+                    predictServer.getServerSN(), predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(),
+                    predictServer.getServerBrand(), predictServer.getServerType(), predictServer.getServerIP(),
+                    predictServer.getServerStorageDevice(), cabinetName, predictServer.getServerU(), predictServer.getServerRemark());
 
-//            MQSendMessage.sendMessages(assetMQ, "asset");
-            ServerManagementRepository.save(predictServer);
-            list.add(predictServer);
+            MQSendMessage.sendMessages(assetMQ, "asset");
             return list;
         }
         return list;
@@ -99,7 +128,7 @@ public class ServerManagementApiController {
     //删除服务器
     @RequestMapping(value = "/deleteServer/{id}")
     public List<predictMmServers> deleteServer(@PathVariable long id){
-        predictMmServers predictServer=ServerManagementRepository.findOne(id);
+        predictMmServers predictServer=serverManagementRepository.findOne(id);
 
         String hostId; //关联ZBX的hostid
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
@@ -107,7 +136,7 @@ public class ServerManagementApiController {
         predictServer.getId();
         zbxHostService.ZbxDeleteServer(hostId);
 
-        ServerManagementRepository.delete(predictServer);
+        serverManagementRepository.delete(predictServer);
         String cabinetName = pmecDAO.findOne(Long.parseLong(predictServer.getServerEquipmentCabinet())).getEquipmentCabinetName();
         MQAsset asset = new MQAsset();
         String assetMQ = asset.addAndUpdAndDelAsset("del", predictServer.getId(), predictServer.getServerSerialNumber(),
@@ -121,4 +150,5 @@ public class ServerManagementApiController {
         list.add(predictServer);
         return list;
     }
+
 }

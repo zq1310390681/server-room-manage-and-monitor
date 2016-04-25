@@ -20,7 +20,6 @@ public interface GroupRepository extends PagingAndSortingRepository<Group,Long> 
 
     //public Group findByGroupName(String group);
     public List<Group> findAll();
-
     public Group findByGroupName(String group);
     @Modifying
     @Transactional
@@ -36,7 +35,6 @@ public interface GroupRepository extends PagingAndSortingRepository<Group,Long> 
 
     @Query(value = "select g from Group g where g.groupList IS EMPTY")
     public List<Group> getAllLeafGroup();
-
     @Query(value = "select g from Group g where g.group.id = ?1")
     public Group getGroupListByGroupID(Long id);
 }

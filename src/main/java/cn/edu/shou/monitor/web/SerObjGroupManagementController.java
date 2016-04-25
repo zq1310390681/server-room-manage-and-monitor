@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web;
 
-import cn.edu.shou.monitor.domain.PredictMmServiceObjGroup;
 import cn.edu.shou.monitor.domain.User;
+import cn.edu.shou.monitor.domain.predictMmServiceObjGroup;
 import cn.edu.shou.monitor.service.SerObjGroupManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -30,7 +30,7 @@ public class SerObjGroupManagementController {
     {
         model.addAttribute("user", currentUser);
         //根据serObjGroupid查找数据对象信息
-        PredictMmServiceObjGroup serObjGroup=serObjGroupManagementRepository.findOne(serObjGroupid);//查找serObjGroupid数据
+        predictMmServiceObjGroup serObjGroup=serObjGroupManagementRepository.findOne(serObjGroupid);//查找serObjGroupid数据
         model.addAttribute("serObjGroup",serObjGroup);
         return "serObjGroupManagementView";
     }

@@ -54,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="appGroupGrid" style="position: absolute"></div>
+                    <div id="appGroupGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--应用分组模板-->
@@ -359,8 +359,28 @@ function submitAppGroupModel(){
             groupOrder:groupOrderVal,
             appGroupName:appGroupNameVal
         };
-        submitAppGroupModelAjax(crudAppGroupBaseUrl + "/createAndUpdateAppGroup",submitAppGroupModelData);
+        if(appGroupRecordId ==0){
+            //ajax请求判断组序号和组名称是否存在
+            $.ajax({
+                url:"/predictCenter/api/appGroup/appGroupExit/"+groupOrderVal+"/"+appGroupNameVal,
+                dataType:"json",
+                async:false,
+                type:"GET",
+                success:function(data){
+                    //判断组序号和组名称是否存在
+                    if(!data.order){
+                        alert("组序号已存在！");
+                        return;
+                    }
+                    if(!data.groupName){
+                        alert("组名称已存在！");
+                        return;
+                    }
 
+                }
+            });
+        }
+        submitAppGroupModelAjax(crudAppGroupBaseUrl + "/createAndUpdateAppGroup",submitAppGroupModelData);
     }
 }
 //提交数据至后台

@@ -1,8 +1,14 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmMiddleForm;
+import cn.edu.shou.monitor.domain.predictMmHost;
 import cn.edu.shou.monitor.domain.predictMmMiddle;
+import cn.edu.shou.monitor.domain.predictMmOperatingSystem;
+import cn.edu.shou.monitor.domain.predictMmVersion;
+import cn.edu.shou.monitor.service.HostManagementRepository;
 import cn.edu.shou.monitor.service.MiddleRepository;
+import cn.edu.shou.monitor.service.OperatingSystemRepository;
+import cn.edu.shou.monitor.service.VersionRepository;
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +27,12 @@ import java.util.List;
 public class MiddleApiController {
     @Autowired
     MiddleRepository middleRepository;
-
+    @Autowired
+    HostManagementRepository hostManagementRepository;
+    @Autowired
+    VersionRepository versionRepository;
+    @Autowired
+    OperatingSystemRepository operatingSystemRepository;
     //获取所有中间件数据库数据信息
     @RequestMapping(value = "/getAllMiddle")
     public List<predictMmMiddle> getAllMiddle(){
@@ -82,10 +93,32 @@ public class MiddleApiController {
         }
         return middles;
     }
+
     //根据中间件类型获得中间件  middleType=1代表iis 2代表tomact 3代表sql 4代表oracle 5代表java
     @RequestMapping(value = "/getMiddleType/{middleType}")
     public List<predictMmMiddle>getMiddleType(@PathVariable String middleType){
-        List middles=middleRepository.getMiddleByMiddleType(middleType);
+        List<predictMmMiddle> middles=middleRepository.getMiddleByMiddleType(middleType);//获取到对应的中间件名称
+        //处理主机名称   版本信息名称   操作系统名称
+        if (middles!=null){
+            for (predictMmMiddle middle:middles){
+                String predictHostId = middle.getMiddleHost();
+                if(!(predictHostId == null || predictHostId.length()<=0)) {
+                    predictMmHost host = hostManagementRepository.findOne(Long.parseLong(middle.getMiddleHost()));
+                    middle.setMiddleHost(host.getHosts());
+                }
+                String versionId = middle.getMiddleVersion();
+                if(!(versionId == null || versionId.length()<=0)) {
+                    predictMmVersion version = versionRepository.findOne(Long.parseLong(versionId));
+                    middle.setMiddleVersion(version.getVersions());
+                }
+
+                String osId = middle.getMiddleOS();
+                if(!(osId == null || osId.length()<=0)) {
+                    predictMmOperatingSystem os = operatingSystemRepository.findOne(Long.parseLong(osId));
+                    middle.setMiddleOS(os.getOperatingSystem());
+                }
+            }
+        }
         return middles;
     }
     //根据中间件ID字符串获取名称

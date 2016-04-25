@@ -65,14 +65,11 @@
             <div id="tabstrip" >
                 <ul>
                     <li class="k-state-active">品牌</li>    <!--默认展开tabstrip-->
-                    <li>操作系统</li>
                 </ul>
                 <div class="col-xs-12 col-sm-6">
                     <div id="brandModelGrid"></div>
                 </div>
-                <div class="col-xs-12 col-sm-6">
-                    <div id="operationSystemModelGrid" ></div>
-                </div>
+
             </div>
             <!--品牌模板-->
             <div id="brandModelWnd" style="display:none" >
@@ -99,28 +96,6 @@
                     </div>
                 </div>
             </div>
-                <!--操作系统模板-->
-                <div id="operationSystemModelWnd" style="display:none">
-                    <div>
-                        <div style="margin-top: 10px">
-                            <label style="margin-left: 53px" >操作系统名称:</label>
-                            <input  style="margin-left: 10px;height:30px;width:400px"  id="operationSystemName" /><label style="color: red;margin-left: 5px">*</label>
-
-                        </div>
-                        <div style="margin-left:190px;margin-top:20px;">
-                            <button id="saveOperationSystemModel"  class="k-button" style="margin-left: 180px;"onclick="submitOperationSystemModel()">
-                                <i class="icon-ok"></i>
-                                保存
-                            </button>
-                            <button id="closeOperationSystemModel"  class="k-button" style="margin-left: 100px;" >
-                                <i class="icon-remove"></i>
-                                取消
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-
 
 
         </div><!-- /.page-content -->
@@ -192,15 +167,11 @@
     /*声明dataSource*/
     var brandGridDataSource
     var brandModelGridDataSource;
-    var operationSystemGridDataSource;
-    var operationSystemModelGridDataSource;
     /*声明弹出的窗体*/
     var brandModelWnd;
-    var operationSystemModelWnd;
 
     /*声明数据选中行的id*/
     var brandModelRecordId;
-    var operationSystemModelRecordId;
 
     /*品牌模板*/
     // 数据源
@@ -228,41 +199,14 @@
                     fields: {
                         id: { editable: false, nullable: true },
                         brandType:{validation:{required: { message: "必填项" } }},
-                        brandName:{validation:{required: { message: "必填项" } }},
+                        brandName:{validation:{required: { message: "必填项" } }}
 
                     }
                 }
             }
         });
     }
-     /*操作系统模板*/
-    // 数据源
-    function setOperationSystemModelGridDataSource(){
-       operationSystemModelGridDataSource=new kendo.data.DataSource({
-            transport: {
-                read:  {
-                    url: crudServiceBaseUrl + "/getAllOperationSystems",
-                    dataType: "json"
-                },
-                create:{
-                    url:crudServiceBaseUrl+"/createAndUpdateOperationSystem",
-                    dataType:"json"
-                },
-            },
-            batch: true,
-            pageSize: 20,
-            schema: {
-                model: {
-                    id: "id",
-                    fields: {
-                        id: { editable: false, nullable: true },
-                        operationSystemName:{validation:{required: { message: "必填项" } }},
 
-                    }
-                }
-            }
-        });
-    }
     //品牌模板 数据表
     function setBrandModelGrid(){
         $("#brandModelGrid").kendoGrid({
@@ -305,49 +249,7 @@
             height:190
         }).data("kendoWindow");
     }
-     //操作系统模板 数据表
-    function setOperationSystemModelGrid(){
-        $("#operationSystemModelGrid").kendoGrid({
-            dataSource:operationSystemModelGridDataSource,
-            toolbar:[{template: kendo.template($("#operationSystemModel_toolbar").html())}],
-            columns:[
-                { field: "operationSystemName", title: "操作系统名称",width:"8%"},
-                { command: [
-                    {text: "编辑", click: showOperationSystemModel },   //编辑窗体内容
-                    { text: "删除",click:delOperationSystemModel }    //删除记录
-                ] ,  title: "操作",width:"14%"}
-            ],
-            pageable: {
-                buttonCount:3,
-                input: true,
-                messages:{
-                    display:"共{2}条记录",
-                    first:"第一页",
-                    last:"最后一页",
-                    next:"下一页",
-                    previous:"前一页",
-                    morePages:"更多页",
-                    refresh:"刷新表格",
-                    empty:"没有数据",
-                    itemsPerPage:"项数据每页",
-                    page:"第",
-                    of:"页"
-                }
-            },
-            selectable: "row"
-        });
 
-
-         operationSystemModelWnd = $("#operationSystemModelWnd").kendoWindow({
-            title: "操作系统信息",
-            modal: true,
-            visible: false,
-            resizable: false,
-            width: 630,
-            height:680
-        }).data("kendoWindow");
-
-    }
 
 
     //查看品牌弹窗
@@ -355,23 +257,11 @@
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         brandModelRecordId=dataItem.id;//记录当前被选中的品牌模板的id
-        operationSystemModelRecordId=dataItem.id;//记录当前被选中的操作系统模板的id
         $("#systemBrandType").val(dataItem.brandType);//品牌类型
         $("#systemBrandName").val(dataItem.brandName);//品牌名称
+        brandModelWnd.center().open();
     }
-    //查看操作系统弹窗
-    function showOperationSystemModel(e) {
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        operationSystemModelRecordId=dataItem.id;//记录当前被选中的操作系统模板的id
-        $("#operationSystemName").val(dataItem.operationSystemName);//操作系统名称
 
-        /*声明为 下拉 输入框样式并赋值*/
-        //品牌类型
-        var brandType= $("#systemBrandType").data("kendoDropDownList");
-        brandType.value(dataItem.brandType);
-       serverModelWnd.center().open();
-    }
     //删除品牌数据
     function delBrandModel(e){
         e.preventDefault();
@@ -392,26 +282,7 @@
         )
 
     }
-    //删除操作系统数据
-    function delOperationSystemModel(e){
-        e.preventDefault();
-        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        operationSystemModelRecordId=dataItem.id;   //记录当前被选中的操作系统模板的id
-        $.ajax(
-                {
-                    url:crudServiceBaseUrl+"/deleteOperationSystem/"+operationSystemModelRecordId,
-                    dataType: "json",   //返回格式为json
-                    async: true,//同步，这也是ajax重要特性
-                    type: "GET",   //请求方式
-                    success:function(data){
-                        alert("记录删除成功！");
-                        setOperationSystemModelGridDataSource();
-                        setOperationSystemModelGrid();
-                    }
-                }
-        )
 
-    }
     //添加品牌数据
     function addBrandModel(){
         $("#systemBrandType").val("");
@@ -420,13 +291,7 @@
         brandModelRecordId=0;//添加品牌模板，模板id设为0.
         brandModelWnd.center().open();
     }
-     //添加操作系统数据
-    function addOperationSystemModel(){
-        $("#operationSystemName").val("");
 
-        operationSystemModelRecordId=0;//添加操作系统模板，模板id设为0.
-        operationSystemModelWnd.center().open();
-    }
 
     // 添加品牌保存
     function submitBrandModel(){
@@ -442,30 +307,13 @@
                 //提交当前行数据的所有数据
                 id:brandModelRecordId,
                 brandType:brandTypeVal,
-                brandName:brandNameVal,
+                brandName:brandNameVal
 
             };
-            submitBrandModelAjax(crudServiceBaseUrl + "/createAndUpdateBrand",submitBrandModelData);
+            submitBrandModelAjax(crudServiceBaseUrl + "/createAndUpdateSystemBrand",submitBrandModelData);
         }
     }
-     // 添加操作系统保存
-    function submitOperationSystemModel(){
-        var operationSystemNameVal= $("#operationSystemName").val();
 
-        if(operationSystemNameVal==""){
-            alert("带有红色标记的为必填项");
-            return ;
-            }else
-             {
-            var submitOperationSystemModelData={
-                //提交当前行数据的所有数据
-                id:operationSystemModelRecordId,
-                operationSystemName:operationSystemNameVal,
-
-            };
-            submitOperationSystemModelAjax(crudServiceBaseUrl + "/createAndUpdateOperationSystem",submitOperationSystemModelData);
-        }
-    }
     //提交品牌数据至后台
     function submitBrandModelAjax(submitURL,objData){
         $.ajax({
@@ -481,29 +329,12 @@
                      }
                 })
     }
-    //提交操作系统数据至后台
-    function submitOperationSystemModelAjax(submitURL,objData){
-        $.ajax({
-                    url:submitURL,
-                    dataType: "json",   //返回格式为json
-                    async: true,//同步，这也是ajax重要特性
-                    type: "GET",   //请求方式
-                    data:objData,
-                    success:function(data){
-                        $("#operationSystemModelWnd").data("kendoWindow").close();
-                        setOperationSystemModelGridDataSource();
-                        setOperationSystemModelGrid();
-                     }
-                })
-    }
+
     //关闭品牌窗口
     $("#closeBrandModel").click( function (e) {
             $("#brandModelWnd").data("kendoWindow").close();
     });
-    //关闭操作系统窗口
-    $("#closeOperationSystemModel").click( function (e) {
-            $("#operationSystemModelWnd").data("kendoWindow").close();
-    });
+
        /*声明一级模板下拉框*/
 
      //根据品牌Id 获取品牌类型
@@ -531,7 +362,7 @@
                     transport:{
                         read:{
                             dataType:"json",
-                            url:dropDownListUrl + "/getBrandsByType/1"
+                            url:dropDownListUrl + "/getAllBrandTypes"
                         }
                     }
                  }
@@ -544,9 +375,7 @@
         //品牌
         setBrandModelGridDataSource();   //调用设置应用模板 数据源函数
         setBrandModelGrid();              //调用设置应用模板 数据表函数
-        //操作系统
-        setOperationSystemModelGridDataSource();
-        setOperationSystemModelGrid();
+
         setDropDownList();
         });
 

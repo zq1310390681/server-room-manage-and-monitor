@@ -58,7 +58,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="serverModelGrid"  ></div>
+                    <div id="serverModelGrid" style="position: absolute;width: 105%" ></div>
                 </div>
             </div>
         </div><!-- /.page-content -->
@@ -147,7 +147,8 @@ function setServerModelGrid(){
         columns:[
             { field:"serverSerialNumber",title:"服务器编号"},
             { field: "serverIP", title: "服务器IP"},
-            { field: "serverRemark", title: "备注",hidden:true},
+            {field:  "serverApp",title: "应用名称"},
+            { field: "serverState", title: "状态"},
             { command: [
                 {name:"view",text:"查看",
                     click:function(e){

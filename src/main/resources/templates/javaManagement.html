@@ -54,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="javaGrid" style="position: absolute"></div>
+                    <div id="javaGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--java虚拟机模板-->
@@ -70,11 +70,6 @@
                         <input  style="margin-left: 10px;height:30px;width:340px"  id="middleIP" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
-                   <!-- <div style="margin:10px">
-                        <label style="margin-left: 115px" >端口号:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="javaPortNum" />
-                        <label style="color: red;margin-left: 5px">*</label>
-                    </div>-->
                     <div style="margin-top: 10px">
                         <label style="margin-left: 42px" >Java虚拟机操作系统:</label>
                         <input  style="margin-left: 9px;height:30px;width:345px"  id="middleOS" />
@@ -158,7 +153,7 @@
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 <!-- page specific plugin scripts -->
 
 <!-- ace scripts -->
@@ -222,15 +217,7 @@ function setJavaGridDataSource(){
         pageSize: 20,
         schema: {
             model: {
-                id: "id",
-                fields: {
-                    id: { editable: false, nullable: true },
-                    middleName: {validation: { required: { message: "必填项" } }  },
-                    middleIP: {validation: { required: { message: "必填项" } }  },
-                   // javaPortNum: {validation: { required: { message: "必填项" } }  },
-                    middleOS: { validation: { required: { message: "必填项" }} },
-                    middleHost: { validation: { required: { message: "必填项" } } }
-                }
+                id: "id"
             }
         }
     });
@@ -247,10 +234,17 @@ function setJavaGrid(){
             {field:"middleName",title:"Java虚拟机名称"},
             {field:"middleIP",title:"虚拟机IP"},
             //{field:"javaPortNum",title:"端口号"},
-            {field:"middleOS",title:"虚拟机操作系统",template:"#=getJavaOS(middleOS)#"},
-            {field:"middleHost",title:"虚拟机所在主机",template:"#=getJavaHost(middleHost)#"},
+            {field:"middleOS",title:"虚拟机操作系统"},
+            {field:"middleHost",title:"虚拟机所在主机"},
             {field:"middleNote",title:"备注",hidden:true},
             { command: [
+                {name:"view",text:"查看",
+                    click:function(e) {
+                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        var url = "/predictCenter/getJavaView/" + dataItem.id + ".html";
+                        window.open(url);
+                    }
+                },
                 {text: "编辑", click: showJavaModel },   //编辑窗体内容
                 { text: "删除",click:delJavaModel }    //删除记录
 
@@ -387,12 +381,10 @@ function showJavaModel(e) {
     $("#middleNote").val(dataItem.middleNote);    //备注
     $("#middleName").val(dataItem.middleName);    //虚拟机名称
     $("#middleIP").val(dataItem.middleIP);    //虚拟机IP
-   // $("#javaPortNum").val(dataItem.javaPortNum);    //虚拟机端口
-    /*声明为 下拉 输入框样式并赋值*/
     var middleOSDrop= $("#middleOS").data("kendoDropDownList");//虚拟机操作系统
-    middleOSDrop.value(dataItem.middleOS);
+    middleOSDrop.text(dataItem.middleOS);
     var middleHostDrop= $("#middleHost").data("kendoDropDownList");//虚拟机所在主机
-    middleHostDrop.value(dataItem.middleHost);
+    middleHostDrop.text(dataItem.middleHost);
     javaModelWnd.center().open();
 }
 //删除数据
@@ -437,8 +429,6 @@ function addJavaModel(){
 
     $("#middleName").val("");
     $("#middleIP").val("");
-   // $("#javaPortNum").val("");
-    $("#middleNote").val("");
     javaRecordId=0;//添加VMWare虚拟机，模板id设为0.
     javaModelWnd.center().open();
 }
@@ -446,11 +436,13 @@ function addJavaModel(){
 function submitJavaModel(){
     var middleNameVal= $("#middleName").val();
     var middleIPVal= $("#middleIP").val();
-   // var javaPortNumVal= $("#javaPortNum").val();
     var middleOSVal= $("#middleOS").val();
     var middleHostVal= $("#middleHost").val();
     var middleNoteVal= $("#middleNote").val();
-
+    if(!validateIp(middleIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(middleNameVal==""||middleOSVal==""||middleIPVal==""||middleHostVal==""){
         alert("带有红色标记的为必填项");
         return;
@@ -460,7 +452,6 @@ function submitJavaModel(){
             id:javaRecordId,
             middleName:middleNameVal,
             middleIP:middleIPVal,
-           // javaPortNum:javaPortNumVal,
             middleOS:middleOSVal,
             middleHost:middleHostVal,
             middleNote:middleNoteVal,

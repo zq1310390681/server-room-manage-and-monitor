@@ -28,8 +28,6 @@ public class predictMmFws extends BaseEntity {
     @Getter @Setter
     private String fwIP;//防火墙IP
     @Getter @Setter
-    private String fwGroup;
-    @Getter @Setter
     private String fwSNMP;//SNMP
     @Getter @Setter
     private String fwPort;//防火墙端口
@@ -92,14 +90,6 @@ public class predictMmFws extends BaseEntity {
 
     public void setFwIP(String fwIP) {
         this.fwIP = fwIP;
-    }
-
-    public String getFwGroup() {
-        return fwGroup;
-    }
-
-    public void setFwGroup(String fwGroup) {
-        this.fwGroup = fwGroup;
     }
 
     public String getFwSNMP() {

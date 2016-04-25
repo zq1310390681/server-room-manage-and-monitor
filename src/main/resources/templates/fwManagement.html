@@ -12,11 +12,6 @@
     <script th:replace="header :: header"></script>
 
 
-    <!--[if lt IE 9]>
-    <script src="/assets/js/html5shiv.js"></script>
-    <script src="/assets/js/respond.min.js"></script>
-    <![endif]-->
-
     <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
     <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
 
@@ -67,7 +62,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="fwModelGrid"  ></div>
+                    <div id="fwModelGrid"  style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--路由器模板-->
@@ -123,12 +118,6 @@
                         <input  style="height:30px;width:113px" id="fwSNMP"/>
                         <label style="margin-left: 100px" >端口号:</label>
                         <input  style="height:30px;width:120px" id="fwPort"/>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
-                        <label style="margin-left: 62px" >应用名称:</label>
-                        <input  style="height:30px;width:400px;margin-left:1px"  id="fwApplicationName" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
@@ -198,7 +187,7 @@
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
-
+<script src="/js/commonFunction.js"></script>
 <!-- page specific plugin scripts -->
 
 <!--[if lte IE 8]>
@@ -269,15 +258,7 @@
             pageSize: 20,
             schema: {
                 model: {
-                    id: "id",
-                    fields: {
-                        id: { editable: false, nullable: true },
-                        fwSerialNumber:{validation:{required: { message: "必填项" } }},
-                        fwIP:{validation:{required: { message: "必填项" } }},
-                        fwGroup:{validation:{required: { message: "必填项" } }},
-                        fwApplicationName:{validation:{required: { message: "必填项" } }},
-
-                    }
+                    id: "id"
                 }
             }
         });
@@ -301,9 +282,22 @@
                 { field: "fwGroup", title: "Group",hidden:true},
                 { field: "fwSNMP", title: "SNMP",hidden:true},
                 { field: "fwPort", title: "端口号",hidden:true},
-                {field: "fwApplicationName",title: "应用名称",template:"#=getApplicationNameById(fwApplicationName)#"},
                 { field: "fwRemark", title: "备注",hidden:true},
                 { command: [
+                    {name:"view",text:"查看",
+                        click:function(e){
+                            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            var url ="/predictCenter/fws/getFwInfo/"+dataItem.id+".html";
+                            window.open(url);
+                        }
+                    },
+                    {name:"viewQr",text:"二维码",
+                        click:function(e){
+                            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            var url ="/predictCenter/fws/getFwQrCode/"+dataItem.id+".html";
+                            window.open(url);
+                        }
+                    },
                     {text: "编辑", click: showFwModel },   //编辑窗体内容
                     { text: "删除",click:delFwModel }    //删除记录
                 ] ,  title: "操作",width:"20%"}
@@ -377,9 +371,6 @@
         //防火墙品牌
         var fwBrand= $("#fwBrand").data("kendoDropDownList");
         fwBrand.value(dataItem.fwBrand);
-        //应用名称
-        var fwApplicationName=$("#fwApplicationName").data("kendoDropDownList");
-        fwApplicationName.value(dataItem.fwApplicationName);
        fwModelWnd.center().open();
     }
     //删除数据
@@ -417,7 +408,6 @@
         $("#fwIP").val("");
         $("#fwSNMP").val("");
         $("#fwPort").val("");
-        $("#fwApplicationName").val("");
         $("#fwRemark").val("");
 
         fwModelRecordId=0;//添加防火墙模板，模板id设为0.
@@ -444,10 +434,12 @@
         var fwGroupVal= $("#fwGroup").val();
         var fwSNMPVal= $("#fwSNMP").val();
         var fwPortVal= $("#fwPort").val();
-        var fwApplicationNameVal=$("#fwApplicationName").val();
         var fwRemarkVal= $("#fwRemark").val();
-
-        if(fwSerialNumberVal==""||fwIPVal==""||fwGroupVal==""||fwApplicationNameVal==""){
+        if(!validateIp(fwIPVal)){
+            alert("IP地址格式不正确！");
+            return;
+        }
+        if(fwSerialNumberVal==""||fwIPVal==""||fwGroupVal==""){
             alert("带有红色标记的为必填项");
             return;
         }else{
@@ -464,7 +456,6 @@
                 fwGroup:fwGroupVal,
                 fwSNMP:fwSNMPVal,
                 fwPort:fwPortVal,
-                fwApplicationName:fwApplicationNameVal,
                 fwRemark:fwRemarkVal
 
             };
@@ -568,20 +559,6 @@
                         read:{
                             dataType:"json",
                             url:dropDownListUrl + "/getBrandsByType/5"
-                        }
-                    }
-                 }
-            });
-     //应用名称下拉列表
-            $("#fwApplicationName").kendoDropDownList({
-                optionLabel: "请选择...",
-                dataTextField: "applicationName",
-                dataValueField: "id",
-                dataSource: {
-                    transport:{
-                        read:{
-                            dataType:"json",
-                            url:dropDownListUrl + "/getAllApplications"
                         }
                     }
                  }

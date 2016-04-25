@@ -30,8 +30,6 @@ public class predictMmStores extends BaseEntity {
     @Getter @Setter
     private String storeIP;//存储设备IP
     @Getter @Setter
-    private String storeGroup;
-    @Getter @Setter
     private String storeEquipmentCabinet;//所在机柜
     @Getter @Setter
     private String storeU;//所在U
@@ -92,14 +90,6 @@ public class predictMmStores extends BaseEntity {
 
     public void setStoreIP(String storeIP) {
         this.storeIP = storeIP;
-    }
-
-    public String getStoreGroup() {
-        return storeGroup;
-    }
-
-    public void setStoreGroup(String storeGroup) {
-        this.storeGroup = storeGroup;
     }
 
     public String getStoreEquipmentCabinet() {

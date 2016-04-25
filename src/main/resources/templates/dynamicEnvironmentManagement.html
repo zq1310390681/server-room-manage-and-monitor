@@ -51,7 +51,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="dynamicEnvironmentGrid" style="position: absolute"></div>
+                    <div id="dynamicEnvironmentGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--动力环境模板-->
@@ -177,13 +177,7 @@ function setDynamicEnvironmentGridDataSource(){
         pageSize: 20,
         schema: {
             model: {
-                id: "id",
-                fields: {
-                    id: { editable: false, nullable: true },
-                    environmentDataSource: {validation: { required: { message: "必填项" } }  },
-                    environmentUsername: {validation: { required: { message: "必填项" } }  },
-                    environmentPassword: { validation: { required: { message: "必填项" }} }
-                }
+                id: "id"
             }
         }
     });

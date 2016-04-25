@@ -1,11 +1,11 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmAlarmForm;
-import cn.edu.shou.monitor.domain.PredictMmAlarm;
+import cn.edu.shou.monitor.domain.predictMmAlarm;
 import cn.edu.shou.monitor.domain.predictMmEquipType;
+import cn.edu.shou.monitor.service.AlarmManagementRepository;
 import cn.edu.shou.monitor.service.EquipTypeRepository;
 import cn.edu.shou.monitor.service.ZbxTriggerRepository;
-import cn.edu.shou.monitor.service.AlarmManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,16 +30,16 @@ public class AlarmManagementApiController {
 
     //获取所有告警规则数据信息
     @RequestMapping(value = "/getAllAlarm")
-    public List<PredictMmAlarm> getAllAlarm(){
+    public List<predictMmAlarm> getAllAlarm(){
         return alarmManagementRepository.findAll();
     }
     //创建告警规则
     @RequestMapping(value = "/createAndUpdateAlarm",method = RequestMethod.GET)
-    public List<PredictMmAlarm> createSurveillancePro(predictMmAlarmForm alarmForm) {
+    public List<predictMmAlarm> createSurveillancePro(predictMmAlarmForm alarmForm) {
         long recordId=alarmForm.getId();//获取记录ID
-        PredictMmAlarm predictAlarm= null;
+        predictMmAlarm predictAlarm= null;
         if(recordId==0){
-            predictAlarm=new PredictMmAlarm();
+            predictAlarm=new predictMmAlarm();
 
         }else {
             predictAlarm=alarmManagementRepository.findOne(recordId);
@@ -104,17 +104,17 @@ public class AlarmManagementApiController {
             zbxTrigger.updTrigger(searchKey, alarmForm.getAlarmThreshold());
         }
         alarmManagementRepository.save(predictAlarm);
-        List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
+        List<predictMmAlarm> list=new ArrayList<predictMmAlarm>();
         list.add(predictAlarm);
         return list;
     }
 
     //删除告警规则
     @RequestMapping(value = "/deleteAlarm/{id}")
-    public List<PredictMmAlarm> deleteSurveillancePro(@PathVariable long id){
-        PredictMmAlarm predictAlarm = alarmManagementRepository.findOne(id);
+    public List<predictMmAlarm> deleteSurveillancePro(@PathVariable long id){
+        predictMmAlarm predictAlarm = alarmManagementRepository.findOne(id);
         alarmManagementRepository.delete(predictAlarm);
-        List<PredictMmAlarm> list=new ArrayList<PredictMmAlarm>();
+        List<predictMmAlarm> list=new ArrayList<predictMmAlarm>();
         list.add(predictAlarm);
         return list;
 

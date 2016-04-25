@@ -18,28 +18,47 @@ public class predictMmApplications extends BaseEntity {
     @Getter @Setter
     private String appGroup;//应用所在分组
     @Getter @Setter
-    private String applicationUser;//应用用户
-    @Getter @Setter
-    private String applicationServiceObject;//服务对象
+    private String applicationServiceObject;//服务对象    取到的值为id
     @Getter @Setter
     private String applicationHost;//所在主机
     @Getter @Setter
     private String hostContent;//添加所在主机内容
     @Getter @Setter
-    private String applicationNetName;//网络名称
-    @Getter @Setter
-    private String applicationIP;//应用IP
-    @Getter @Setter
-    private String applicationNetServiceObjectIP;//服务对象IP
-    @Getter @Setter
-    private String applicationMiddlewareName;//中间件名称
+    private String applicationMiddlewareName;//中间件   取到的值为id
     @Getter @Setter
     private String applicationRemark;//备注
     @Getter @Setter
-    private String hostName;
+    private String hostName;//所在主机名称
     @Getter @Setter
     private String hostid;
+    @Getter @Setter
+    private String keyApp; //重点应用
+    @Getter @Setter
+    private String  appState;//应用状态
 
+    public String getAppState() {
+        return appState;
+    }
+
+    public void setAppState(String appState) {
+        this.appState = appState;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public String getHostid() {
+        return hostid;
+    }
+
+    public void setHostid(String hostid) {
+        this.hostid = hostid;
+    }
 
     public String getApplicationName() {
         return applicationName;
@@ -49,13 +68,7 @@ public class predictMmApplications extends BaseEntity {
         this.applicationName = applicationName;
     }
 
-    public String getApplicationUser() {
-        return applicationUser;
-    }
 
-    public void setApplicationUser(String applicationUser) {
-        this.applicationUser = applicationUser;
-    }
 
     public String getApplicationServiceObject() {
         return applicationServiceObject;
@@ -73,29 +86,7 @@ public class predictMmApplications extends BaseEntity {
         this.applicationHost = applicationHost;
     }
 
-    public String getApplicationNetName() {
-        return applicationNetName;
-    }
 
-    public void setApplicationNetName(String applicationNetName) {
-        this.applicationNetName = applicationNetName;
-    }
-
-    public String getApplicationIP() {
-        return applicationIP;
-    }
-
-    public void setApplicationIP(String applicationIP) {
-        this.applicationIP = applicationIP;
-    }
-
-    public String getApplicationNetServiceObjectIP() {
-        return applicationNetServiceObjectIP;
-    }
-
-    public void setApplicationNetServiceObjectIP(String applicationNetServiceObjectIP) {
-        this.applicationNetServiceObjectIP = applicationNetServiceObjectIP;
-    }
 
     public String getApplicationMiddlewareName() {
         return applicationMiddlewareName;
@@ -129,19 +120,11 @@ public class predictMmApplications extends BaseEntity {
         this.appGroup = appGroup;
     }
 
-    public String getHostid() {
-        return hostid;
+    public String getKeyApp() {
+        return keyApp;
     }
 
-    public void setHostid(String hostid) {
-        this.hostid = hostid;
-    }
-
-    public String getHostName() {
-        return hostName;
-    }
-
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
+    public void setKeyApp(String keyApp) {
+        this.keyApp = keyApp;
     }
 }

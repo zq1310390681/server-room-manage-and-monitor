@@ -42,7 +42,7 @@ public class PingManagementController {
     {
         model.addAttribute("user", currentUser);
         model.addAttribute("pingHostname",hostname);
-        model.addAttribute("pingHostname",hostid);
+        model.addAttribute("hostid",hostid);
         return "pingShowView";
     }
 }

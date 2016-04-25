@@ -54,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="sqlserverGrid" style="position: absolute"></div>
+                    <div id="sqlserverGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--SQLserver数据库模板-->
@@ -138,7 +138,7 @@
 <!--[if IE]>
 <script src="/assets/js/jquery.1.10.2.min.js"></script>
 <![endif]-->
-
+<script src="/js/commonFunction.js"></script>
 <!--[if !IE]> -->
 
 <script type="text/javascript">
@@ -211,15 +211,7 @@ function setSqlserverGridDataSource(){
         pageSize: 20,
         schema: {
             model: {
-                id: "id",
-                fields: {
-                    id: { editable: false, nullable: true },
-                    middleName: {validation: { required: { message: "必填项" } }  },
-                    middleIP: {validation: { required: { message: "必填项" } }  },
-                    middleUserName: { validation: { required: { message: "必填项" }} },
-                    middlePassword: { validation: { required: { message: "必填项" }} },
-                    middleHost: { validation: { required: { message: "必填项" } } }
-                }
+                id: "id"
             }
         }
     });
@@ -237,16 +229,16 @@ function setSqlserverGrid(){
             {field:"middleIP",title:"SQLserver数据库IP"},
             {field:"middleUserName",title:"SQLserver数据库用户名"},
             {field:"middlePassword",title:"SQLserver数据库密码"},
-            {field:"middleHost",title:"SQLserver数据库所在主机",template:"#=getmiddleHost(middleHost)#"},
+            {field:"middleHost",title:"SQLserver数据库所在主机"},
             {field:"middleNote",title:"备注",hidden:true},
             { command: [
-               /* {name:"view",text:"查看",
+                {name:"view",text:"查看",
                     click:function(e){
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                        var url ="/predictCenter/getSqlserverViewInfo/"+dataItem.id+".html";
+                        var url ="/predictCenter/getSqlserverView/"+dataItem.id;
                         window.open(url);
                     }
-                }, */
+                },
                 {text: "编辑", click: showSqlserverModel },   //编辑窗体内容
                 { text: "删除",click:delSqlserverModel }    //删除记录
 
@@ -374,7 +366,7 @@ function showSqlserverModel(e) {
     $("#middlePassword").val(dataItem.middlePassword);    //SQLserver数据库密码
     /*声明为 下拉 输入框样式并赋值*/
     var middleHostDrop= $("#middleHost").data("kendoDropDownList");//SQLserver数据库所在主机
-    middleHostDrop.value(dataItem.middleHost);
+    middleHostDrop.text(dataItem.middleHost);
     sqlserverModelWnd.center().open();
 }
 //删除数据
@@ -429,7 +421,10 @@ function submitSqlserverModel(){
     var middlePasswordVal= $("#middlePassword").val();
     var middleHostVal= $("#middleHost").val();
     var middleNoteVal= $("#middleNote").val();
-
+    if(!validateIp(middleIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(middleNameVal==""||middleUserNameVal==""||middlePasswordVal==""||middleIPVal==""||middleHostVal==""){
         alert("带有红色标记的为必填项");
         return;

@@ -3,7 +3,6 @@ package cn.edu.shou.monitor.service;
 import cn.edu.shou.monitor.domain.PredictMmAlarmGrade;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

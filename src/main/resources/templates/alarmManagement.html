@@ -51,7 +51,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="alarmGrid" style="position: absolute"></div>
+                    <div id="alarmGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--alarm模板-->
@@ -237,7 +237,7 @@ function setAlarmGrid(){
             {field:"equipTypeElement",title:"告警设备要素",template:"#=getEquipTypeName(equipTypeElement)#"},
             {field:"alarmThreshold",title:"告警阈值(%)"},
            // {field:"alarmGrade",title:"告警等级",template:"#=getAlarmGradeById(alarmGrade)#"},
-            {field:"description",title:"告警信息"},
+            {field:"alarmInform",title:"告警信息"},
             {field:"alarmNote",title:"备注",hidden:true},
             { command: [
                 {name:"view",text:"查看",

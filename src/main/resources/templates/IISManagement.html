@@ -54,7 +54,7 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="iisGrid" style="position: absolute"></div>
+                    <div id="iisGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
             <!--IIS模板-->
@@ -153,6 +153,7 @@
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 <script src="/assets/js/typeahead-bs2.min.js"></script>
+<script src="/js/commonFunction.js"></script>
 
 <!-- page specific plugin scripts -->
 
@@ -222,14 +223,7 @@ function setIisGridDataSource(){
         pageSize: 20,
         schema: {
             model: {
-                id: "id",
-                fields: {
-                    id: { editable: false, nullable: true },
-                    middleName: {validation: { required: { message: "必填项" } }  },
-                    middleIP: {validation: { required: { message: "必填项" } }  },
-                    middleVersion: { validation: { required: { message: "必填项" }} },
-                    middleHost: { validation: { required: { message: "必填项" } } }
-                }
+                id: "id"
             }
         }
     });
@@ -244,10 +238,17 @@ function setIisGrid(){
         columns:[
             {field:"middleName",title:"IIS名称"},
             {field:"middleIP",title:"IIS IP"},
-            {field:"middleVersion",title:"IIS版本信息",template:"#=getmiddleVersion(middleVersion)#"},
-            {field:"middleHost",title:"IIS所在主机",template:"#=getmiddleHost(middleHost)#"},
+            {field:"middleVersion",title:"IIS版本信息"},
+            {field:"middleHost",title:"IIS所在主机"},
             {field:"middleNote",title:"备注",hidden:true},
             { command: [
+                {name:"view",text:"查看",
+                    click:function(e) {
+                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        var url = "/predictCenter/getIISView/" + dataItem.id + ".html";
+                        window.open(url);
+                    }
+                },
                 {text: "编辑", click: showIisModel },   //编辑窗体内容
                 { text: "删除",click:delIisModel }    //删除记录
 
@@ -387,9 +388,9 @@ function showIisModel(e) {
 
     /*声明为 下拉 输入框样式并赋值*/
     var middleVersionDrop= $("#middleVersion").data("kendoDropDownList");//IIS版本信息
-    middleVersionDrop.value(dataItem.middleVersion);
+    middleVersionDrop.text(dataItem.middleVersion);
     var middleHostDrop= $("#middleHost").data("kendoDropDownList");//IIS所在主机
-    middleHostDrop.value(dataItem.middleHost);
+    middleHostDrop.text(dataItem.middleHost);
     iisModelWnd.center().open();
 }
 //删除数据
@@ -442,7 +443,10 @@ function submitIisModel(){
     var middleVersionVal= $("#middleVersion").val();
     var middleHostVal= $("#middleHost").val();
     var middleNoteVal= $("#middleNote").val();
-
+    if(!validateIp(middleIPVal)){
+        alert("IP地址格式不正确！");
+        return;
+    }
     if(middleNameVal==""||middleVersionVal==""||middleIPVal==""||middleHostVal==""){
         alert("带有红色标记的为必填项");
         return;
@@ -460,6 +464,7 @@ function submitIisModel(){
         submitIisModelAjax(crudIISBaseUrl + "/createAndUpdateMiddle",submitIisModelData);
     }
 }
+
 //提交数据至后台
 function submitIisModelAjax(submitURL,objData){
     $.ajax({

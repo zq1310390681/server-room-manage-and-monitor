@@ -6,14 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
-import java.util.Locale;
 
 /**
  * Created by sqhe18 on 2016/3/27.
  */
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class predictMmServiceObjectAndApplication extends BaseEntity{
+public class predictMmServiceObjectAndApplication extends BaseEntity {
     @Getter @Setter
     private String serviceObjectId;//服务对象的ID
     @Getter @Setter
