@@ -1,45 +1,31 @@
-package cn.edu.shou.monitor.web.api;
+package cn.edu.shou.monitor.util;
 
-/**
- * Created by seky on 16/4/22.
- */
-
-import cn.edu.shou.monitor.service.ApplicationManagementRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 导出
- *
- * @param file csv文件(路径+文件名)，csv文件不存在会自动创建
- * @param dataList 数据
- * @return
+ * Created by light on 2016/4/25.
  */
-@RestController
-@RequestMapping(value ="/predictCenter/api/")
+/**
+ * CSV操作(导出和导入)
+ *
+ * @author 林计钦
+ * @version 1.0 Jan 27, 2014 4:30:58 PM
+ */
 public class CSVUtils {
-    @Autowired
-    ApplicationManagementRepository applicationManagementRepository;
-    @RequestMapping(value = "/exportCsv")
-    public boolean exCSV(){
-        //获取数据
-        List<Object> dataList=new ArrayList<Object>();
-
-        boolean isSuccess=exportCsv(new File("C:/Users/sqhe18/Desktop/qianqian.csv"), dataList);
-        System.out.println(isSuccess);
-        return true;
-    }
-
 
     //导出
-    public  boolean exportCsv(File file, List<Object> dataList){
+    public boolean exportCsv(File file, String fieldNames,List<Object> dataList){
         boolean isSucess=false;
-
         FileOutputStream out=null;
         OutputStreamWriter osw=null;
         BufferedWriter bw=null;
@@ -51,7 +37,7 @@ public class CSVUtils {
             //bw =new BufferedWriter(osw);
             bw =new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
             bw.write("\uFEFF");
-            bw.write("编号,姓名,性别\r\n");
+            bw.write(fieldNames+"\r\n");
             if(dataList!=null && !dataList.isEmpty()){
                 for(Object data : dataList){
                     bw.append(data.toString()).append("\r\n");

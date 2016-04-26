@@ -1,7 +1,8 @@
 package cn.edu.shou.monitor.transmission;
 
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
-import org.apache.commons.logging.Log;
+import cn.edu.shou.monitor.service.ZbxHostRepository;
+import cn.edu.shou.monitor.tool.SmsSend;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created by light on 2016/3/20.
@@ -21,6 +22,11 @@ import java.util.Date;
 @RestController
 @RequestMapping(value = "/predictCenter/screen")
 public class Schedule {
+    @Autowired
+    ZbxHostRepository zbxHost;
+    @Autowired
+    PhoneMessage phoneMessage;
+
     private static Logger log = Logger.getLogger(Schedule.class);
 
     //@Scheduled(fixedRate = 5000)       //perf 的队列
@@ -39,6 +45,20 @@ public class Schedule {
             MQEvent testEvent = new MQEvent();
             String eventMQ = testEvent.showEvent(hostIdSingle);
             MQSendMessage.sendMessages(eventMQ, "event");
+        }
+    }
+
+//    @Scheduled(fixedRate = 1000 * 60 * 20)
+    @RequestMapping(value = "/sendSms")
+    public void sendSms(){
+        List<String> hostidArr = new ArrayList<>();
+        hostidArr = zbxHost.getHostid();
+        SmsSend send = new SmsSend();
+        for(String hostid : hostidArr){
+            String content = phoneMessage.sendMessage(hostid);
+            if(!(content == null || content.length() <= 0)) {
+                send.sendMessage("13003269434", content);
+            }
         }
     }
 

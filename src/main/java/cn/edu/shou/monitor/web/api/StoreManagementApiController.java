@@ -45,6 +45,7 @@ public class StoreManagementApiController {
         predictStore.setStoreEquipmentCabinet(storesForm.getStoreEquipmentCabinet());
         predictStore.setStoreU(storesForm.getStoreU());
         predictStore.setStoreRemark(storesForm.getStoreRemark());
+        predictStore.setSMSName("存储设备");
 
 //        StoreManagementRepository.save(predictStore);
 //        List<predictMmStores> list=new ArrayList<predictMmStores>();
@@ -61,6 +62,8 @@ public class StoreManagementApiController {
                 list.add(predictStore);
                 return list;
             }else {
+                StoreManagementRepository.save(predictStore);
+                list.add(predictStore);
                 return list;
             }
         }

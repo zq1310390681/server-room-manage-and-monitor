@@ -41,6 +41,7 @@ public class PingManagementApiController {
         predictPing.setOneIP(pingForm.getOneIP());
         predictPing.setTwoIP(pingForm.getTwoIP());
         predictPing.setPingNote(pingForm.getPingNote());
+        predictPing.setSMSName("网络监控");
 
         String createResult=null;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
@@ -54,6 +55,8 @@ public class PingManagementApiController {
                 list.add(predictPing);
                 return list;
             }else {
+                PingManagementRepository.save(predictPing);
+                list.add(predictPing);
                 return list;
             }
         }

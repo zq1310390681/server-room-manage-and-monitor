@@ -41,6 +41,16 @@ public class predictMmHost extends BaseEntity {
     private String zbxHostname;
     @Getter  @Setter
     private String  hostState;//主机状态
+    @Getter @Setter
+    private String  SMSName; //
+
+    public String getSMSName() {
+        return SMSName;
+    }
+
+    public void setSMSName(String SMSName) {
+        this.SMSName = SMSName;
+    }
 
     public String getHostState() {
         return hostState;

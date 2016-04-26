@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +68,7 @@ public class ZbxTriggerRepository {
         int a = expression.indexOf("}");
         String operator = expression.substring(a+1,a+2); //得到运算符
 
+        List<String> str = new ArrayList<>();
         for(Map<String,Object> map : list){
             String expressionOld = map.get("expression").toString();
             String thresholdOld = expressionOld.substring(a+2,expressionOld.length());
@@ -73,7 +76,10 @@ public class ZbxTriggerRepository {
             map.put("expression",expressionNew);
             String triggerid = map.get("triggerid").toString();
             String updTriggers = "update triggers set expression = '"+ expressionNew + "' where triggerid =" + triggerid + ";\n";
-            jdbc.update(updTriggers);
+            str.add(updTriggers);
+//            jdbc.update(updTriggers);
         }
+        String[] sql = str.toArray(new String[str.size()]);
+        jdbc.batchUpdate(sql);
     }
 }

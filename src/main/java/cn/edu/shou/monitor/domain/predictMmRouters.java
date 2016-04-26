@@ -41,6 +41,16 @@ public class predictMmRouters extends BaseEntity {
     private String routerRemark;//备注
     @Getter @Setter
     private String hostId;
+    @Getter @Setter
+    private String  SMSName; //
+
+    public String getSMSName() {
+        return SMSName;
+    }
+
+    public void setSMSName(String SMSName) {
+        this.SMSName = SMSName;
+    }
 
     public String getRouterSN() {
         return routerSN;

@@ -47,6 +47,16 @@ public class predictMmServers extends BaseEntity {
     private String serverApp;//应用名称
     @Getter @Setter
     private String  serverKvm; //服务器KVM
+    @Getter @Setter
+    private String  SMSName; //
+
+    public String getSMSName() {
+        return SMSName;
+    }
+
+    public void setSMSName(String SMSName) {
+        this.SMSName = SMSName;
+    }
 
     public String getServerKvm() {
         return serverKvm;
@@ -183,4 +193,6 @@ public class predictMmServers extends BaseEntity {
     public void setServerApp(String serverApp) {
         this.serverApp = serverApp;
     }
+
+
 }

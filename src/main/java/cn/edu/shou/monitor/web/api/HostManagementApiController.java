@@ -105,6 +105,7 @@ public class HostManagementApiController {
         predictHost.setHostUserName(hostForm.getHostUserName());
         predictHost.setOperational(hostForm.getOperational());
         predictHost.setVmwareUserName(hostForm.getVmwareUserName());
+        predictHost.setSMSName("服务器操作系统");
 
         String zbxHostname = ChineseCharToAbc.getPinYin(hostForm.getHosts());
         predictHost.setZbxHostname(zbxHostname);
@@ -122,6 +123,8 @@ public class HostManagementApiController {
                 list.add(predictHost);
                 return list;
             } else {
+                hostManagementRepository.save(predictHost);
+                list.add(predictHost);
                 return list;
             }
         }

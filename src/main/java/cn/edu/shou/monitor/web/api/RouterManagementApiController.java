@@ -49,6 +49,7 @@ public class RouterManagementApiController {
         predictRouter.setRouterEquipmentCabinet(routersForm.getRouterEquipmentCabinet());
         predictRouter.setRouterU(routersForm.getRouterU());
         predictRouter.setRouterRemark(routersForm.getRouterRemark());
+        predictRouter.setSMSName("路由器");
 
         String createResult=null;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
@@ -62,6 +63,8 @@ public class RouterManagementApiController {
                 list.add(predictRouter);
                 return list;
             }else {
+                routerManagementRepository.save(predictRouter);
+                list.add(predictRouter);
                 return list;
             }
         }

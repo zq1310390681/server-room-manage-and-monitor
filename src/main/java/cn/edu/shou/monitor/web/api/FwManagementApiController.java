@@ -45,6 +45,7 @@ public class FwManagementApiController {
         predictFw.setFwSNMP(fwsForm.getFwSNMP());
         predictFw.setFwPort(fwsForm.getFwPort());
         predictFw.setFwRemark(fwsForm.getFwRemark());
+        predictFw.setSMSName("防火墙");
 
         String createResult=null;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
@@ -58,6 +59,8 @@ public class FwManagementApiController {
                 list.add(predictFw);
                 return list;
             }else {
+                FwManagementRepository.save(predictFw);
+                list.add(predictFw);
                 return list;
             }
         }

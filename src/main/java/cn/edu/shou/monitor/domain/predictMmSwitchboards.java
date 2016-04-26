@@ -39,6 +39,16 @@ public class predictMmSwitchboards extends BaseEntity {
     private String switchboardU;//所在U
     @Getter @Setter
     private String switchboardRemark;//备注
+    @Getter @Setter
+    private String  SMSName; //
+
+    public String getSMSName() {
+        return SMSName;
+    }
+
+    public void setSMSName(String SMSName) {
+        this.SMSName = SMSName;
+    }
 
     public String getSwitchboardSN() {
         return switchboardSN;

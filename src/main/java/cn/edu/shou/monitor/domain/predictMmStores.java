@@ -35,6 +35,16 @@ public class predictMmStores extends BaseEntity {
     private String storeU;//所在U
     @Getter @Setter
     private String storeRemark;//备注
+    @Getter @Setter
+    private String  SMSName; //
+
+    public String getSMSName() {
+        return SMSName;
+    }
+
+    public void setSMSName(String SMSName) {
+        this.SMSName = SMSName;
+    }
 
     public String getStoreSN() {
         return storeSN;

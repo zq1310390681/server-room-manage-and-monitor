@@ -90,7 +90,7 @@ public class AlarmManagementApiController {
 //        return list;
 
 
-        // 有错误，先用着
+
         predictAlarm.setEquipTypeName(alarmForm.getEquipTypeName()); //设备名称的id
         predictAlarm.setEquipTypeElement(alarmForm.getEquipTypeElement());//告警设备监控要素 id
         predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值

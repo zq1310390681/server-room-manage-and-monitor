@@ -35,15 +35,21 @@ public class PhoneMessage {
             String priority = result.getJSONObject(0).getString("priority");
             String selectSqlName = "SELECT hosts FROM predict.zbx_hosts where host_id = '"+ hostid+"';";
             String selectSqlDesc = "SELECT desc_zh FROM predict.alarm_description where desc_en = '"+ description+"';";
+            String sqlType = "SELECT SMS_name FROM zbx_hosts_sms where host_id = '"+ hostid+"';";
 
             List<Map<String,Object>> listName = new ArrayList<Map<String,Object>>();
             listName = jdbcTemplate.queryForList(selectSqlName);
             String name = listName.get(0).get("hosts").toString();
 
-            List<Map<String,Object>> listdesc = new ArrayList<Map<String,Object>>();
-            listdesc = jdbcTemplate.queryForList(selectSqlDesc);
-            String desc_zh = listdesc.get(0).get("desc_zh").toString();
-            content = "机房主机出现报警，请尽快处理。详细信息为：主机编号：" + name + ",报警内容: "+ desc_zh + ",警报等级"+ priority+"。";
+            List<Map<String,Object>> listDesc = new ArrayList<Map<String,Object>>();
+            listDesc = jdbcTemplate.queryForList(selectSqlDesc);
+            String desc_zh = listDesc.get(0).get("desc_zh").toString();
+
+            List<Map<String,Object>> listType = new ArrayList<Map<String,Object>>();
+            listType = jdbcTemplate.queryForList(sqlType);
+            String type = listType.get(0).get("SMS_name").toString();
+
+            content = "机房主机出现报警，请尽快处理。详细信息为："+ type +"编号：" + name + ",报警内容: "+ desc_zh + ",警报等级"+ priority+"。";
         }
         return content;
     }
