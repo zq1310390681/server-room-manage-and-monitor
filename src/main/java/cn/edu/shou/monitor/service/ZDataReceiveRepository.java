@@ -17,22 +17,20 @@ public class ZDataReceiveRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    static final String RADAR_SQL = "SELECT common_radar.name,common_radar.time,common_radar.quantity,radar_quantity.day_quantity\n" +
+    static final String RADAR_SQL = "SELECT common_radar.name,common_radar.time,common_radar.quantity,radar_quantity.day_quantity,common_radar.parent_name\n" +
             "from common_radar,radar_quantity where common_radar.name = radar_quantity.name;";
-    static final String XRADAR_SQL = "SELECT xradar.name,xradar.time,xradar.quantity,xradar_quantity.day_quantity from xradar,xradar_quantity\n" +
+    static final String XRADAR_SQL = "SELECT xradar.name,xradar.time,xradar.quantity,xradar_quantity.day_quantity,xradar.parent_name from xradar,xradar_quantity\n" +
             "where xradar.name = xradar_quantity.name and xradar.time != '--';";
     static final String VOS_SQL = "SELECT single_vos.name,single_vos.time,single_vos.quantity,vos_quantity.day_quantity from single_vos,vos_quantity\n" +
             "where single_vos.name = vos_quantity.name and single_vos.time != '--';";
     static final String BUOY_SQL = "SELECT buoy.name,buoy.time,buoy.quantity,buoy_quantity.day_quantity from buoy,buoy_quantity\n" +
             "where buoy.name = buoy_quantity.buoy_name and buoy.time != '--';";
-    static final String STA_REAL_SQL = "SELECT sea_station.name,sea_station.real_time,sea_station.real_quantity as quantity,sea_quantity.real\n" +
+    static final String STA_REAL_SQL = "SELECT sea_station.name,sea_station.real_time,sea_station.real_quantity as quantity,sea_quantity.real,sea_station.parent_name\n" +
             "from sea_station,sea_quantity where sea_station.name = sea_quantity.name and sea_station.real_time != '--';";
-    static final String STA_HOURLY_SQL = "SELECT sea_station.name,sea_station.hourly_time,sea_station.hourly_quantity as quantity,sea_quantity.hourly from sea_station,sea_quantity \n" +
-            "where sea_station.name = sea_quantity.name and sea_station.real_time != '--';";
-    static final String STA_PUN_SQL = "SELECT sea_station.name,sea_station.pun_time,sea_station.pun_quantity as quantity,sea_quantity.pun \n" +
-            "from sea_station,sea_quantity where sea_station.name = sea_quantity.name and sea_station.real_time != '--';";
-
-
+    static final String STA_HOURLY_SQL = "SELECT sea_station.name,sea_station.hourly_time,sea_station.hourly_quantity as quantity,sea_quantity.hourly,sea_station.parent_name " +
+            "from sea_station,sea_quantity where sea_station.name = sea_quantity.name and sea_station.hourly_time != '--';";
+    static final String STA_PUN_SQL = "SELECT sea_station.name,sea_station.pun_time,sea_station.pun_quantity as quantity,sea_quantity.pun,sea_station.parent_name \n" +
+            "from sea_station,sea_quantity where sea_station.name = sea_quantity.name and sea_station.pun_time != '--';";
 
     @TargetDataSource(name = "webdata")
     public List<Map<String,Object>> checkNum(String selectSql){

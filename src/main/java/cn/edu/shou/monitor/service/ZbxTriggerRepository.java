@@ -65,14 +65,14 @@ public class ZbxTriggerRepository {
         }
         List<Map<String,Object>> list = jdbc.queryForList(triggerSql);
         String expression = list.get(1).get("expression").toString(); // 因为是一个模版出来的，所有操作符都一样
-        int a = expression.indexOf("}");
+        int a = expression.lastIndexOf("}");
         String operator = expression.substring(a+1,a+2); //得到运算符
 
         List<String> str = new ArrayList<>();
         for(Map<String,Object> map : list){
             String expressionOld = map.get("expression").toString();
             String thresholdOld = expressionOld.substring(a+2,expressionOld.length());
-            String expressionNew = expressionOld.replace(operator+thresholdOld,operator+thresholdNew);
+            String expressionNew = expressionOld.replace(operator+thresholdOld,operator + thresholdNew);
             map.put("expression",expressionNew);
             String triggerid = map.get("triggerid").toString();
             String updTriggers = "update triggers set expression = '"+ expressionNew + "' where triggerid =" + triggerid + ";\n";

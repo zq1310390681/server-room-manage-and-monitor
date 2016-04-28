@@ -20,7 +20,6 @@ public class ZDataReceiveApiController {
     @Autowired
     ZDataReceiveRepository receive;
 
-
     @RequestMapping(value = "/radar")
     public List<Map<String,Object>> getRadar(){
         List<Map<String,Object>> list;
