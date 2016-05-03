@@ -3,17 +3,21 @@ package cn.edu.shou.monitor.transmission;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by light on 2016/3/29.
  */
+@Repository
 public class SuComputerScreen {
     /**
      * 利用JSch包实现远程主机SHELL命令执行
@@ -24,9 +28,12 @@ public class SuComputerScreen {
      * @param privateKey 密钥文件路径
      * @param passphrase 密钥的密码
      */
+
+    @Autowired
+    JdbcTemplate jdbc;
+
     public  String sshShell(String ip, String user, String psw
             ,int port ,String privateKey ,String passphrase,String command) throws Exception{
-
         String shellString = null;
         Session session = null;
         Channel channel = null;
@@ -107,13 +114,16 @@ public class SuComputerScreen {
         return shellOutput;
     }
 
-    public static String sendSuComputer(String command) throws Exception{
+
+    public  String sendSuComputer(String command) throws Exception{
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         SuComputerScreen superComputer = new SuComputerScreen();
-        List<String> line = new ArrayList<String>();
         List<String> result = new ArrayList<String>();
+        String[] title = {"JobID","Name","User","Time","Use","S","Queue"};
 
-        if(command.equals("qstat \\n")){
+        if(command.equals("qstat \n")){
+            JSONArray array = new JSONArray();
+            JSONObject superCom = new JSONObject();
             String shellResult = superComputer.sshShell("192.168.9.27", "test", "test123", -1, "", "",command); //"qstat \n"; "pbsnodes \n"
             String[] tempArray = shellResult.split("\n");
             result.addAll(Arrays.asList(tempArray));
@@ -121,45 +131,58 @@ public class SuComputerScreen {
                 for(String rs : result){
                     if(rs.substring(0, 1).matches("[0-9]")){
                         rs=rs.replaceAll("\\s+", ",");
-                        line.add(rs.substring(0,rs.length()-1));
+                        String[] temp = rs.substring(0,rs.length()-1).split(",");
+                        for(int i=0;i<temp.length;i++){
+                            if(title[i].equals("Name")){
+                                String temps = "ECSWFSs";
+                                String sql = "SELECT name_zh FROM super_computer WHERE abbr like '%"+ temps + "%';";
+                                Map map = jdbc.queryForMap(sql);
+                                if(map.size()>0){
+                                    superCom.put(title[i], map.get("name_zh"));
+                                }else{
+                                    superCom.put(title[i], temp[i]);
+                                }
+                            }else {
+                                superCom.put(title[i], temp[i]);
+                            }
+                        }
+                        array.put(superCom);
                     }
                 }
             }
-            return line.toString();
+            return array.toString();
         }
 
         if(command.equals("pbsnodes \n")){
             String shellResult = superComputer.sshShell("192.168.9.27", "test", "test123", -1, "", "",command); //"qstat \n"; "pbsnodes \n"
-            String[] tempArray = shellResult.split("\n\n");
+            String[] tempArray = shellResult.split("\r\n\r\n");
             result.addAll(Arrays.asList(tempArray));
             for(int i= 0;i<result.size();i++){
                 String str = result.get(i);
                 String sub = str.substring(0,5);
-                if(sub.equals("admin")||sub.equals("login")){
+                if(!sub.equals("comput")){
                     result.remove(i);
                 }
             }
 
-            List<List<String>> info = new ArrayList<>();
+            JSONArray superCom = new JSONArray();
             for(String str:result){
-                List<String> inner = new ArrayList<>();
+                JSONObject su = new JSONObject();
                 String computTemp = str.substring(str.indexOf("comput"),str.indexOf("state")).replace("\n","").replace(" ","");
-                String comput = "comput="+computTemp;
-                inner.add(comput);
-                String state = str.substring(str.indexOf("state"),str.indexOf("np")).replace("\n","").replace(" ","");
-                inner.add(state);
-                String loadave = str.substring(str.indexOf("loadave"), str.indexOf(",ncpus"));
-                inner.add(loadave);
+                su.put("computNodes",computTemp);
+                String state = str.substring(str.indexOf("state")+7,str.indexOf("np")).replace("\n","").replace(" ","");
+                su.put("state", state);
+                String loadave = str.substring(str.indexOf("loadave") + 8, str.indexOf(",ncpus"));
+                su.put("loadave", loadave);
                 String availmem = str.substring(str.indexOf("availmem=")+9, str.indexOf("kb,totmem"));
                 String totmem = str.substring(str.indexOf("totmem=")+7, str.indexOf("kb,idletime"));
                 double memTemp = 100*Double.valueOf(availmem)/Double.valueOf(totmem);
                 String memTemp1 = decimalFormat.format(memTemp);
-                String freeMem = "freeMem="+memTemp1;
-                inner.add(freeMem);
-                info.add(inner);
+                su.put("freeMem",memTemp1);
+                superCom.put(su);
             }
-            System.out.println(info.toString().replace("=",":"));
-            return info.toString().replace("=",":");
+            System.out.printf(superCom.toString());
+            return superCom.toString();
         }else{
             return null;
         }

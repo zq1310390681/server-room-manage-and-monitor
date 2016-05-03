@@ -213,9 +213,9 @@ public class FrontScreen {
     //获取cpu，内存，存储联合查询函数
     public JSONObject getUnionUsage(String type,String hostIds){
         String searchStr="";
-        if (type=="memory"){//内存
+        if (type.equals("memory")){//内存
             searchStr="vm.memory.size";
-        }else if(type=="cpu"){//cpu
+        }else if(type.equals("cpu")){//cpu
             searchStr="[percpu,avg15]";
         }else {//disk
             searchStr=",pfree";

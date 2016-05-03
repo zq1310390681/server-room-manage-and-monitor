@@ -26,6 +26,9 @@ public class Schedule {
     ZbxHostRepository zbxHost;
     @Autowired
     PhoneMessage phoneMessage;
+    @Autowired
+    SuComputerScreen superComputer;
+
 
     private static Logger log = Logger.getLogger(Schedule.class);
 
@@ -135,11 +138,11 @@ public class Schedule {
 
     @RequestMapping(value = "/superComputerShort")
     public String sendScDataShort() throws Exception{
-        return SuComputerScreen.sendSuComputer("qstat \n");
+        return superComputer.sendSuComputer("qstat \n");
     }
 
     @RequestMapping(value = "/superComputerLong")
     public String sendScDataLong() throws Exception{
-        return SuComputerScreen.sendSuComputer("pbsnodes \n");
+        return superComputer.sendSuComputer("pbsnodes \n");
     }
 }

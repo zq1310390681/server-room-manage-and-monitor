@@ -83,4 +83,11 @@ public class ZDataReceiveApiController {
         return receiveRate.toString();
     }
 
+    @RequestMapping(value = "/seaStation")
+    public String getSeaStationNum(){
+        receive.updStationNum();
+        return "success";
+        }
+
+
 }

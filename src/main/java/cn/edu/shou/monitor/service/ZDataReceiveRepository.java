@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by light on 2016/4/4.
@@ -64,8 +61,8 @@ public class ZDataReceiveRepository {
             sumQuantity = qutyGot + sumQuantity;
         }
         Map<String,Object> sumCheck = new HashMap<String,Object>();
-        sumCheck.put("sumCheckNum",sumCheckNum);
-        sumCheck.put("sumQuantity",sumQuantity);
+        sumCheck.put("sumCheckNum",sumCheckNum);  //分子
+        sumCheck.put("sumQuantity",sumQuantity);  //分母
         list.add(0,sumCheck);  //固定第0位为sumCheck
         return list;
     }
@@ -154,4 +151,40 @@ public class ZDataReceiveRepository {
         }
     }
 
+    // 定时执行
+    @TargetDataSource(name = "webdata")
+    public  void updStationNum(){
+        String selectSql = "SELECT sum(real_quantity) as sum_sta, parent_name FROM webdata.sea_station group by parent_name;";
+        List<Map<String,Object>> allStaNum = new ArrayList<Map<String,Object>>();
+        allStaNum = jdbcTemplate.queryForList(selectSql);
+
+        if(allStaNum.size()>0) {
+            String[] stationName = {"南通", "上海", "宁波", "温州", "宁德", "厦门"};
+            Date date = new Date();
+            int hour = date.getHours();
+            for (Map map : allStaNum) {
+                for (String name : stationName) {
+                    if (map.toString().contains(name)) {
+                        String updSql = "UPDATE center_station SET quantity = '" + map.get("sum_sta") + "' WHERE station_name = '" + name + "'and hour =" + hour + ";";
+                        jdbcTemplate.update(updSql);
+                    }
+                }
+            }
+        }
+    }
+
+    @TargetDataSource(name = "webdata")
+    public void getStationNum(){
+        Date date = new Date();
+        String sql = "SELECT sum(quantity), center_station FROM center_station where hour <= "+ date.getHours() +"group by center_station;";
+    }
+
+
+    public void getSeaStaNum(){
+        //sql sea station
+        String real_quantity = "";
+        //sql sea quantity
+        //compare last and real quantity
+        //update
+    }
 }

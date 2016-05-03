@@ -1,6 +1,5 @@
 package cn.edu.shou.monitor.transmission;
 
-import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import cn.edu.shou.monitor.service.impl.ZbxTriggerServiceImpl;
 import cn.edu.shou.monitor.spring.TargetDataSource;
 import org.json.JSONArray;
@@ -8,7 +7,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
