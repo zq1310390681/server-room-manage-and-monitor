@@ -2,17 +2,21 @@ package cn.edu.shou.monitor.transmission;
 
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import cn.edu.shou.monitor.service.ZbxHostRepository;
+import cn.edu.shou.monitor.spring.TargetDataSource;
 import cn.edu.shou.monitor.tool.SmsSend;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by light on 2016/3/20.
@@ -27,7 +31,7 @@ public class Schedule {
     @Autowired
     PhoneMessage phoneMessage;
     @Autowired
-    SuComputerScreen superComputer;
+    JdbcTemplate jdbcTemplate;
 
 
     private static Logger log = Logger.getLogger(Schedule.class);
@@ -136,13 +140,25 @@ public class Schedule {
         return FrontScreen.sendPutNet("output");
     }
 
-    @RequestMapping(value = "/superComputerShort")
-    public String sendScDataShort() throws Exception{
-        return superComputer.sendSuComputer("qstat \n");
-    }
 
-    @RequestMapping(value = "/superComputerLong")
-    public String sendScDataLong() throws Exception{
-        return superComputer.sendSuComputer("pbsnodes \n");
-    }
+    @TargetDataSource(name = "webdata")
+        public  void updStationNum(){
+            String selectSql = "SELECT sum(real_quantity) as sum_sta, parent_name FROM webdata.sea_station group by parent_name;";
+            List<Map<String,Object>> allStaNum = new ArrayList<Map<String,Object>>();
+            allStaNum = jdbcTemplate.queryForList(selectSql);
+
+            if(allStaNum.size()>0) {
+                String[] stationName = {"南通", "上海", "宁波", "温州", "宁德", "厦门"};
+                Calendar cal = Calendar.getInstance();
+                int hour=cal.get(Calendar.HOUR);
+                for (Map map : allStaNum) {
+                    for (String name : stationName) {
+                        if (map.toString().contains(name)) {
+                            String updSql = "UPDATE center_station SET quantity = '" + map.get("sum_sta") + "' WHERE station_name = '" + name + "'and hour =" + hour + ";";
+                            jdbcTemplate.update(updSql);
+                        }
+                    }
+                }
+            }
+        }
 }

@@ -1,4 +1,4 @@
-package cn.edu.shou.monitor.transmission;
+package cn.edu.shou.monitor.service;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
@@ -12,13 +12,16 @@ import org.springframework.stereotype.Repository;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by light on 2016/3/29.
+ * Created by light on 2016/5/4.
  */
 @Repository
-public class SuComputerScreen {
+public class ZSuperComputer {
     /**
      * 利用JSch包实现远程主机SHELL命令执行
      * @param ip 主机IP
@@ -117,7 +120,7 @@ public class SuComputerScreen {
 
     public  String sendSuComputer(String command) throws Exception{
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        SuComputerScreen superComputer = new SuComputerScreen();
+        ZSuperComputer superComputer = new ZSuperComputer();
         List<String> result = new ArrayList<String>();
         String[] title = {"JobID","Name","User","Time","Use","S","Queue"};
 
@@ -136,8 +139,8 @@ public class SuComputerScreen {
                             if(title[i].equals("Name")){
                                 String temps = "ECSWFSs";
                                 String sql = "SELECT name_zh FROM super_computer WHERE abbr like '%"+ temps + "%';";
-                                Map map = jdbc.queryForMap(sql);
-                                if(map.size()>0){
+                                if(jdbc.queryForList(sql).size()>0){
+                                    Map map = jdbc.queryForMap(sql);
                                     superCom.put(title[i], map.get("name_zh"));
                                 }else{
                                     superCom.put(title[i], temp[i]);
@@ -150,7 +153,7 @@ public class SuComputerScreen {
                     }
                 }
             }
-            return array.toString();
+            return array.toString().replace("\r","");
         }
 
         if(command.equals("pbsnodes \n")){
@@ -159,9 +162,10 @@ public class SuComputerScreen {
             result.addAll(Arrays.asList(tempArray));
             for(int i= 0;i<result.size();i++){
                 String str = result.get(i);
-                String sub = str.substring(0,5);
+                String sub = str.substring(0,6);
                 if(!sub.equals("comput")){
                     result.remove(i);
+                    --i;
                 }
             }
 
@@ -181,8 +185,7 @@ public class SuComputerScreen {
                 su.put("freeMem",memTemp1);
                 superCom.put(su);
             }
-            System.out.printf(superCom.toString());
-            return superCom.toString();
+            return superCom.toString().replace("\\r","");
         }else{
             return null;
         }

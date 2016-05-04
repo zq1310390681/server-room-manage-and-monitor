@@ -66,14 +66,15 @@ public class ZDataReceiveApiController {
         check.add(receive.checkSeaNum("seaReal"));
         check.add(receive.checkSeaNum("seaHourly"));
         check.add(receive.checkSeaNum("seaPun"));
+//        check.add(receive.getStationNum());   //正式上线用这个
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         String rate;
         double quantitySum =0;
         double checkSum=0;
         for(List<Map<String,Object>> list : check){
-            double a = Double.valueOf(list.get(0).get("sumQuantity").toString()); //固定第一位为check
-            double b = Double.valueOf(list.get(0).get("sumCheckNum").toString());
+            double a = Double.valueOf(list.get(0).get("fenzi").toString()); //固定第一位为check
+            double b = Double.valueOf(list.get(0).get("fenmu").toString());
             quantitySum = quantitySum + a;
             checkSum = checkSum + b;
         }
@@ -89,5 +90,15 @@ public class ZDataReceiveApiController {
         return "success";
         }
 
+    @RequestMapping(value = "/network")
+    public String sendNetwork(){
+        receive.updSeaStaNum();
+        return "success";
+    }
+
+    @RequestMapping(value = "/stationSum")
+    public List<Map<String,Object>> sendStationSum(){
+        return receive.getStationNum();
+    }
 
 }
