@@ -22,7 +22,6 @@ public class ZDataReceiveApiController {
 
     @RequestMapping(value = "/radar")
     public List<Map<String,Object>> getRadar(){
-        List<Map<String,Object>> list;
         return receive.checkNum("radar");
     }
 
@@ -101,4 +100,15 @@ public class ZDataReceiveApiController {
         return receive.getStationNum();
     }
 
+    @RequestMapping(value = "/stationAndRadar")
+    public JSONObject sendStationAndRadar(){
+        JSONObject together = new JSONObject();
+        List<Map<String,Object>> sta = receive.getStationNum();
+        List<Map<String,Object>> rd = receive.checkNum("radar");
+        List<Map<String,Object>> xrd = receive.checkNum("xradar");
+        together.put("station",sta);
+        together.put("radar",rd);
+        together.put("xradar",xrd);
+        return together;
+    }
 }
