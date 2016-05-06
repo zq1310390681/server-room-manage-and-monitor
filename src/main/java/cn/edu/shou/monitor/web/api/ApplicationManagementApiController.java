@@ -6,7 +6,6 @@ import cn.edu.shou.monitor.domain.predictMmHost;
 import cn.edu.shou.monitor.domain.predictMmServers;
 import cn.edu.shou.monitor.domain.predictMmServiceObjectAndApplication;
 import cn.edu.shou.monitor.service.*;
-import cn.edu.shou.monitor.transmission.MQAsset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +40,8 @@ public class ApplicationManagementApiController {
     MiddleRepository middleRepository;
     @Autowired
     CsvUtilRepository csvUtilRepository;
+    @Autowired
+    ZActiveMQRepository activeMq;
 
 
     //获取所有应用数据信息
@@ -145,7 +146,6 @@ public class ApplicationManagementApiController {
         SoAndAppRepository.save(predictSoAndApp);
 
         //3d 推送
-        MQAsset asset = new MQAsset();
         predictMmServers predictServer;
         String appName = predictApplication.getApplicationName();
         for(String str: predictHostId ){  //predictHostId : app所在 host的 predict id
@@ -156,13 +156,11 @@ public class ApplicationManagementApiController {
 
             String cabinetName = cabinetRepository.findOne(Long.parseLong(predictServer.getServerEquipmentCabinet())).getEquipmentCabinetName();
             String zbxServerHostId = predictServer.getHostId();
-            asset.updApp("upd", predictServer.getId(), predictServer.getServerSerialNumber(), zbxServerHostId, predictServer.getServerSN(),
+            activeMq.updApp("upd", predictServer.getId(), predictServer.getServerSerialNumber(), zbxServerHostId, predictServer.getServerSN(),
                     predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(), predictServer.getServerBrand(),
                     predictServer.getServerType(), predictServer.getServerIP(), predictServer.getServerStorageDevice(), cabinetName,
                     predictServer.getServerU(), appName,predictServer.getServerRemark());
         }
-
-
         return list;
     }
     //删除应用

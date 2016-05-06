@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by light on 2016/5/4.
  */
 @Repository
-public class ZSuperComputer {
+public class ZSuperComputerRepository {
     @Autowired
     JdbcTemplate jdbc;
 

@@ -1,4 +1,4 @@
-package cn.edu.shou.monitor.transmission;
+package cn.edu.shou.monitor.service;
 
 import cn.edu.shou.monitor.service.impl.ZbxTriggerServiceImpl;
 import cn.edu.shou.monitor.spring.TargetDataSource;
@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by light on 2016/4/14.
+ * Created by light on 2016/5/6.
  */
 @Repository
-public class PhoneMessage {
+public class ZPhoneSmsRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -56,12 +56,10 @@ public class PhoneMessage {
         String selectSql = "SELECT hosts FROM predict.zbx_hosts where host_id = '"+hostid+"';";
         List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
         if(jdbcTemplate==null){
-            jdbcTemplate=new JdbcTemplate();
+            jdbcTemplate = new JdbcTemplate();
         }
         list = jdbcTemplate.queryForList(selectSql);
-
-        String name = list.get(0).get("hosts").toString();
-
-        return name;
+        return list.get(0).get("hosts").toString();
     }
+
 }

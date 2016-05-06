@@ -1,16 +1,14 @@
-package cn.edu.shou.monitor.transmission;
+package cn.edu.shou.monitor.util;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.springframework.stereotype.Component;
 
 import javax.jms.*;
 
 /**
- * Created by light on 2016/2/25.
+ * Created by light on 2016/5/6.
  */
-@Component
-public class MQSendMessage {
+public class ActiveMQ {
     private static final int SEND_NUMBER = 1;
 
     public static void sendMessages(String messageContents,String queue) {

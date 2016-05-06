@@ -2,10 +2,9 @@ package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmSwitchboardsForm;
 import cn.edu.shou.monitor.domain.predictMmSwitchboards;
+import cn.edu.shou.monitor.service.ZActiveMQRepository;
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
-import cn.edu.shou.monitor.transmission.MQAsset;
-import cn.edu.shou.monitor.transmission.MQSendMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +19,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value ="/predictCenter/api/switchboard" )
-public class switchboardManagementApiController {
+public class SwitchboardManagementApiController {
     @Autowired
     cn.edu.shou.monitor.service.SwitchboardManagementRepository SwitchboardManagementRepository;
     @Autowired
     predictMmEquipmentCabinetRepository pmecDAO;
+    @Autowired
+    ZActiveMQRepository activeMq;
 
     //获取所有交换机数据信息
     @RequestMapping(value = "/getAllSwitchboards")
@@ -66,23 +67,19 @@ public class switchboardManagementApiController {
             if(createResult.contains("success")){
                 SwitchboardManagementRepository.save(predictSwitchboard);
                 list.add(predictSwitchboard);
-                MQAsset asset = new MQAsset();
-                String assetMQ = asset.addAndUpdAndDelAssetForSwitchBoard("add", predictSwitchboard.getId(), predictSwitchboard.getSwitchboardSerialNumber(), hostId, predictSwitchboard.getSwitchboardSN(),
+                activeMq.addAndUpdAndDelAssetForSwitchBoard("add", predictSwitchboard.getId(), predictSwitchboard.getSwitchboardSerialNumber(), hostId, predictSwitchboard.getSwitchboardSN(),
                         predictSwitchboard.getSwitchboardPurchasingDate(), predictSwitchboard.getSwitchboardMaintenanceDueTime(), predictSwitchboard.getSwitchboardBrand(),
                         predictSwitchboard.getSwitchboardType(), predictSwitchboard.getSwitchboardIP(), cabinetName,
                         predictSwitchboard.getSwitchboardU(), predictSwitchboard.getSwitchboardRemark());
 
-                MQSendMessage.sendMessages(assetMQ, "asset"); //static 方法不需通过实例化对象
                 return list;
             }else {
                 // the update
-                MQAsset asset = new MQAsset();
-                String assetMQ = asset.addAndUpdAndDelAssetForSwitchBoard("upd", predictSwitchboard.getId(), predictSwitchboard.getSwitchboardSerialNumber(), hostId, predictSwitchboard.getSwitchboardSN(),
+                activeMq.addAndUpdAndDelAssetForSwitchBoard("upd", predictSwitchboard.getId(), predictSwitchboard.getSwitchboardSerialNumber(), hostId, predictSwitchboard.getSwitchboardSN(),
                         predictSwitchboard.getSwitchboardPurchasingDate(), predictSwitchboard.getSwitchboardMaintenanceDueTime(), predictSwitchboard.getSwitchboardBrand(),
                         predictSwitchboard.getSwitchboardType(), predictSwitchboard.getSwitchboardIP(), cabinetName,
                         predictSwitchboard.getSwitchboardU(), predictSwitchboard.getSwitchboardRemark());
 
-                MQSendMessage.sendMessages(assetMQ, "asset"); //static 方法不需通过实例化对象
                 SwitchboardManagementRepository.save(predictSwitchboard);
                 list.add(predictSwitchboard);
                 return list;
@@ -102,13 +99,11 @@ public class switchboardManagementApiController {
 
         SwitchboardManagementRepository.delete(predictSwitchboard);
         String cabinetName = pmecDAO.findOne(Long.parseLong(predictSwitchboard.getSwitchboardEquipmentCabinet())).getEquipmentCabinetName();
-        MQAsset asset = new MQAsset();
-        String assetMQ = asset.addAndUpdAndDelAssetForSwitchBoard("upd", predictSwitchboard.getId(), predictSwitchboard.getSwitchboardSerialNumber(), hostId, predictSwitchboard.getSwitchboardSN(),
+        activeMq.addAndUpdAndDelAssetForSwitchBoard("upd", predictSwitchboard.getId(), predictSwitchboard.getSwitchboardSerialNumber(), hostId, predictSwitchboard.getSwitchboardSN(),
                 predictSwitchboard.getSwitchboardPurchasingDate(), predictSwitchboard.getSwitchboardMaintenanceDueTime(), predictSwitchboard.getSwitchboardBrand(),
                 predictSwitchboard.getSwitchboardType(), predictSwitchboard.getSwitchboardIP(), cabinetName,
                 predictSwitchboard.getSwitchboardU(), predictSwitchboard.getSwitchboardRemark());
 
-        MQSendMessage.sendMessages(assetMQ, "asset"); //static 方法不需通过实例化对象
         List<predictMmSwitchboards> list=new ArrayList<predictMmSwitchboards>();
         list.add(predictSwitchboard);
         return list;

@@ -1,11 +1,11 @@
-package cn.edu.shou.monitor.tool;
+package cn.edu.shou.monitor.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HttpUtil {
+public class SmsHttpUtil {
 
 	public static String sendPostRequestByParam(String path, String params)
 			throws Exception {

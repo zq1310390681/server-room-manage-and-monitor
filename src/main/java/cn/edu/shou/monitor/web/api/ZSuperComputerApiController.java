@@ -1,6 +1,6 @@
 package cn.edu.shou.monitor.web.api;
 
-import cn.edu.shou.monitor.service.ZSuperComputer;
+import cn.edu.shou.monitor.service.ZSuperComputerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/predictCenter/screen")
 public class ZSuperComputerApiController {
     @Autowired
-    ZSuperComputer superComputer;
+    ZSuperComputerRepository superComputer;
 
     @RequestMapping(value = "/superComputerShort")
     public String sendScDataShort() throws Exception{

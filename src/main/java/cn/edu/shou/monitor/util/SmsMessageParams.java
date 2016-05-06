@@ -1,6 +1,6 @@
-package cn.edu.shou.monitor.tool;
+package cn.edu.shou.monitor.util;
 
-public class MessageParams {
+public class SmsMessageParams {
 
 	public static String IP="http://58.68.247.137:9053";
 	public static String sendPath = IP+"/communication/sendSms.ashx";

@@ -1,11 +1,11 @@
-package cn.edu.shou.monitor.tool;
+package cn.edu.shou.monitor.util;
 
 import org.apache.commons.codec.binary.Base64;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-public class CodingUtils {
+public class SmsCodingUtils {
 
 	private static final Base64 base64 = new Base64();
 

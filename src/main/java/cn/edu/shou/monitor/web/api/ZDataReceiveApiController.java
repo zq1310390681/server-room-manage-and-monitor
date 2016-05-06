@@ -1,6 +1,7 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.service.ZDataReceiveRepository;
+import com.jcraft.jsch.HASH;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,13 +85,13 @@ public class ZDataReceiveApiController {
         return receiveRate.toString();
     }
 
-    @RequestMapping(value = "/seaStation")
+    @RequestMapping(value = "/seaStation") // 测试
     public String getSeaStationNum(){
         receive.updStationNum();
         return "success";
-        }
+    }
 
-    @RequestMapping(value = "/network")
+    @RequestMapping(value = "/network")  // 测试
     public String sendNetwork(){
         receive.updSeaStaNum();
         return "success";
@@ -101,8 +103,10 @@ public class ZDataReceiveApiController {
     }
 
     @RequestMapping(value = "/stationAndRadar")
-    public JSONObject sendStationAndRadar(){
-        JSONObject together = new JSONObject();
+    public Map<String,List<Map<String,Object>>> sendStationAndRadar(){
+//        JSONObject together = new JSONObject();
+        Map<String,List<Map<String,Object>>> together = new HashMap<>();
+        List<Map<String,List<Map<String,Object>>>> templist = new ArrayList<>();
         List<Map<String,Object>> sta = receive.getStationNum();
         List<Map<String,Object>> rd = receive.checkNum("radar");
         List<Map<String,Object>> xrd = receive.checkNum("xradar");

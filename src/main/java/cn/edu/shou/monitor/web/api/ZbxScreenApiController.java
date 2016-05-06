@@ -2,6 +2,7 @@ package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.service.ZbxScreenRepository;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RequestMapping(value = "/predictCenter/screen", method= RequestMethod.GET,produces={"application/xml", "application/json"})
 public class ZbxScreenApiController {
     private static Logger log = Logger.getLogger(ZbxScreenApiController.class);
+    /****从数据库**************************************************************************/
     @Autowired
     ZbxScreenRepository zbx;
     @RequestMapping(value = "/cpu")
@@ -58,20 +60,73 @@ public class ZbxScreenApiController {
         union.put("dateTime",System.currentTimeMillis());
         log.debug("end send union "+(System.currentTimeMillis()-time));
         return union.toString();
-
     }
 
-}
+    /****ZBX API**************************************************************************/
 
-//long time = System.currentTimeMillis();
-////log.debug("start send union "+time);
-//JSONArray disk = frontScreen.sendDisk();
-////log.debug("disk end "+ (System.currentTimeMillis()-time));
-//time = System.currentTimeMillis();
-//        JSONArray cpu = frontScreen.sendCpu();
-//        //log.debug("cpu end "+(System.currentTimeMillis()-time));
-//        time = System.currentTimeMillis();
-//        JSONArray ram = frontScreen.sendMemory();
-//        //log.debug("menory end "+(System.currentTimeMillis()-time));
-//        time = System.currentTimeMillis();
-//        JSONObject union = new JSONObject();
+    // Send msgs to the front screen
+    @RequestMapping(value = "/ramUsage")
+    public String sendRAMToFront() {
+        JSONArray ram = zbx.sendMemory();
+        JSONObject sendRAM = new JSONObject();
+        sendRAM.put("disk",ram);
+        sendRAM.put("dateTime",System.currentTimeMillis());
+        return sendRAM.toString().replace("null,","");
+    }
+
+    @RequestMapping(value = "/cpuUsage")
+    public String sendCPUToFront() {
+        JSONArray cpu = zbx.sendCpu();
+        JSONObject sendCPU = new JSONObject();
+        sendCPU.put("cpu",cpu);
+        sendCPU.put("dateTime",System.currentTimeMillis());
+        return sendCPU.toString().replace("null,","");
+    }
+
+    @RequestMapping(value = "/diskUsage")
+    public String sendDISKToFront() {
+        JSONArray disk = zbx.sendDisk();
+        JSONObject sendDisk = new JSONObject();
+        sendDisk.put("disk",disk);
+        sendDisk.put("dateTime",System.currentTimeMillis());
+        return sendDisk.toString().replace("null,","");
+    }
+
+    @RequestMapping(value = "/unionUsage")
+    public String sendUnion(){
+        long time = System.currentTimeMillis();
+        //log.debug("start send union "+time);
+        JSONArray disk = zbx.sendDisk();
+        //log.debug("disk end "+ (System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
+        JSONArray cpu = zbx.sendCpu();
+        //log.debug("cpu end "+(System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
+        JSONArray ram = zbx.sendMemory();
+        //log.debug("menory end "+(System.currentTimeMillis()-time));
+        time = System.currentTimeMillis();
+        JSONObject union = new JSONObject();
+        union.put("disk",disk);
+        union.put("ram",ram);
+        union.put("cpu",cpu);
+        union.put("dateTime",System.currentTimeMillis());
+        //log.debug("end send union "+(System.currentTimeMillis()-time));
+        return union.toString().replace("null,","");
+    }
+
+
+    @RequestMapping(value = "/ping")
+    public String sendPingToFront(){
+        return zbx.sendPing();
+    }
+
+    @RequestMapping(value = "/input")
+    public String sendInputNet(){
+        return zbx.sendPutNet("input");
+    }
+
+    @RequestMapping(value = "/output")
+    public String sendOutputNet(){
+        return zbx.sendPutNet("output");
+    }
+}

@@ -17,20 +17,24 @@ public class ZDataReceiveRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    static final String RADAR_SQL = "SELECT common_radar.name,common_radar.time,common_radar.quantity,radar_quantity.day_quantity,common_radar.parent_name\n" +
+    static final String RADAR_SQL = "SELECT common_radar.name,common_radar.time,common_radar.quantity as fenzi,radar_quantity.day_quantity,common_radar.parent_name\n" +
             "from common_radar,radar_quantity where common_radar.name = radar_quantity.name;";
-    static final String XRADAR_SQL = "SELECT xradar.name,xradar.time,xradar.quantity,xradar_quantity.day_quantity,xradar.parent_name from xradar,xradar_quantity\n" +
+    static final String XRADAR_SQL = "SELECT xradar.name,xradar.time,xradar.quantity as fenzi,xradar_quantity.day_quantity,xradar.parent_name from xradar,xradar_quantity\n" +
             "where xradar.name = xradar_quantity.name and xradar.time != '--';";
-    static final String VOS_SQL = "SELECT single_vos.name,single_vos.time,single_vos.quantity,vos_quantity.day_quantity from single_vos,vos_quantity\n" +
+    static final String VOS_SQL = "SELECT single_vos.name,single_vos.time,single_vos.quantity as fenzi,vos_quantity.day_quantity from single_vos,vos_quantity\n" +
             "where single_vos.name = vos_quantity.name and single_vos.time != '--';";
-    static final String BUOY_SQL = "SELECT buoy.name,buoy.time,buoy.quantity,buoy_quantity.day_quantity from buoy,buoy_quantity\n" +
+    static final String BUOY_SQL = "SELECT buoy.name,buoy.time,buoy.quantity as fenzi,buoy_quantity.day_quantity from buoy,buoy_quantity\n" +
             "where buoy.name = buoy_quantity.buoy_name and buoy.time != '--';";
-    static final String STA_REAL_SQL = "SELECT sea_station.name,sea_station.real_time,sea_station.real_quantity as quantity,sea_quantity.real,sea_station.parent_name\n" +
+    static final String STA_REAL_SQL = "SELECT sea_station.name,sea_station.real_time,sea_station.real_quantity as fenzi,sea_quantity.real,sea_station.parent_name\n" +
             "from sea_station,sea_quantity where sea_station.name = sea_quantity.name and sea_station.real_time != '--';";
-    static final String STA_HOURLY_SQL = "SELECT sea_station.name,sea_station.hourly_time,sea_station.hourly_quantity as quantity,sea_quantity.hourly,sea_station.parent_name " +
+    static final String STA_HOURLY_SQL = "SELECT sea_station.name,sea_station.hourly_time,sea_station.hourly_quantity as fenzi,sea_quantity.hourly,sea_station.parent_name " +
             "from sea_station,sea_quantity where sea_station.name = sea_quantity.name and sea_station.hourly_time != '--';";
-    static final String STA_PUN_SQL = "SELECT sea_station.name,sea_station.pun_time,sea_station.pun_quantity as quantity,sea_quantity.pun,sea_station.parent_name \n" +
+    static final String STA_PUN_SQL = "SELECT sea_station.name,sea_station.pun_time,sea_station.pun_quantity as fenzi,sea_quantity.pun,sea_station.parent_name \n" +
             "from sea_station,sea_quantity where sea_station.name = sea_quantity.name and sea_station.pun_time != '--';";
+
+    Calendar cal = Calendar.getInstance();
+    int h = cal.get(Calendar.HOUR_OF_DAY);
+    int m = cal.get(Calendar.MINUTE);
 
     @TargetDataSource(name = "webdata")
     public List<Map<String,Object>> checkNum(String selectSql){
@@ -58,14 +62,17 @@ public class ZDataReceiveRepository {
             String hourStr = timeStr.substring(index+1,index+3);
             int hour = Integer.valueOf(hourStr);
             int a = Math.round(quty*(hour+1)/24); // a 为应收的个数
-            hashMap.put("checkNum", a);
+            hashMap.put("fenmu", a);
             sumCheckNum = sumCheckNum+a;
-            int qutyGot = Integer.valueOf(hashMap.get("quantity").toString());
+            int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
             sumQuantity = qutyGot + sumQuantity;
+            hashMap.remove("time");
+            hashMap.remove("day_quantity");
+            hashMap.put("time",String.valueOf(h)+":"+String.valueOf(m));
         }
         Map<String,Object> sumCheck = new HashMap<String,Object>();
-        sumCheck.put("fenmu",sumCheckNum);  //fenmu
-        sumCheck.put("fenzi",sumQuantity);  //fenzi
+        sumCheck.put("fenmuAll",sumCheckNum);  //fenmu
+        sumCheck.put("fenziAll",sumQuantity);  //fenzi
         list.add(0,sumCheck);  //固定第0位为sumCheck
         return list;
     }
@@ -82,14 +89,14 @@ public class ZDataReceiveRepository {
                 int index = timeStr.indexOf(":");
                 String minStr = timeStr.substring(index+1,index+3); // 得到分钟
                 int min = Integer.valueOf(minStr);// 标准为1分钟1个数据
-                hashMap.put("checkNum", min+1);
+                hashMap.put("fenmu", min+1);
                 fenmu = fenmu+min;
-                int qutyGot = Integer.valueOf(hashMap.get("quantity").toString());
+                int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
                 fenzi = qutyGot + fenzi;
             }
             Map<String,Object> sumCheck = new HashMap<String,Object>();
-            sumCheck.put("fenmu",fenmu);  // 分母
-            sumCheck.put("fenzi",fenzi);  // 分子
+            sumCheck.put("fenmuAll",fenmu);  // 分母
+            sumCheck.put("fenziAll",fenzi);  // 分子
             seaList.add(0,sumCheck);
             return seaList;
         }
@@ -101,14 +108,14 @@ public class ZDataReceiveRepository {
             for(Map<String,Object> hashMap: seaList){
                 String quantity = hashMap.get("hourly").toString();
                 int quty = Integer.valueOf(quantity);
-                hashMap.put("checkNum", quty);
+                hashMap.put("fenmu", quty);
                 sumCheckNum=sumCheckNum+quty;
-                int qutyGot = Integer.valueOf(hashMap.get("quantity").toString());
+                int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
                 sumQuantity = qutyGot + sumQuantity;
             }
             Map<String,Object> sumCheck = new HashMap<String,Object>();
-            sumCheck.put("fenmu",sumCheckNum);
-            sumCheck.put("fenzi",sumQuantity);
+            sumCheck.put("fenmuAll",sumCheckNum);
+            sumCheck.put("fenziAll",sumQuantity);
             seaList.add(0,sumCheck);
             return seaList;
         }
@@ -127,26 +134,26 @@ public class ZDataReceiveRepository {
                 int a;
                 if(hour>=2 && hour<8){
                     a = quty/4;
-                    hashMap.put("checkNum", a);
+                    hashMap.put("fenmu", a);
                 }
                 if(hour>=8 && hour<14){
                     a = 2*quty/4;
-                    hashMap.put("checkNum", a);
+                    hashMap.put("fenmu", a);
                 }
                 if(hour>=14 && hour<20){
                     a = 3*quty/4;
-                    hashMap.put("checkNum", a);
+                    hashMap.put("fenmu", a);
                 }else{
                     a= 4*quty/4;
-                    hashMap.put("checkNum", a);
+                    hashMap.put("fenmu", a);
                 }
                 sumCheckNum=sumCheckNum+a;
-                int qutyGot = Integer.valueOf(hashMap.get("quantity").toString());
+                int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
                 sumQuantity = qutyGot + sumQuantity;
             }
             Map<String,Object> sumCheck = new HashMap<String,Object>();
-            sumCheck.put("fenmu",sumCheckNum);
-            sumCheck.put("fenzi",sumQuantity);
+            sumCheck.put("fenmuAll",sumCheckNum);
+            sumCheck.put("fenziAll",sumQuantity);
             seaList.add(0,sumCheck);
             return seaList;
         }else {
@@ -216,9 +223,7 @@ public class ZDataReceiveRepository {
         String sql = "SELECT quty.name,quty.current_num,sta.hourly_quantity,sta.pun_quantity,sta.parent_name,quty.real, quty.hourly,quty.pun\n" +
                 "FROM sea_station as sta,sea_quantity as quty where quty.name = sta.name;";
         List<Map<String,Object>> listSta = jdbcTemplate.queryForList(sql);
-        Calendar cal = Calendar.getInstance();
-        int h = cal.get(Calendar.HOUR_OF_DAY);
-        int m = cal.get(Calendar.MINUTE);
+
         int fenzi = 0;
         int fenmu = 0;
         for(Map<String,Object> element : listSta){
@@ -234,8 +239,8 @@ public class ZDataReceiveRepository {
             fenzi = fenzi + stationSum;
             fenmu = fenmu + stationNeed;
 
-            element.put("stationSum",stationSum);
-            element.put("stationNeed",stationNeed);
+            element.put("fenzi",stationSum);
+            element.put("fenmu",stationNeed);
             element.put("time",String.valueOf(h)+":"+String.valueOf(m));
             element.remove("current_num");
             element.remove("hourly_quantity");
@@ -245,8 +250,8 @@ public class ZDataReceiveRepository {
             element.remove("pun");
         }
         Map<String,Object> check = new HashMap<>();
-        check.put("分子",fenzi);
-        check.put("分母",fenmu);
+        check.put("fenziAll",fenzi);
+        check.put("fenmuAll",fenmu);
         listSta.add(0,check);
         return listSta;
     }
