@@ -1,7 +1,6 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.service.ZDataReceiveRepository;
-import com.jcraft.jsch.HASH;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

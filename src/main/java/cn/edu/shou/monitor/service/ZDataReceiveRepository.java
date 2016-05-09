@@ -234,7 +234,7 @@ public class ZDataReceiveRepository {
             int hourNeed = Integer.parseInt(element.get("hourly").toString());
             int punNeed = Integer.parseInt(element.get("pun").toString());
 //            int stationSum = realSum + hourly + pun;  //正式上线用这个
-            int stationSum = (realSum + 60 * h + m) + hourly + pun;  //测试展示数据
+            int stationSum = (realSum + 60 * h) + hourly + pun;  //测试展示数据
             int stationNeed = Math.round(m * realNeed/1440 + (realNeed * h/24)) + Math.round(hourNeed * h/24) + Math.round(punNeed * h/24);
             fenzi = fenzi + stationSum;
             fenmu = fenmu + stationNeed;
