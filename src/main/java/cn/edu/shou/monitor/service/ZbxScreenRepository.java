@@ -28,7 +28,7 @@ public class ZbxScreenRepository {
             " where history.itemid = items.itemid\n" +
             " and items.key_ like '%system.cpu.load[percpu,avg15]%' \n" +
             " and hosts.hostid = items.hostid\n" +
-            " group by hosts.hostid\n" +
+            " group by items.hostid\n" +
             " order by clock desc";
     // disk name and value
     static final String USED_DISK = " select sum(history_uint.value) as sumUsed," + "hosts.name\n" +
@@ -37,7 +37,7 @@ public class ZbxScreenRepository {
             "  and items.name like 'used disk%'\n" +
             "  and items.flags = 4\n" +
             "  and hosts.hostid = items.hostid\n" +
-            "  group by hosts.hostid;";
+            "  group by items.hostid;";
     // disk only value total
     static final String TOTAL_DISK = " select sum(history_uint.value) as sumFree\n" +
             "  from history_uint,items,hosts\n" +
@@ -45,21 +45,20 @@ public class ZbxScreenRepository {
             "  and items.name like 'free disk%'\n" +
             "  and items.flags = 4\n" +
             "  and hosts.hostid = items.hostid\n" +
-            "  group by hosts.hostid";
+            "  group by items.hostid";
     static final String FREE_MEMORY = "  select sum(history_uint.value) as sumFree,hosts.name\n" +
             "  from history_uint,items,hosts\n" +
             "  where history_uint.itemid = items.itemid\n" +
             "  and items.key_ like 'vm.memory.size[free]'\n" +
             "  and hosts.hostid = items.hostid\n" +
-            "  group by hosts.hostid";
+            "  group by items.hostid";
     static final String TOTAL_MEMORY = " select sum(history_uint.value) as sumTotal,hosts.name" +
             "  from history_uint,items,hosts\n" +
             "  where history_uint.itemid = items.itemid\n" +
             "  and items.key_ like '%vm.memory.size[total]%'\n" +
             "  and hosts.hostid = items.hostid\n" +
-            "  group by hosts.hostid";
+            "  group by items.hostid";
 
-    @TargetDataSource(name = "zabbix")
     public List<Map<String,Object>> getCpu(){
         String cpu = CPU_AVG15;
         List<Map<String,Object>> cpuList = new ArrayList<Map<String,Object>>();
@@ -70,7 +69,6 @@ public class ZbxScreenRepository {
         return cpuList;
     }
 
-    @TargetDataSource(name = "zabbix")
     public List<Map<String,Object>> getDisk(){
         String usedDisk = USED_DISK;
         List<Map<String,Object>> usedDiskList = new ArrayList<Map<String,Object>>();
@@ -96,7 +94,7 @@ public class ZbxScreenRepository {
         cpuJSON.put("dateTime",System.currentTimeMillis());
         return usedDiskList;
     }
-    @TargetDataSource(name = "zabbix")
+
     public List<Map<String,Object>> getRam(){
         String freeMemory = FREE_MEMORY;
         List<Map<String,Object>> freeMemoryList = new ArrayList<Map<String,Object>>();
