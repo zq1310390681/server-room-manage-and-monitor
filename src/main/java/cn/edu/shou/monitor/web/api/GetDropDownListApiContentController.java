@@ -17,17 +17,17 @@ import java.util.List;
 @RequestMapping(value ="/predictCenter/api/dropDownList" )
 public class GetDropDownListApiContentController {
     @Autowired
-    predictMmBrandRepository brandRepository;
+    PredictMmBrandRepository brandRepository;
     @Autowired
-    predictMmEquipmentCabinetRepository EquipmentCabinetRepository;
+    PredictMmEquipmentCabinetRepository EquipmentCabinetRepository;
     @Autowired
-    predictMmURepository URepository;
+    PredictMmURepository URepository;
     @Autowired
     StoreManagementRepository StoresRepository;
     @Autowired
-    predictMmServiceObjectRepository ServiceObjectRepository;
+    PredictMmServiceObjectRepository ServiceObjectRepository;
     @Autowired
-    predictMmMainframeRepository MainframeRepository;
+    PredictMmMainframeRepository MainframeRepository;
     @Autowired
     ApplicationManagementRepository ApplicationRepository;
 
@@ -43,7 +43,7 @@ public class GetDropDownListApiContentController {
     @Autowired
     VersionRepository versionRepository;
     @Autowired
-    predictMmBrandTypeRepository BrandTypeRepository;
+    PredictMmBrandTypeRepository BrandTypeRepository;
     @Autowired
     SerObjGroupManagementRepository serObjGroupManagementRepository;
     @Autowired
@@ -165,23 +165,23 @@ public class GetDropDownListApiContentController {
     }
     //获取服务对象分组列表
     @RequestMapping("/getServiceObjectGroup")
-    public List<predictMmServiceObjGroup>getServiceObjectGroup(){
+    public List<PredictMmServiceObjGroup>getServiceObjectGroup(){
         return serObjGroupManagementRepository.findAll();
     }
     //根据服务对象分组Id获取服务对象分组名称
     @RequestMapping(value = "/getServiceObjectGroupById/{id}")
-    public predictMmServiceObjGroup getServiceObjectGroupById(@PathVariable long id){
+    public PredictMmServiceObjGroup getServiceObjectGroupById(@PathVariable long id){
         return serObjGroupManagementRepository.findOne(id);
     }
 
     //获取应用分组列表
     @RequestMapping("/getAppGroup")
-    public List<predictMmAppGroup>getAppGroup(){
+    public List<PredictMmAppGroup>getAppGroup(){
         return appGroupManagementRepository.findAll();
     }
     //根据应用分组Id获取应用分组名称
     @RequestMapping(value = "/getAppGroupById/{id}")
-    public predictMmAppGroup getAppGroupById(@PathVariable long id){
+    public PredictMmAppGroup getAppGroupById(@PathVariable long id){
         return appGroupManagementRepository.findOne(id);
     }
 

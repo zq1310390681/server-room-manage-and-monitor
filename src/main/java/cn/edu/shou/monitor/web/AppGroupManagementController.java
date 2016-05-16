@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web;
 
 import cn.edu.shou.monitor.domain.User;
-import cn.edu.shou.monitor.domain.predictMmAppGroup;
+import cn.edu.shou.monitor.domain.PredictMmAppGroup;
 import cn.edu.shou.monitor.service.AppGroupManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -30,7 +30,7 @@ public class AppGroupManagementController {
     {
         model.addAttribute("user", currentUser);
         //根据pingId查找数据对象信息
-        predictMmAppGroup appGroup=appGroupManagementRepository.findOne(appGroupid);//查找ping数据
+        PredictMmAppGroup appGroup=appGroupManagementRepository.findOne(appGroupid);//查找ping数据
         model.addAttribute("appGroup",appGroup);
         return "appGroupManagementView";
     }

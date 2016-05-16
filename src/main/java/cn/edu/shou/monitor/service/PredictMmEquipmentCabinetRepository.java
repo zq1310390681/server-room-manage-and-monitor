@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Administrator on 2016/1/15 0015.
  */
 @Repository
-public interface predictMmEquipmentCabinetRepository extends PagingAndSortingRepository<predictMmEquipmentCabinet, Long> {
+public interface PredictMmEquipmentCabinetRepository extends PagingAndSortingRepository<predictMmEquipmentCabinet, Long> {
     public List<predictMmEquipmentCabinet> findAll();//获取所有机柜
     //查询机柜信息
     @Query("select cabinet from predictMmEquipmentCabinet cabinet where cabinet.equipmentCabinetName=:equCabinet")

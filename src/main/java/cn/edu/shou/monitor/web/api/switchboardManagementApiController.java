@@ -4,7 +4,7 @@ import cn.edu.shou.monitor.domain.missiveDataForm.predictMmSwitchboardsForm;
 import cn.edu.shou.monitor.domain.predictMmSwitchboards;
 import cn.edu.shou.monitor.service.ZActiveMQRepository;
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
-import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +23,7 @@ public class SwitchboardManagementApiController {
     @Autowired
     cn.edu.shou.monitor.service.SwitchboardManagementRepository SwitchboardManagementRepository;
     @Autowired
-    predictMmEquipmentCabinetRepository pmecDAO;
+    PredictMmEquipmentCabinetRepository pmecDAO;
     @Autowired
     ZActiveMQRepository activeMq;
 

@@ -3,7 +3,7 @@ package cn.edu.shou.monitor.web;
 import cn.edu.shou.monitor.domain.User;
 import cn.edu.shou.monitor.domain.predictMmFws;
 import cn.edu.shou.monitor.service.FwManagementRepository;
-import cn.edu.shou.monitor.service.predictMmBrandRepository;
+import cn.edu.shou.monitor.service.PredictMmBrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ public class FwManagementController {
     @Autowired
     FwManagementRepository fwManagementRepository;
     @Autowired
-    predictMmBrandRepository brandRepository;
+    PredictMmBrandRepository brandRepository;
     @RequestMapping(value = "/getFwInfo")
     public String getFwInfo(Model model,@AuthenticationPrincipal User currentUser){
         model.addAttribute("user", currentUser);

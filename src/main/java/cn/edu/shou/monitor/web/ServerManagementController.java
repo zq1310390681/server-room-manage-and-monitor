@@ -3,9 +3,9 @@ package cn.edu.shou.monitor.web;
 import cn.edu.shou.monitor.domain.User;
 import cn.edu.shou.monitor.domain.predictMmServers;
 import cn.edu.shou.monitor.service.StoreManagementRepository;
-import cn.edu.shou.monitor.service.predictMmBrandRepository;
-import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
-import cn.edu.shou.monitor.service.predictMmURepository;
+import cn.edu.shou.monitor.service.PredictMmBrandRepository;
+import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.PredictMmURepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,13 +22,13 @@ public class ServerManagementController {
     @Autowired
     cn.edu.shou.monitor.service.ServerManagementRepository ServerManagementRepository;
     @Autowired
-    predictMmEquipmentCabinetRepository cabinetRepository;
+    PredictMmEquipmentCabinetRepository cabinetRepository;
     @Autowired
     StoreManagementRepository storeRepository;
     @Autowired
-    predictMmURepository uRepository;
+    PredictMmURepository uRepository;
     @Autowired
-    predictMmBrandRepository brandRepository;
+    PredictMmBrandRepository brandRepository;
     @RequestMapping(value = "/getServerInfo")
     public String getServerInfo(Model model,@AuthenticationPrincipal User currentUser){
         model.addAttribute("user", currentUser);

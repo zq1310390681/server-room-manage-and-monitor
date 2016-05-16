@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.PredictMmAppGroupForm;
-import cn.edu.shou.monitor.domain.predictMmAppGroup;
+import cn.edu.shou.monitor.domain.PredictMmAppGroup;
 import cn.edu.shou.monitor.service.AppGroupManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,20 +24,20 @@ public class AppGroupManagementApiController {
     AppGroupManagementRepository appGroupManagementRepository;
     //获取所有应用分组数据信息
     @RequestMapping(value = "/getAllAppGroup")
-    public List<predictMmAppGroup> getAllAppGroup(){
-        List<predictMmAppGroup> predictMmAppGroup=appGroupManagementRepository.findAll();
-        return predictMmAppGroup;
+    public List<PredictMmAppGroup> getAllAppGroup(){
+        List<PredictMmAppGroup> PredictMmAppGroup =appGroupManagementRepository.findAll();
+        return PredictMmAppGroup;
     }
     //创建和更新应用分组
     @RequestMapping(value = "/createAndUpdateAppGroup",method = RequestMethod.GET)
-    public List<predictMmAppGroup> createAndUpdateAppGroup(PredictMmAppGroupForm appGroupForm) {
+    public List<PredictMmAppGroup> createAndUpdateAppGroup(PredictMmAppGroupForm appGroupForm) {
         long recordId=appGroupForm.getId();//获取记录ID
-        predictMmAppGroup predictAppGroup= null;
-        predictMmAppGroup modifiedGroup=null;//被修改的分组对象
+        PredictMmAppGroup predictAppGroup= null;
+        PredictMmAppGroup modifiedGroup=null;//被修改的分组对象
         long requstModifyOrder=appGroupForm.getGroupOrder();//需要修改的序号
         long modifiedOrder=0;//被修改的序号
         if(recordId==0){
-            predictAppGroup=new predictMmAppGroup();
+            predictAppGroup=new PredictMmAppGroup();
         }else {
             predictAppGroup=appGroupManagementRepository.findOne(recordId);//需要修改的对象
             modifiedGroup=appGroupManagementRepository.getAppGroupByOrder(appGroupForm.getGroupOrder());
@@ -50,24 +50,24 @@ public class AppGroupManagementApiController {
         predictAppGroup.setAppGroupName(appGroupForm.getAppGroupName());
         appGroupManagementRepository.save(predictAppGroup);
 
-        List<predictMmAppGroup> list=new ArrayList<predictMmAppGroup>();
+        List<PredictMmAppGroup> list=new ArrayList<PredictMmAppGroup>();
         list.add(predictAppGroup);
         return list;
     }
 
     //删除应用分组
     @RequestMapping(value = "/deleteAppGroup/{id}")
-    public List<predictMmAppGroup> deleteAppGroup(@PathVariable long id){
-        predictMmAppGroup predictAppGroup=appGroupManagementRepository.findOne(id);
+    public List<PredictMmAppGroup> deleteAppGroup(@PathVariable long id){
+        PredictMmAppGroup predictAppGroup=appGroupManagementRepository.findOne(id);
         appGroupManagementRepository.delete(predictAppGroup);
-        List<predictMmAppGroup> list=new ArrayList<predictMmAppGroup>();
+        List<PredictMmAppGroup> list=new ArrayList<PredictMmAppGroup>();
         list.add(predictAppGroup);
         return list;
     }
     //判断分组是否已存在
     @RequestMapping(value = "/appGroupExit/{orderGroup}/{groupName}")
     public Map<String,Boolean> appGroupExit(@PathVariable String orderGroup,@PathVariable String groupName){
-        predictMmAppGroup appGroup= new predictMmAppGroup();
+        PredictMmAppGroup appGroup= new PredictMmAppGroup();
         Map<String,Boolean>results=new HashMap<String,Boolean>();
         boolean orderExist=false;//组序号是否存在标示
         boolean groupNameExist=false;//组名称是否存在标示

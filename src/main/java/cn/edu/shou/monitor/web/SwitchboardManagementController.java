@@ -2,9 +2,9 @@ package cn.edu.shou.monitor.web;
 
 import cn.edu.shou.monitor.domain.User;
 import cn.edu.shou.monitor.domain.predictMmSwitchboards;
-import cn.edu.shou.monitor.service.predictMmBrandRepository;
-import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
-import cn.edu.shou.monitor.service.predictMmURepository;
+import cn.edu.shou.monitor.service.PredictMmBrandRepository;
+import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.PredictMmURepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -21,11 +21,11 @@ public class SwitchboardManagementController {
     @Autowired
     cn.edu.shou.monitor.service.SwitchboardManagementRepository SwitchboardManagementRepository;
     @Autowired
-    predictMmURepository uRepository;
+    PredictMmURepository uRepository;
     @Autowired
-    predictMmBrandRepository brandRepository;
+    PredictMmBrandRepository brandRepository;
     @Autowired
-    predictMmEquipmentCabinetRepository cabinetRepository;
+    PredictMmEquipmentCabinetRepository cabinetRepository;
     @RequestMapping(value = "/getSwitchboardInfo")
     public String getSwitchboardInfo(Model model,@AuthenticationPrincipal User currentUser){
         model.addAttribute("user", currentUser);

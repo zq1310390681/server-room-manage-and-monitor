@@ -11,8 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by light on 2016/4/5.
@@ -93,6 +95,130 @@ public class ZbxScreenRepository {
         cpuJSON.put("disk",usedDiskList);
         cpuJSON.put("dateTime",System.currentTimeMillis());
         return usedDiskList;
+    }
+
+    public List<Map<String,Object>> getDiskDis(){
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+        String itemidSqlUsed = "select itemid from items,hosts where items.flags = 4\n" +
+                "and items.name like 'used disk%' and hosts.hostid = items.hostid";
+        List<Map<String,Object>> usedItemid = jdbcTemplate.queryForList(itemidSqlUsed);
+        Map<String,Object> singleItemUsed = new HashMap<>();
+
+        String itemidSqlTotal = "select itemid from items,hosts where items.flags = 4\n" +
+                "and items.name like 'total disk%' and hosts.hostid = items.hostid";
+        List<Map<String,Object>> totalItemid = jdbcTemplate.queryForList(itemidSqlTotal);
+        Map<String,Object> singleItemTotal = new HashMap<>();
+
+        List<Map<String,Object>> usedTemp = new ArrayList<>();
+        List<Map<String,Object>> totalTemp = new ArrayList<>();
+        for(int i=0;i<totalItemid.size();i++){
+            Object used = null;
+            Object total= null;
+            double u = 0;
+            double t = 1;
+            String usedItem = usedItemid.get(i).get("itemid").toString();
+            String freeItem = totalItemid.get(i).get("itemid").toString();
+            String usedDiskSql = "SELECT history_uint.value,hosts.name\n" +
+                    "FROM history_uint,hosts,items\n" +
+                    "where history_uint.itemid = "+ usedItem + "\n" +
+                    "and items.itemid = history_uint.itemid and items.hostid = hosts.hostid\n" +
+                    "order by clock desc limit 1 ;";
+            if(jdbcTemplate.queryForList(usedDiskSql).size()>0){
+                singleItemUsed = jdbcTemplate.queryForMap(usedDiskSql);
+//                used = singleItemUsed.get("value");
+//                u = Double.parseDouble(String.valueOf(used));
+                usedTemp.add(singleItemUsed);
+            }
+
+            String totalDiskSql = "SELECT history_uint.value,hosts.name\n" +
+                    "FROM history_uint,hosts,items\n" +
+                    "where history_uint.itemid = "+ freeItem + "\n" +
+                    "and items.itemid = history_uint.itemid and items.hostid = hosts.hostid\n" +
+                    "order by clock desc limit 1 ;";
+            if(jdbcTemplate.queryForList(totalDiskSql).size()>0) {
+                singleItemTotal = jdbcTemplate.queryForMap(totalDiskSql);
+//                total = singleItemTotal.get("value");
+//                t = Double.parseDouble(String.valueOf(total));
+                totalTemp.add(singleItemTotal);
+            }
+
+//            double rate = u * 100/t;
+//            singleItemTotal.remove("value");
+//            singleItemTotal.put("value", decimalFormat.format(rate));
+//            usedDiskList.add(singleItemTotal);
+        }
+
+//        List<Map<String,Object>> usedUnionList = new ArrayList<>();
+//        String lastName="";
+//        int usedSize = usedTemp.size();
+//        for(int i= 0;i<usedSize;i++){
+//            String currentName = usedTemp.get(i).get("name").toString();
+//            if(i == 0){
+//                lastName = currentName;
+//            }
+//            if(!lastName.equals(currentName)){
+//                lastName = currentName;
+//            }else{
+//                Map<String,Object> usedUnion = new HashMap<>();
+//                if (usedUnion.toString().contains(currentName)){
+//                    usedUnion.put("usedUnion", Double.parseDouble(usedUnion.get("usedUnion").toString()) + Double.parseDouble(usedTemp.get(i).get("value").toString()));
+//                }else{
+//                    usedUnion.put("name", currentName);
+//                    usedUnion.put("usedUnion", Double.parseDouble(usedTemp.get(i).get("value").toString()));
+//                }
+//                usedUnionList.add(usedUnion);
+//            }
+//        }
+//
+//        List<Map<String,Object>> totalUnionList = new ArrayList<>();
+//        int totalSize = totalTemp.size();
+//        for(int i=0;i<totalSize;i++){
+//            String currentName = totalTemp.get(i).get("name").toString();
+//            Map<String,Object> totalUnion = new HashMap<>();
+//            if(i == 0){
+//                lastName = currentName;
+//            }
+//            if(!lastName.equals(currentName)){
+//                lastName = currentName;
+//            }else {
+//                if (totalUnion.toString().contains(currentName)) {
+//                    totalUnion.put("totalUnion", Double.parseDouble(totalUnion.get("totalUnion").toString()) + Double.parseDouble(totalTemp.get(i).get("value").toString()));
+//                } else {
+//                    totalUnion.put("name", currentName);
+//                    totalUnion.put("totalUnion", Double.parseDouble(totalTemp.get(i).get("value").toString()));
+//                }
+//                totalUnionList.add(totalUnion);
+//            }
+//        }
+//
+//        for(int i=0;i<totalUnionList.size();i++){
+//            String total = totalUnionList.get(i).get("totalUnion").toString();
+//            String used = usedUnionList.get(i).get("usedUnion").toString();
+//            double rate = 100 * Double.parseDouble(used)/Double.parseDouble(total);
+//            usedUnionList.get(i).remove("usedUnion");
+//            usedUnionList.get(i).put("fullRate",decimalFormat.format(rate));
+//        }
+//        usedUnionList.remove(0);
+
+        Map<String,Double>result = usedTemp.stream().collect(
+                Collectors.groupingBy(
+                        used -> used.get("name").toString(),
+                        Collectors.summingDouble(t -> Double.parseDouble(t.get("value").toString()))
+                ));
+        Map<String,Double>result2 = totalTemp.stream().collect(
+                Collectors.groupingBy(
+                        used->used.get("name").toString(),
+                        Collectors.summingDouble(t->Double.parseDouble(t.get("value").toString()))
+                ));
+        ArrayList<Map<String,Object>> usedRate = new ArrayList<>();
+        for (String key:result.keySet()){
+            Map<String,Object> tempmap = new HashMap<String,Object>();
+            tempmap.put("name",key);
+            tempmap.put("fullrate",decimalFormat.format(100 * result.get(key)/result2.get(key)));
+            usedRate.add(tempmap);
+        }
+        return usedRate;
     }
 
     public List<Map<String,Object>> getRam(){

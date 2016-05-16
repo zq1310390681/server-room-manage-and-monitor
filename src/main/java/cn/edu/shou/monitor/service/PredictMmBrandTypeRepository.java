@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Administrator on 2016/1/15 0015.
  */
 @Repository
-public interface predictMmBrandTypeRepository extends PagingAndSortingRepository<predictMmBrandType, Long> {
+public interface PredictMmBrandTypeRepository extends PagingAndSortingRepository<predictMmBrandType, Long> {
     public List<predictMmBrandType> findAll();//获取所有品牌
     /*//根据类别获取品牌数据
     @Query("select brand from predictMmBrand brand where brand.brandType=:type")

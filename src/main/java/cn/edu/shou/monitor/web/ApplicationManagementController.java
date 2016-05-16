@@ -5,7 +5,7 @@ import cn.edu.shou.monitor.domain.predictMmApplications;
 import cn.edu.shou.monitor.service.ApplicationManagementRepository;
 import cn.edu.shou.monitor.service.HostManagementRepository;
 import cn.edu.shou.monitor.service.MiddleRepository;
-import cn.edu.shou.monitor.service.predictMmServiceObjectRepository;
+import cn.edu.shou.monitor.service.PredictMmServiceObjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,7 @@ public class ApplicationManagementController {
     @Autowired
     ApplicationManagementRepository applicationManagementRepository;
     @Autowired
-    predictMmServiceObjectRepository serviceObjectRepository;
+    PredictMmServiceObjectRepository serviceObjectRepository;
     @Autowired
     HostManagementRepository hostManagementRepository;
     @Autowired

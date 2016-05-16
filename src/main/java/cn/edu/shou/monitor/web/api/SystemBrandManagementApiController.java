@@ -18,11 +18,11 @@ import java.util.List;
 @RequestMapping(value ="/predictCenter/api/systemBrand" )
 public class SystemBrandManagementApiController {
     @Autowired
-    cn.edu.shou.monitor.service.predictMmBrandRepository predictMmBrandRepository;
+    cn.edu.shou.monitor.service.PredictMmBrandRepository PredictMmBrandRepository;
     //获取所有品牌数据信息
     @RequestMapping(value = "/getAllSystemBrands")
     public List<predictMmBrand> getAllSystemBrands(){
-        return predictMmBrandRepository.findAll();
+        return PredictMmBrandRepository.findAll();
     }
     //创建品牌
     @RequestMapping(value = "/createAndUpdateSystemBrand",method = RequestMethod.GET)
@@ -32,11 +32,11 @@ public class SystemBrandManagementApiController {
         if(recordId==0){
             predictSystemBrand=new predictMmBrand();
         }else {
-            predictSystemBrand=predictMmBrandRepository.findOne(recordId);
+            predictSystemBrand= PredictMmBrandRepository.findOne(recordId);
         }
         predictSystemBrand.setBrandName(systemBrandForm.getBrandName());
         predictSystemBrand.setBrandType(systemBrandForm.getBrandType());
-        predictMmBrandRepository.save(predictSystemBrand);
+        PredictMmBrandRepository.save(predictSystemBrand);
         List<predictMmBrand> list=new ArrayList<predictMmBrand>();
         list.add(predictSystemBrand);
         return list;
@@ -44,8 +44,8 @@ public class SystemBrandManagementApiController {
     //删除品牌
     @RequestMapping(value = "/deleteSystemBrand/{id}")
     public List<predictMmBrand> deleteSystemBrand(@PathVariable long id){
-        predictMmBrand predictSystemBrand=predictMmBrandRepository.findOne(id);
-        predictMmBrandRepository.delete(predictSystemBrand);
+        predictMmBrand predictSystemBrand= PredictMmBrandRepository.findOne(id);
+        PredictMmBrandRepository.delete(predictSystemBrand);
         List<predictMmBrand> list=new ArrayList<predictMmBrand>();
         list.add(predictSystemBrand);
         return list;

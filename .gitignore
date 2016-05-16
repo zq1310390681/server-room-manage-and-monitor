@@ -52,3 +52,4 @@ target
 src/main/resources/static/img
 .png
 data
+./.idea

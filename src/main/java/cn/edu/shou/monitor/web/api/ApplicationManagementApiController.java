@@ -31,7 +31,7 @@ public class ApplicationManagementApiController {
     @Autowired
     ServerManagementRepository serverRepository;
     @Autowired
-    predictMmEquipmentCabinetRepository cabinetRepository;
+    PredictMmEquipmentCabinetRepository cabinetRepository;
     @Autowired
     AppGroupManagementRepository groupManagementRepository;
     @Autowired

@@ -26,7 +26,7 @@ public class ServerManagementApiController {
     @Autowired
     ServerManagementRepository serverManagementRepository;
     @Autowired
-    predictMmEquipmentCabinetRepository pmecDAO;
+    PredictMmEquipmentCabinetRepository pmecDAO;
     @Autowired
     HostManagementRepository hostManagementRepository;
     @Autowired

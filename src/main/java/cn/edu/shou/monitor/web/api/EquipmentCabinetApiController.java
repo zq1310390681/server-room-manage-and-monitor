@@ -2,7 +2,7 @@ package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmEquipmentCabinetForm;
 import cn.edu.shou.monitor.domain.predictMmEquipmentCabinet;
-import cn.edu.shou.monitor.service.predictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ import java.util.Map;
 @RequestMapping(value = "/predictCenter/api/cabinet")
 public class EquipmentCabinetApiController {
     @Autowired
-    predictMmEquipmentCabinetRepository equipmentCabinetRepository;
+    PredictMmEquipmentCabinetRepository equipmentCabinetRepository;
     @RequestMapping(value = "/getAllCabinet")
     public List<predictMmEquipmentCabinet> getAllCabinet(){
         return equipmentCabinetRepository.findAll();

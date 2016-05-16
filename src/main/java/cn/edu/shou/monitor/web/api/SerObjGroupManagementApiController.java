@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.PredictMmServiceObjGroupForm;
-import cn.edu.shou.monitor.domain.predictMmServiceObjGroup;
+import cn.edu.shou.monitor.domain.PredictMmServiceObjGroup;
 import cn.edu.shou.monitor.service.SerObjGroupManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,40 +24,40 @@ public class SerObjGroupManagementApiController {
     SerObjGroupManagementRepository serObjGroupManagementRepository;
     //获取所有服务对象分组数据信息
     @RequestMapping(value = "/getAllSerObjGroup")
-    public List<predictMmServiceObjGroup> getAllSerObjGroup(){
+    public List<PredictMmServiceObjGroup> getAllSerObjGroup(){
         return serObjGroupManagementRepository.findAll();
     }
     //创建和更新服务对象分组
     @RequestMapping(value = "/createAndUpdateSerObjGroup",method = RequestMethod.GET)
-    public List<predictMmServiceObjGroup> createAndUpdateSerObjGroup(PredictMmServiceObjGroupForm serObjGroupForm) {
+    public List<PredictMmServiceObjGroup> createAndUpdateSerObjGroup(PredictMmServiceObjGroupForm serObjGroupForm) {
         long recordId=serObjGroupForm.getId();//获取记录ID
-        predictMmServiceObjGroup predictSerObjGroup= null;
+        PredictMmServiceObjGroup predictSerObjGroup= null;
         if(recordId==0){
-            predictSerObjGroup=new predictMmServiceObjGroup();
+            predictSerObjGroup=new PredictMmServiceObjGroup();
         }else {
             predictSerObjGroup=serObjGroupManagementRepository.findOne(recordId);
         }
         predictSerObjGroup.setGroupOrder(serObjGroupForm.getGroupOrder());
         predictSerObjGroup.setSerObjGroupName(serObjGroupForm.getSerObjGroupName());
         serObjGroupManagementRepository.save(predictSerObjGroup);
-        List<predictMmServiceObjGroup> list=new ArrayList<predictMmServiceObjGroup>();
+        List<PredictMmServiceObjGroup> list=new ArrayList<PredictMmServiceObjGroup>();
         list.add(predictSerObjGroup);
         return list;
     }
 
     //删除服务对象分组
     @RequestMapping(value = "/deleteSerObjGroup/{id}")
-    public List<predictMmServiceObjGroup> deleteSerObjGroup(@PathVariable long id){
-        predictMmServiceObjGroup predictSerObjGroup=serObjGroupManagementRepository.findOne(id);
+    public List<PredictMmServiceObjGroup> deleteSerObjGroup(@PathVariable long id){
+        PredictMmServiceObjGroup predictSerObjGroup=serObjGroupManagementRepository.findOne(id);
         serObjGroupManagementRepository.delete(predictSerObjGroup);
-        List<predictMmServiceObjGroup> list=new ArrayList<predictMmServiceObjGroup>();
+        List<PredictMmServiceObjGroup> list=new ArrayList<PredictMmServiceObjGroup>();
         list.add(predictSerObjGroup);
         return list;
     }
     //判断组序号与组名称是否已经存在
     @RequestMapping(value = "/serObjGroupExit/{groupOrder}/{groupName}")
     public Map<String,Boolean> serObjGroupExit(@PathVariable String groupOrder,@PathVariable String groupName){
-        predictMmServiceObjGroup serviceObjGroup=new predictMmServiceObjGroup();
+        PredictMmServiceObjGroup serviceObjGroup=new PredictMmServiceObjGroup();
         Map<String,Boolean>results = new HashMap<String,Boolean>();
         boolean orderExit=false;//组序号是否存在
         boolean groupNameExit = false; //组名称是否存在

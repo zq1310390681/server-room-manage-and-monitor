@@ -12,7 +12,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class predictMmServiceObjGroup extends BaseEntity {
+public class PredictMmServiceObjGroup extends BaseEntity {
     @Getter  @Setter
     private long groupOrder;//分组的排序
     @Getter @Setter
