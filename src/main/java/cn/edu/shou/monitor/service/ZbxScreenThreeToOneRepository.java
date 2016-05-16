@@ -21,36 +21,36 @@ public class ZbxScreenThreeToOneRepository {
     //关于disk的
     @TargetDataSource(name = "zabbix")
     public List<Map<String,Object>> getDisk(){
-        return screenRepository.getDisk();
+        return screenRepository.getDiskDis();
     }
     @RequestMapping(value = "/disk192")
     @TargetDataSource(name = "zabbix192")
     public List<Map<String,Object>> getDisk192(){
-        return screenRepository.getDisk();
+        return screenRepository.getDiskDis();
     }
 
     //关于cpu的
     @TargetDataSource(name = "zabbix")
     public List<Map<String,Object>> getCpu(){
-        return screenRepository.getCpu();
+        return screenRepository.getCpuDis();
     }
 
     @RequestMapping(value = "/cpu192")
     @TargetDataSource(name = "zabbix192")
     public List<Map<String,Object>> getCpu192(){
-        return screenRepository.getCpu();
+        return screenRepository.getCpuDis();
     }
 
     //关于ram的
     @TargetDataSource(name = "zabbix")
     public List<Map<String,Object>> getRam(){
-        return screenRepository.getRam();
+        return screenRepository.getRamDis();
     }
 
     @RequestMapping(value = "/ram192")
     @TargetDataSource(name = "zabbix192")
     public List<Map<String,Object>> getRam192(){
-        return screenRepository.getRam();
+        return screenRepository.getRamDis();
     }
 
 }
