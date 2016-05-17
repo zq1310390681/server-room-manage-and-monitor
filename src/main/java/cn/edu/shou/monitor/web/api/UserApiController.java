@@ -16,8 +16,6 @@ public class UserApiController {
     @Autowired
     private UserRepository usDAO;
 
-
-
     //通过用户名获取用户信息
     @RequestMapping(value="/getuserbyusername", method= RequestMethod.GET)
     public User getuserbyusername(String userName){

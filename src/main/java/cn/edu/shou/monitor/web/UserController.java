@@ -71,8 +71,7 @@ public class UserController {
         return "userinfoedit";
     }
     @RequestMapping(value = "/edit/image",method = RequestMethod.POST)
-    public String setUserInfo(Model model,@RequestParam String imagePath, @RequestParam Long id)
-    {
+    public String setUserInfo(Model model,@RequestParam String imagePath, @RequestParam Long id){
         User user = userDAO.findOne(id);
         user.setImagePath(imagePath);
         userDAO.save(user);

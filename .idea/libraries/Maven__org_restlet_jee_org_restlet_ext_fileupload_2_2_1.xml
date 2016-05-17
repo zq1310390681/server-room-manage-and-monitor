@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: org.restlet.jee:org.restlet.ext.fileupload:2.2.1">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../m2jar/.m2/repository/org/restlet/jee/org.restlet.ext.fileupload/2.2.1/org.restlet.ext.fileupload-2.2.1.jar!/" />
+      <root url="jar://D:/project/.m2/repository/org/restlet/jee/org.restlet.ext.fileupload/2.2.1/org.restlet.ext.fileupload-2.2.1.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/../../m2jar/.m2/repository/org/restlet/jee/org.restlet.ext.fileupload/2.2.1/org.restlet.ext.fileupload-2.2.1-javadoc.jar!/" />
+      <root url="jar://D:/project/.m2/repository/org/restlet/jee/org.restlet.ext.fileupload/2.2.1/org.restlet.ext.fileupload-2.2.1-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../../m2jar/.m2/repository/org/restlet/jee/org.restlet.ext.fileupload/2.2.1/org.restlet.ext.fileupload-2.2.1-sources.jar!/" />
+      <root url="jar://D:/project/.m2/repository/org/restlet/jee/org.restlet.ext.fileupload/2.2.1/org.restlet.ext.fileupload-2.2.1-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

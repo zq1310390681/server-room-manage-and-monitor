@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/3/15 0015.
@@ -57,6 +59,18 @@ public class MiddleApiController {
         mmMiddle.setMiddleNote(mmMiddleForm.getMiddleNote());
         mmMiddle.setMiddleType(mmMiddleForm.getMiddleType());
         mmMiddle.setMiddleVersion(mmMiddleForm.getMiddleVersion());
+
+        ZbxHostServiceImpl zbxHost = new ZbxHostServiceImpl();
+        Map<String,String> midType = new HashMap<>();
+        midType.put("1","iis");
+        midType.put("2","tomact");
+        midType.put("3","sql");
+        midType.put("4","oracle");
+        midType.put("5","Jvm");
+        String type = mmMiddleForm.getMiddleType();
+        if(type.equals("1")){
+
+        }
         middleRepository.save(mmMiddle);
         List<predictMmMiddle> list=new ArrayList<predictMmMiddle>();
         list.add(mmMiddle);
