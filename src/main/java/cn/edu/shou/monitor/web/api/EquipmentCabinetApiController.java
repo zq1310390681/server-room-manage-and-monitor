@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web.api;
 
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmEquipmentCabinetForm;
-import cn.edu.shou.monitor.domain.predictMmEquipmentCabinet;
+import cn.edu.shou.monitor.domain.PredictMmEquipmentCabinet;
 import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,15 +23,15 @@ public class EquipmentCabinetApiController {
     @Autowired
     PredictMmEquipmentCabinetRepository equipmentCabinetRepository;
     @RequestMapping(value = "/getAllCabinet")
-    public List<predictMmEquipmentCabinet> getAllCabinet(){
+    public List<PredictMmEquipmentCabinet> getAllCabinet(){
         return equipmentCabinetRepository.findAll();
     }
     @RequestMapping(value = "/createAndUpdateCabinet",method = RequestMethod.GET)
-    public List<predictMmEquipmentCabinet> createAndUpdateCabinet(predictMmEquipmentCabinetForm cabinetForm){
+    public List<PredictMmEquipmentCabinet> createAndUpdateCabinet(predictMmEquipmentCabinetForm cabinetForm){
         long recordId = cabinetForm.getId();
-        predictMmEquipmentCabinet equipmentCabinet = null;
+        PredictMmEquipmentCabinet equipmentCabinet = null;
         if (recordId == 0){
-            equipmentCabinet = new predictMmEquipmentCabinet();
+            equipmentCabinet = new PredictMmEquipmentCabinet();
         }else {
             equipmentCabinet = equipmentCabinetRepository.findOne(recordId);
         }
@@ -39,21 +39,21 @@ public class EquipmentCabinetApiController {
         equipmentCabinet.setEquipmentCabinetUsedU(cabinetForm.getEquipmentCabinetUsedU());
 
         equipmentCabinetRepository.save(equipmentCabinet);
-        List<predictMmEquipmentCabinet> list=new ArrayList<predictMmEquipmentCabinet>();
+        List<PredictMmEquipmentCabinet> list=new ArrayList<PredictMmEquipmentCabinet>();
         list.add(equipmentCabinet);
         return list;
     }
     @RequestMapping(value = "/deleteCabinet/{id}" )
-    public List<predictMmEquipmentCabinet> deleteCabinet(@PathVariable long id){
-        predictMmEquipmentCabinet equipmentCabinet = equipmentCabinetRepository.findOne(id);
+    public List<PredictMmEquipmentCabinet> deleteCabinet(@PathVariable long id){
+        PredictMmEquipmentCabinet equipmentCabinet = equipmentCabinetRepository.findOne(id);
         equipmentCabinetRepository.delete(equipmentCabinet);
-        List<predictMmEquipmentCabinet> list = new ArrayList<predictMmEquipmentCabinet>();
+        List<PredictMmEquipmentCabinet> list = new ArrayList<PredictMmEquipmentCabinet>();
         list.add(equipmentCabinet);
         return list;
     }
     @RequestMapping(value = "/cabinetExit/{cabinet}")
     public Map<String,Boolean>cabinetExit(@PathVariable String cabinet){
-        predictMmEquipmentCabinet equCabinet = new predictMmEquipmentCabinet();
+        PredictMmEquipmentCabinet equCabinet = new PredictMmEquipmentCabinet();
         Map<String,Boolean> results = new HashMap<String ,Boolean>();
         boolean cabinetExit = false;// 机柜是否存在
         equCabinet = equipmentCabinetRepository.getCabByName(cabinet);

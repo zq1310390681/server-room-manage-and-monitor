@@ -20,7 +20,7 @@
         <a class="menu-toggler" id="menu-toggler" href="#">
             <span class="menu-text"></span>
         </a>
-        <div th:replace="slider :: slidermenu(${'pj_pz_appGroup'})"></div>
+        <div th:replace="slider :: slidermenu(${'pj_yyyh'})"></div>
         <div class="main-content">
             <div class="breadcrumbs" id="breadcrumbs">
                 <script type="text/javascript">
@@ -35,10 +35,7 @@
                         <a href="#">监控管理配置</a>
                     </li>
                     <li class="active">
-                        <a href="#">系统配置</a>
-                    </li>
-                    <li class="active">
-                        <a href="#">配置应用分组</a>
+                        <a href="#">应用用户</a>
                     </li>
                 </ul><!-- .breadcrumb -->
                 <div class="nav-search" id="nav-search">
@@ -54,28 +51,33 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="appGroupGrid" style="position: absolute;width: 105%"></div>
+                    <div id="applicationUserGrid" style="position: absolute"></div>
                 </div>
             </div>
-            <!--应用分组模板-->
-            <div id="appGroupModelWnd" style="display:none">
+            <!--应用用户模板-->
+            <div id="applicationUserModelWnd" style="display:none">
                 <div>
                     <div style="margin:10px">
-                        <label style="margin-left: 50px" >分组排序:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="groupOrder"/>
+                        <label style="margin-left: 46px" >应用用户单位:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="applicationUserCompany"/>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin:10px">
-                        <label style="margin-left: 50px" >分组名称:</label>
-                        <input  style="margin-left: 10px;height:30px;width:340px"  id="appGroupName" />
+                        <label style="margin-left: 46px" >应用用户名称:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="applicationUserName"/>
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 60px" >应用用户IP:</label>
+                        <input  style="margin-left: 10px;height:30px;width:400px"  id="applicationUserIp" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveAppGroup"  class="k-button btn-info" style="margin-left: 109px;color:white "onclick="submitAppGroupModel()">
+                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 80px;"onclick="submitApplicationUserModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeAppGroupModel" class="k-button btn-danger" style="margin-left: 29px;color:white" >
+                        <button id="closeApplicationUserModel" class="k-button" style="margin-left: 80px;" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -93,7 +95,7 @@
             </div>
             <div id="outputWnd" style="display:none">
                 <div style="margin-top: 10px">
-                    <label style="margin-left: 52px" >选择服务器:</label>
+                    <label style="margin-left: 52px" >选择应用用户:</label>
                     <input  style="margin-left: 10px;height:30px;width:400px" id="selection"/><label style="color: red;margin-left: 5px">*</label>
                     <button style="margin-left:400px;margin-top:80px;height:25px">导出</button>
                     <button id="closeSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
@@ -150,21 +152,24 @@
 <script src="/js/jquery.cookie.js"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
-var crudAppGroupBaseUrl = "/predictCenter/api/appGroup";  //根地址
-var appGroupGridDataSource;        //应用分组数据源
-var appGroupModelWnd;  //声明弹出的窗体
-var appGroupRecordId;  //声明数据选中行的id
+var crudApplicationUserBaseUrl = "/predictCenter/api/applicationUser";  //根地址
+var dropDownListUrl = "/predictCenter/api/dropDownList";  //根地址
+var applicationUserGridDataSource;        //应用用户数据源
+var applicationUserModelWnd;  //声明弹出的窗体
+var applicationUserRecordId;  //声明数据选中行的id
+
 //主程序入口
 $(function(){
-    setAppGroupGridDataSource();//应用分组数据源
-    setAppGroupGrid();//获取应用分组数据列表
+    setApplicationUserGridDataSource();//设应用用户数据源
+    setApplicationUserGrid();//设置应用用户数据列表
+    //setDropDownList();
 });
-//设置应用分组数据源
-function setAppGroupGridDataSource(){
-    appGroupGridDataSource=new kendo.data.DataSource({
+//设置服务对象数据源
+function setApplicationUserGridDataSource(){
+    applicationUserGridDataSource=new kendo.data.DataSource({
         transport: {
             read:  {
-                url: crudAppGroupBaseUrl + "/getAllAppGroup",
+                url: crudApplicationUserBaseUrl + "/getAllApplicationUser",
                 dataType: "json"
             }
         },
@@ -172,35 +177,40 @@ function setAppGroupGridDataSource(){
         pageSize: 20,
         schema: {
             model: {
-                id: "id"
+                id: "id",
+                fields: {
+                    id: { editable: false, nullable: true },
+                    applicationUserCompany: {validation: { required: { message: "必填项" } }  },
+                    applicationUserName: {validation: { required: { message: "必填项" } }  },
+                    applicationUserIp: {validation: { required: { message: "必填项" } }  }
+                }
             }
         }
     });
 }
-//应用分组 数据表函数
-function setAppGroupGrid(){
-    $("#appGroupGrid").kendoGrid({
-        dataSource:appGroupGridDataSource,
-        toolbar:[{template: kendo.template($("#appGroupModel_toolbar").html())},
+//服务对象 数据表函数
+function setApplicationUserGrid(){
+    $("#applicationUserGrid").kendoGrid({
+        dataSource:applicationUserGridDataSource,
+        toolbar:[{template: kendo.template($("#ApplicationUserModel_toolbar").html())},
             {template: kendo.template($("#inputModel_toolbar").html())},
             {template: kendo.template($("#outputModel_toolbar").html())}],
         columns:[
-            /*{title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"10%"},*/
-            {field:"groupOrder",title:"分组排序"},
-            {field:"appGroupName",title:"分组名称"},
+            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+            {field:"applicationUserCompany",title:"应用用户所在单位"},
+            {field:"applicationUserName",title:"应用用户名称"},
+            {field:"applicationUserIp",title:"应用用户IP"},
             { command: [
-               /* {name:"view",text:"查看",
+                 {name:"view",text:"查看",
                     click:function(e){
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                        if(dataItem==undefined){
-                            dataItem=submitRecObj;
-                        }
-                        var url ="/predictCenter/getAppGroupView/"+dataItem.id+".html";
+                        var url ="/predictCenter/getApplicationUserViewInfo/"+dataItem.id+".html";
                         window.open(url);
                     }
-                },*/
-                {text: "编辑", click: showAppGroupModel,className: "btn btn-info"},   //编辑窗体内容
-                {text: "删除",click:delAppGroupModel ,className:"btn btn-danger "}    //删除记录
+                },
+                {text: "编辑", click: showApplicationUserModel },   //编辑窗体内容
+                { text: "删除",click:delApplicationUserModel }    //删除记录
+
             ],
                 title: "操作"
             }
@@ -224,13 +234,13 @@ function setAppGroupGrid(){
         },
         selectable: "row"
     });
-    appGroupModelWnd = $("#appGroupModelWnd").kendoWindow({
-        title: "应用分组",
+    applicationUserModelWnd = $("#applicationUserModelWnd").kendoWindow({
+        title: "应用用户",
         modal: true,
         visible: false,
         resizable: false,
-        width: 570,
-        height:200
+        width: 630,
+        height:250
     }).data("kendoWindow");
     //导入模板窗体
     inputWnd = $("#inputWnd").kendoWindow({
@@ -297,106 +307,78 @@ function submitFolderAjax(submitURL,objData){
         }
     })
 }
-
 //查看弹窗
-function showAppGroupModel(e) {
+function showApplicationUserModel(e) {
     e.preventDefault();
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-    if(dataItem==undefined){
-        dataItem=submitRecObj;
-    }
-    appGroupRecordId=dataItem.id;//记录当前被选中的虚拟机的id
+    applicationUserRecordId=dataItem.id;//记录当前被选中的虚拟机的id
 
     //文本框
-    $("#groupOrder").val(dataItem.groupOrder);    //分组排序
-    $("#appGroupName").val(dataItem.appGroupName);    //应用分组名称
-    appGroupModelWnd.center().open();
+    $("#applicationUserCompany").val(dataItem.applicationUserCompany);//应用用户所在单位
+    $("#applicationUserName").val(dataItem.applicationUserName);    //应用用户名称
+    $("#applicationUserIp").val(dataItem.applicationUserIp);    //应用用户IP
+    applicationUserModelWnd.center().open();
 }
 //删除数据
-function delAppGroupModel(e){
+function delApplicationUserModel(e){
     e.preventDefault();
 
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-    if(dataItem==undefined){
-        dataItem=submitRecObj;
-    }
-    appGroupRecordId=dataItem.id;   //记录当前被选中的应用分组的id
+    applicationUserRecordId=dataItem.id;   //记录当前被选中的应用用户的id
 
     swal({
-                title: "确认要删除该数据吗？",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#55c6dc",
-                confirmButtonText: "删除",
-                cancelButtonText: "取消",
-                closeOnConfirm: true
-            },function(){
-                $.ajax({
-                    url:crudAppGroupBaseUrl+"/deleteAppGroup/"+appGroupRecordId,
-                    dataType: "json",   //返回格式为json
-                    async: true,//同步，这也是ajax重要特性
-                    type: "GET",   //请求方式
-                    success:function(data){
-                        //alert("记录删除成功！");
-                        setAppGroupGridDataSource();//获取应用分组数据源
-                        setAppGroupGrid();//重新生成表单
-                    }
-                })
+        title: "确认要删除该数据吗？",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#55c6dc",
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        closeOnConfirm: true
+    },function(){
+        $.ajax({
+            url:crudApplicationUserBaseUrl+"/deleteApplicationUser/"+applicationUserRecordId,
+            dataType: "json",   //返回格式为json
+            async: true,//同步，这也是ajax重要特性
+            type: "GET",   //请求方式
+            success:function(data){
+                //alert("记录删除成功！");
+                setApplicationUserGridDataSource();//获取应用用户数据源
+                setApplicationUserGrid();//重新生成表单
             }
-    );
+        })
+    });
 }
-//添加数据
-function addAppGroupModel(){
-    $("#groupOrder").val("");
-    $("#appGroupName").val("");
-    appGroupRecordId=0;//添加应用分组，模板id设为0.
-    appGroupModelWnd.center().open();
 
+
+//添加数据
+function addApplicationUserModel(){
+    $("#applicationUserCompany").val("");
+    $("#applicationUserName").val("");
+    $("#applicationUserIp").val("");
+    applicationUserRecordId=0;//添加应用用户，模板id设为0.
+    applicationUserModelWnd.center().open();
 }
 // 保存
-function submitAppGroupModel(){
-    var groupOrderVal= $("#groupOrder").val();
-    var appGroupNameVal= $("#appGroupName").val();
-
-    if(groupOrderVal==""||appGroupNameVal==""){
+function submitApplicationUserModel(){
+    var applicationUserCompanyVal= $("#applicationUserCompany").val();
+    var applicationUserNameVal= $("#applicationUserName").val();
+    var applicationUserIpVal= $("#applicationUserIp").val();
+    if(applicationUserNameVal==""||applicationUserIpVal==""||applicationUserCompanyVal==""){
         alert("带有红色标记的为必填项");
         return;
     }else{
-        var submitAppGroupModelData={
+        var submitApplicationUserModelData={
             //提交当前行数据的所有数据
-            id:appGroupRecordId,
-            groupOrder:groupOrderVal,
-            appGroupName:appGroupNameVal
+            id:applicationUserRecordId,
+            applicationUserCompany:applicationUserCompanyVal,
+            applicationUserName:applicationUserNameVal,
+            applicationUserIp:applicationUserIpVal
         };
-        if(appGroupRecordId ==0){
-            //ajax请求判断组序号和组名称是否存在
-            $.ajax({
-                url:"/predictCenter/api/appGroup/appGroupExit/"+groupOrderVal+"/"+appGroupNameVal,
-                dataType:"json",
-                async:false,
-                type:"GET",
-                success:function(data){
-                    //判断组序号和组名称是否存在
-                    if(!data.order){
-                        alert("组序号已存在！");
-                        return;
-                    }else if(!data.groupName){
-                        alert("组名称已存在！");
-                        return;
-                    }else{
-                        submitAppGroupModelAjax(crudAppGroupBaseUrl + "/createAndUpdateAppGroup",submitAppGroupModelData);
-                    }
-                }
-            });
-        }else{
-            submitAppGroupModelAjax(crudAppGroupBaseUrl + "/createAndUpdateAppGroup",submitAppGroupModelData);
-        }
-
+        submitApplicationUserModelAjax(crudApplicationUserBaseUrl + "/createAndUpdateApplicationUser",submitApplicationUserModelData);
     }
 }
 //提交数据至后台
-var submitRecObj=null;//提交记录对象
-function submitAppGroupModelAjax(submitURL,objData){
+function submitApplicationUserModelAjax(submitURL,objData){
     $.ajax({
         url:submitURL,
         dataType: "json",   //返回格式为json
@@ -404,20 +386,19 @@ function submitAppGroupModelAjax(submitURL,objData){
         type: "GET",   //请求方式
         data:objData,
         success:function(data){
-            submitRecObj=data;
-            $("#appGroupModelWnd").data("kendoWindow").close();
-            setAppGroupGridDataSource();//获取应用分组数据源
-            setAppGroupGrid();//重新生成表单
+            $("#applicationUserModelWnd").data("kendoWindow").close();
+            setApplicationUserGridDataSource();//获取应用用户数据源
+            setApplicationUserGrid();//重新生成表单
         }
     })
 };
 // 关闭窗口
-$("#closeAppGroupModel").click( function (e) {
-    $("#appGroupModelWnd").data("kendoWindow").close();
+$("#closeApplicationUserModel").click( function (e) {
+    $("#applicationUserModelWnd").data("kendoWindow").close();
 });
 </script>
-<script id="appGroupModel_toolbar" type="text/x-kendo-template">
-    <button class="k-button k-button-icontext k-grid-add" id="appGroupModel_toolbar_queryBtn" onclick="addAppGroupModel();"><span class="k-icon k-add"></span>添加应用分组</button>   <!--添加证书-->
+<script id="ApplicationUserModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="ApplicationUserModel_toolbar_queryBtn" onclick="addApplicationUserModel();"><span class="k-icon k-add"></span>添加应用用户</button>   <!--添加证书-->
 </script>
 <script id="inputModel_toolbar" type="text/x-kendo-template">
     <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->

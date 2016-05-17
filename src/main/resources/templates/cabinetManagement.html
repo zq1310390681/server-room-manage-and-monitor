@@ -64,11 +64,11 @@
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCabinet"  class="k-button" style="margin-left: 122px;color:#55c6dc "onclick="submitCabinetModel()">
+                        <button id="saveCabinet"  class="k-button btn-info" style="margin-left: 150px;color:white"onclick="submitCabinetModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeCabinetModel" class="k-button" style="margin-left: 29px;color:#ff0000" >
+                        <button id="closeCabinetModel" class="k-button btn-danger" style="margin-left: 29px;color:white" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -178,11 +178,11 @@ function setCabinetGrid(){
             {template: kendo.template($("#inputModel_toolbar").html())},
             {template: kendo.template($("#outputModel_toolbar").html())}],
         columns:[
-            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"10%"},
+          //  {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"10%"},
             {field:"equipmentCabinetName",title:"机柜信息"},
             { command: [
-                {text: "编辑", click: showCabinetModel },   //编辑窗体内容
-                { text: "删除",click:delCabinetModel }    //删除记录
+                {text: "编辑", click: showCabinetModel ,className: "btn btn-info"},   //编辑窗体内容
+                { text: "删除",click:delCabinetModel,className:"btn btn-danger " }    //删除记录
             ],
                 title: "操作"
             }
@@ -284,6 +284,9 @@ function submitFolderAjax(submitURL,objData){
 function showCabinetModel(e) {
     e.preventDefault();
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     cabinetRecordId=dataItem.id;//记录当前被选中的机柜id
 
     //文本框
@@ -295,6 +298,9 @@ function delCabinetModel(e){
     e.preventDefault();
 
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     cabinetRecordId=dataItem.id;   //记录当前被选中的机柜id
 
     swal({
@@ -340,23 +346,29 @@ function submitCabinetModel(){
             id:cabinetRecordId,
             equipmentCabinetName:equipmentCabinetNameVal
         };
-        $.ajax({
-            url:"/predictCenter/api/cabinet/cabinetExit/"+equipmentCabinetNameVal,
-            dataType:"json",
-            async:true,
-            type:"GET",
-            success:function(data){
-                //机柜是否存在
-                if(!data.cabinet){
-                    alert("机柜已存在！");
-                    return;
+        if(cabinetRecordId==0){
+            $.ajax({
+                url:"/predictCenter/api/cabinet/cabinetExit/"+equipmentCabinetNameVal,
+                dataType:"json",
+                async:true,
+                type:"GET",
+                success:function(data){
+                    //机柜是否存在
+                    if(!data.cabinet){
+                        alert("机柜已存在！");
+                        return;
+                    }else{
+                        submitCabinetModelAjax(crudCabinetBaseUrl + "/createAndUpdateCabinet",submitCabinetModelData);
+                    }
                 }
-                submitCabinetModelAjax(crudCabinetBaseUrl + "/createAndUpdateCabinet",submitCabinetModelData);
-            }
-        });
+            });
+        }else{
+            submitCabinetModelAjax(crudCabinetBaseUrl + "/createAndUpdateCabinet",submitCabinetModelData);
+        }
     }
 }
 //提交数据至后台
+var submitRecObj=null;//提交记录对象
 function submitCabinetModelAjax(submitURL,objData){
     $.ajax({
         url:submitURL,
@@ -365,6 +377,7 @@ function submitCabinetModelAjax(submitURL,objData){
         type: "GET",   //请求方式
         data:objData,
         success:function(data){
+            submitRecObj=data;
             $("#cabinetModelWnd").data("kendoWindow").close();
             setCabinetGridDataSource();//获取机柜数据源
             setCabinetGrid();//重新生成表单

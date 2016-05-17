@@ -46,7 +46,6 @@
                 </div><!-- #nav-search -->
             </div>
 
-
         </div><!-- /.main-content -->
         <div class="page-content">
             <div>
@@ -79,20 +78,20 @@
                         <input  style="margin-left: 10px;height:30px;width:450px"  id="alarmGrade" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>-->
-                   <!-- <div style="margin:10px">
-                        <label style="margin-left: 36px" >告警信息:</label>
+                    <div style="margin:10px">
+                        <label style="margin-left: 36px" >提示信息:</label>
                         <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:445px" readonly="true"  id="alarmInform" ></textarea>
-                    </div>-->
+                    </div>
                     <div style="margin-top: 10px">
                         <label style="margin-left: 73px">备注:</label>
                         <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:445px"  id="alarmNote" ></textarea>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="alarmModel"  class="k-button" style="margin-left: 185px;"onclick="submitAlarmModel()">
+                        <button id="alarmModel"  class="k-button btn-info" style="margin-left: 185px;color:white"onclick="submitAlarmModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeAlarmModel" class="k-button" style="margin-left: 50px;" >
+                        <button id="closeAlarmModel" class="k-button btn-danger" style="margin-left: 50px;color:white" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -186,9 +185,26 @@ function setDropDownList(){
                     dataType: "json"
                 }
             }
+        },
+        change:function(e){
+            var value = this.value();
+            getInform(value);
         }
     });
-
+    //在提示信息框里显示提示信息
+    function getInform(val){
+        var description = "";
+        $.ajax({
+            dataType:"json",
+            url:crudAlarmBaseUrl + "/getDescription/"+val,
+            async:false,
+            success:function(data){
+                description = data.description;
+            }
+        });
+        //绑定提示信息
+        $("#alarmInform").val(description);
+    }
    /* $("#alarmGrade").kendoDropDownList({
         optionLabel: "选择告警等级",
         dataTextField: "alarmGradeName",
@@ -203,6 +219,7 @@ function setDropDownList(){
         }
     });*/
 }
+
 //主程序入口
 $(function(){
     setAlarmGridDataSource();//设置告警规则
@@ -237,18 +254,21 @@ function setAlarmGrid(){
             {field:"equipTypeElement",title:"告警设备要素",template:"#=getEquipTypeName(equipTypeElement)#"},
             {field:"alarmThreshold",title:"告警阈值(%)"},
            // {field:"alarmGrade",title:"告警等级",template:"#=getAlarmGradeById(alarmGrade)#"},
-            {field:"alarmInform",title:"告警信息"},
+           // {field:"alarmInform",title:"告警信息",template:"#=getInform(alarmInform)#"},
             {field:"alarmNote",title:"备注",hidden:true},
             { command: [
-                {name:"view",text:"查看",
+                {name:"view",text:"查看",className:"btn btn-success",
                 click:function(e){
                     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                    if(dataItem==undefined){
+                        dataItem=submitRecObj;
+                    }
                     var url ="/predictCenter/getAlarmViewInfo/"+dataItem.id+".html";
                     window.open(url);
                     }
                  },
-                {text: "编辑", click: showAlarmModel },   //编辑窗体内容
-                { text: "删除",click:delAlarmModel }    //删除记录
+                {text: "编辑", click: showAlarmModel ,className: "btn btn-info"},   //编辑窗体内容
+                {text: "删除",click:delAlarmModel ,className:"btn btn-danger " }    //删除记录
 
             ],
                 title: "操作",width:"30%"
@@ -279,7 +299,7 @@ function setAlarmGrid(){
         visible: false,
         resizable: false,
         width: 650,
-        height:250
+        height:350
     }).data("kendoWindow");
 }
 //获取设备类型名称
@@ -313,7 +333,11 @@ function getEquipTypeName(equipTypeId){
 function showAlarmModel(e) {
     e.preventDefault();
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     alarmRecordId=dataItem.id;//记录当前被选中的告警规则的id
+
 
     //非下拉框
     $("#alarmNote").val(dataItem.alarmNote);    //备注
@@ -333,6 +357,9 @@ function delAlarmModel(e){
     e.preventDefault();
 
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     alarmRecordId=dataItem.id;   //记录当前被选中的告警规则的id
     swal({
                 title: "确认要删除该数据吗？",
@@ -393,7 +420,9 @@ function submitAlarmModel(){
         };
         submitAlarmModelAjax(crudAlarmBaseUrl + "/createAndUpdateAlarm",submitAlarmModelData);
     }
+
 }
+var submitRecObj=null;//提交记录对象
 //提交数据至后台
 function submitAlarmModelAjax(submitURL,objData){
     $.ajax({
@@ -403,11 +432,13 @@ function submitAlarmModelAjax(submitURL,objData){
         type: "GET",   //请求方式
         data:objData,
         success:function(data){
+            submitRecObj=data;
             $("#alarmModelWnd").data("kendoWindow").close();
             setAlarmGridDataSource();//获取告警规则数据源
             setAlarmGrid();//重新生成表单
         }
     })
+   // $("#alarmGrid").data("kendoGrid").refresh();
 };
 // 关闭窗口
 $("#closeAlarmModel").click( function (e) {

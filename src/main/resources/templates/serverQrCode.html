@@ -30,6 +30,14 @@
                                     <label th:text="*{server} ? *{server.serverSerialNumber} : '(no user specified)'"></label>
                                 </div>
                             </div>
+                            <div class="profile-info-row" style="height: 46px">
+                                <div class="profile-info-name">
+                                    对应应用：
+                                </div>
+                                <div class="profile-info-value">
+                                    <label th:text="*{server} ? *{server.serverApp} : '(no user specified)'"></label>
+                                </div>
+                            </div>
                             <div class="profile-info-row">
                                 <div class="profile-info-name">
                                     服务器S/N号：

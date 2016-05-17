@@ -6,12 +6,22 @@ import cn.edu.shou.monitor.domain.predictMmHost;
 import cn.edu.shou.monitor.domain.predictMmServers;
 import cn.edu.shou.monitor.domain.predictMmServiceObjectAndApplication;
 import cn.edu.shou.monitor.service.*;
+import cn.edu.shou.monitor.web.FileOperate;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +32,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value ="/predictCenter/api/application" )
 public class ApplicationManagementApiController {
+    @Value("${spring.main.homedir}")
+    String homedir;
     @Autowired
     cn.edu.shou.monitor.service.ApplicationManagementRepository ApplicationManagementRepository;
     @Autowired
@@ -42,7 +54,6 @@ public class ApplicationManagementApiController {
     CsvUtilRepository csvUtilRepository;
     @Autowired
     ZActiveMQRepository activeMq;
-
 
     //获取所有应用数据信息
     @RequestMapping(value = "/getAllApplications")
@@ -97,7 +108,7 @@ public class ApplicationManagementApiController {
     }
     //创建应用
     @RequestMapping(value = "/createAndUpdateApplication",method = RequestMethod.GET)
-        public List<predictMmApplications> createApplication(predictMmApplicationsForm applicationsForm) {
+        public predictMmApplications createApplication(predictMmApplicationsForm applicationsForm) {
         long recordId=applicationsForm.getId();//获取记录ID
         predictMmApplications predictApplication=null;
         predictMmServiceObjectAndApplication predictSoAndApp = null;
@@ -113,7 +124,7 @@ public class ApplicationManagementApiController {
         predictApplication.setApplicationServiceObject(applicationsForm.getApplicationServiceObject());
         predictApplication.setApplicationHost(applicationsForm.getApplicationHost());
         predictApplication.setApplicationMiddlewareName(applicationsForm.getApplicationMiddlewareName());
-        predictApplication.setApplicationRemark(applicationsForm.getServerRemark());
+        predictApplication.setApplicationRemark(applicationsForm.getApplicationRemark());
         predictApplication.setKeyApp(applicationsForm.getKeyApp());
 
         String[] predictHostId = applicationsForm.getApplicationHost().split(",");
@@ -161,10 +172,12 @@ public class ApplicationManagementApiController {
                     predictServer.getServerType(), predictServer.getServerIP(), predictServer.getServerStorageDevice(), cabinetName,
                     predictServer.getServerU(), appName,predictServer.getServerRemark());
         }
-        return list;
+
+
+        return predictApplication;
     }
     //删除应用
-    @RequestMapping(value = "/deleteApplication/{id}")
+    @RequestMapping(value = "/delaeteApplication/{id}")
     public List<predictMmApplications> deleteApplication(@PathVariable long id){
         predictMmApplications predictApplication=ApplicationManagementRepository.findOne(id);//删除应用表数据
         ApplicationManagementRepository.delete(predictApplication);
@@ -177,12 +190,92 @@ public class ApplicationManagementApiController {
     }
     //数据导出
     @RequestMapping(value = "/export")
-    public boolean exportData(){
-        String filePath="C:/Users/sqhe18/Desktop/";
+    public ResponseEntity<byte[]>  exportData(){
+        String filePath=homedir+"/download/";
         String fileName="应用.csv";
-        List<predictMmApplications>applicationses=getAllApplications();//获取到需要导出的数据
+        List exportDa = new ArrayList<>();
+        List<predictMmApplications> applicationses = getAllApplications();//获取到需要导出的数据
+        List<String>results=new ArrayList<String>();
+        String header="应用名称,重点应用,应用所在组,服务对象,所在主机,子系统,中间件名称";
+        for (predictMmApplications application:applicationses){
+            String values="";
+            if (application.getApplicationName()!=null){
+                values+=application.getApplicationName().replace(",","、")+",";
+            }else {
+                values+=application.getApplicationName()+",";
+            }
+            if (application.getKeyApp()!=null){
+                values+=application.getKeyApp().replace(",","、")+",";
+            }else {
+                values+=application.getKeyApp()+",";
+            }
+            if (application.getAppGroup()!=null){
+                values+=application.getAppGroup().replace(",","、")+",";
+            }else {
+                values+=application.getAppGroup()+",";
+            }
+            if (application.getApplicationServiceObject()!=null){
+                String appServiceObj=application.getApplicationServiceObject().replace(",","、")+",";
+                int index=appServiceObj.indexOf("|");//获取到|的位置
+                appServiceObj=appServiceObj.substring(index+1,appServiceObj.length());
+                values+=appServiceObj;
+            }else {
+                values+=application.getApplicationServiceObject()+",";
+            }
+            if (application.getHostName()!=null){
+                values+=application.getHostName().replace(",","、")+",";
+            }else {
+                values+=application.getHostName()+",";
+            }
+            if (application.getHostContent()!= null){
+                values+=application.getHostContent().replace(",","、")+",";
+            }else {
+                values+=application.getHostContent()+",";
+            }
+            if (application.getApplicationMiddlewareName()!=null){
+                String middleName=application.getApplicationMiddlewareName().replace(",","、")+",";
+                int index = middleName.indexOf("|");
+                middleName = middleName.substring(index+1,middleName.length());
+                values+=middleName;
+            }else {
+                values+=application.getApplicationMiddlewareName();
+            }
+            results.add(values);
+        }
 
-        csvUtilRepository.exportCsv(new File(filePath+fileName),applicationses);
-        return true;
+        csvUtilRepository.exportCsv(new File(filePath+fileName),results,header);
+
+        ResponseEntity<byte[]>  result = downFile("应用.csv");
+        return result;
+    }
+    public ResponseEntity<byte[]> downFile(String fileName)  {
+        HttpServletRequest req = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        //String path = req.getSession().getServletContext().getRealPath("/");
+        String filePath=homedir+"/download/"+fileName;//文件路径
+        try {
+            //filePath = URLEncoder.encode(filePath, "UTF-8");//转码解决IE下文件名乱码问题
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Http响应头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", filePath);
+        if (!FileOperate.exitFile(filePath)){
+            return null;
+        }
+        try {
+            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(filePath)),
+                    headers,
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //日志
+
+        }
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "error.txt");
+        return new ResponseEntity<byte[]>("文件不存在.".getBytes(), headers, HttpStatus.OK);
     }
 }

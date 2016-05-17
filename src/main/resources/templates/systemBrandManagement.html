@@ -62,33 +62,23 @@
             </div>
         </div><!-- /.main-content -->
         <div class="page-content">
-            <div id="tabstrip" >
-                <ul>
-                    <li class="k-state-active">品牌</li>    <!--默认展开tabstrip-->
-                </ul>
-                <div class="col-xs-12 col-sm-6">
-                    <div id="brandModelGrid"></div>
+                <div class="col-xs-10 ">
+                    <div id="brandModelGrid" style="position: absolute;width: 105%"></div>
                 </div>
-
-            </div>
             <!--品牌模板-->
             <div id="brandModelWnd" style="display:none" >
                 <div>
-                    <div style="margin-top: 10px">
-                        <label style="margin-left: 52px" >品牌类型:</label>
-                        <input  style="margin-left: 10px;height:30px;width:400px" id="systemBrandType"/><label style="color: red;margin-left: 5px">*</label>
-                    </div>
                     <div style="margin-top: 10px">
                         <label style="margin-left: 53px" >品牌名称:</label>
                         <input  style="margin-left: 10px;height:30px;width:400px"  id="systemBrandName" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveBrandModel"  class="k-button" style="marginleft: 180px;"onclick="submitBrandModel()">
+                        <button id="saveBrandModel"  class="k-button btn-info" style="margin-left: 162px;color: white"onclick="submitBrandModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeBrandModel"  class="k-button" style="margin-left: 100px;" >
+                        <button id="closeBrandModel"  class="k-button btn-danger" style="margin-left: 30px;color: white" >
                             <i class="icon-remove"></i>
                             取消
                         </button>
@@ -181,27 +171,13 @@
                 read:  {
                     url: crudServiceBaseUrl + "/getAllSystemBrands",
                     dataType: "json"
-                },
-                create:{
-                    url:crudServiceBaseUrl+"/createAndUpdateSystemBrand",
-                    dataType:"json"
-                },
-                destroy:{
-                    url:crudServiceBaseUrl+"/deleteSystemBrand",
-                    dataType:"json"
                 }
             },
             batch: true,
             pageSize: 20,
             schema: {
                 model: {
-                    id: "id",
-                    fields: {
-                        id: { editable: false, nullable: true },
-                        brandType:{validation:{required: { message: "必填项" } }},
-                        brandName:{validation:{required: { message: "必填项" } }}
-
-                    }
+                    id: "id"
                 }
             }
         });
@@ -213,11 +189,10 @@
             dataSource:brandModelGridDataSource,
             toolbar:[{template: kendo.template($("#brandModel_toolbar").html())}],
             columns:[
-                { field:"brandType",title:"品牌类型"},
                 { field: "brandName", title: "品牌名称"},
                 { command: [
-                    {text: "编辑", click: showBrandModel },   //编辑窗体内容
-                    { text: "删除",click:delBrandModel }    //删除记录
+                    {text: "编辑", click: showBrandModel,className:"btn btn-info" },   //编辑窗体内容
+                    { text: "删除",click:delBrandModel,className:"btn btn-danger " }    //删除记录
                 ] ,  title: "操作"}
             ],
             pageable: {
@@ -246,7 +221,7 @@
             visible: false,
             resizable: false,
             width: 630,
-            height:190
+            height:140
         }).data("kendoWindow");
     }
 
@@ -256,65 +231,68 @@
     function showBrandModel(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         brandModelRecordId=dataItem.id;//记录当前被选中的品牌模板的id
-        $("#systemBrandType").val(dataItem.brandType);//品牌类型
         $("#systemBrandName").val(dataItem.brandName);//品牌名称
         brandModelWnd.center().open();
     }
-
     //删除品牌数据
     function delBrandModel(e){
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         brandModelRecordId=dataItem.id;   //记录当前被选中的品牌模板的id
-        $.ajax(
-                {
-                    url:crudServiceBaseUrl+"/deleteSystemBrand/"+brandModelRecordId,
-                    dataType: "json",   //返回格式为json
-                    async: true,//同步，这也是ajax重要特性
-                    type: "GET",   //请求方式
-                    success:function(data){
-                        alert("记录删除成功！");
-                        setBrandModelGridDataSource();
-                        setBrandModelGrid();
-                    }
+        swal({
+            title: "确认要删除该数据吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#55c6dc",
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: true
+        },function() {
+            $.ajax({
+                url: crudServiceBaseUrl + "/deleteSystemBrand/" + brandModelRecordId,
+                dataType: "json",   //返回格式为json
+                async: true,//同步，这也是ajax重要特性
+                type: "GET",   //请求方式
+                success: function (data) {
+                    setBrandModelGridDataSource();
+                    setBrandModelGrid();
                 }
-        )
-
-    }
+            })
+        });
+   }
 
     //添加品牌数据
     function addBrandModel(){
-        $("#systemBrandType").val("");
         $("#systemBrandName").val("");
 
         brandModelRecordId=0;//添加品牌模板，模板id设为0.
         brandModelWnd.center().open();
     }
-
-
     // 添加品牌保存
     function submitBrandModel(){
-        var brandTypeVal= $("#systemBrandType").val();
         var brandNameVal= $("#systemBrandName").val();
 
-        if(brandTypeVal==""||brandNameVal==""){
+        if(brandNameVal==""){
             alert("带有红色标记的为必填项");
             return ;
-            }else
-             {
+            }else{
             var submitBrandModelData={
                 //提交当前行数据的所有数据
                 id:brandModelRecordId,
-                brandType:brandTypeVal,
                 brandName:brandNameVal
-
             };
             submitBrandModelAjax(crudServiceBaseUrl + "/createAndUpdateSystemBrand",submitBrandModelData);
         }
     }
-
     //提交品牌数据至后台
+    var submitRecObj=null;//提交记录对象
     function submitBrandModelAjax(submitURL,objData){
         $.ajax({
                     url:submitURL,
@@ -323,6 +301,7 @@
                     type: "GET",   //请求方式
                     data:objData,
                     success:function(data){
+                        submitRecObj=data;
                         $("#brandModelWnd").data("kendoWindow").close();
                         setBrandModelGridDataSource();
                         setBrandModelGrid();
@@ -335,59 +314,16 @@
             $("#brandModelWnd").data("kendoWindow").close();
     });
 
-       /*声明一级模板下拉框*/
-
-     //根据品牌Id 获取品牌类型
-    function getBrandTypeById(id){
-        var brandType;//品牌类型
-        $.ajax({
-            dataType:"json",
-            url:dropDownListUrl + "/getBrandTypeById/"+id,
-            async:false,                       //是否异步：不异步，页面加载同时加载数据
-            success:function(data){
-                brandType=data.brandType;
-            }
-        });
-        return brandType;
-    }
-
-    //设置下拉列表
-    function setDropDownList(){
-          //品牌类型下拉列表
-        $("#systemBrandType").kendoDropDownList({
-                optionLabel: "请选择...",
-                dataTextField: "brandType",
-                dataValueField: "id",
-                dataSource: {
-                    transport:{
-                        read:{
-                            dataType:"json",
-                            url:dropDownListUrl + "/getAllBrandTypes"
-                        }
-                    }
-                 }
-            });
-
-    }
     //程序入口
     $(function(){
         var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
         //品牌
         setBrandModelGridDataSource();   //调用设置应用模板 数据源函数
         setBrandModelGrid();              //调用设置应用模板 数据表函数
-
-        setDropDownList();
-        });
-
-
+     });
 </script>
 <script id="brandModel_toolbar" type="text/x-kendo-template">
     <button class="k-button k-button-icontext k-grid-add" id="brandModel_toolbar_queryBtn" onclick="addBrandModel();"><span class="k-icon k-add"></span>添加品牌</button>   <!--添加品牌-->
-
 </script>
-<script id="operationSystemModel_toolbar" type="text/x-kendo-template">
-      <button class="k-button k-button-icontext k-grid-add" id="operationSystemModel_toolbar_queryBtn" onclick="addOperationSystemModel();"><span class="k-icon k-add"></span>添加操作系统</button>   <!--添加品牌-->
-
-    </script>
 </body>
 </html>

@@ -7,12 +7,7 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/assets/css/dropzone.css" />
-
-
     <script th:replace="header :: header"></script>
-
-
-
     <link rel="stylesheet" href="/css/myTableCSS/myTableCSS.css"/>
     <link rel="stylesheet" href="/css/myTableCSS/wlsh.defult.css" title="Default Styles" media="screen"/>
 
@@ -106,11 +101,11 @@
                     </div>
 
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveApplicationModel"  class="k-button" style="margin-left: 180px;"onclick="submitApplicationModel()">
+                        <button id="saveApplicationModel"  class="k-button btn-info" style="margin-left: 180px;color:white;"onclick="submitApplicationModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeApplicationModel"  class="k-button" style="margin-left: 28px;" >
+                        <button id="closeApplicationModel"  class="k-button btn-danger" style="margin-left: 28px;color:white;" >
                             <i class="icon-remove"></i>
                             取消
                         </button>
@@ -250,26 +245,29 @@
                      {template: kendo.template($("#inputModel_toolbar").html())},
                      {template: kendo.template($("#outputModel_toolbar").html())}],
             columns:[
-                {title: "<input type='checkbox' id='chkAll' onclick='checkAll()'/>全选",template: '<input type="checkbox" name="selectChk"/>',width:"5%"},
-                { field:"applicationName",title:"应用名称"},
-                { field:"keyApp",title:"重点应用"},
-                { field:"appGroup",title:"应用所在组"},
-                { field: "applicationServiceObject", title: "服务对象",template:"#=getName(applicationServiceObject) #"},
-                { field: "applicationHost", title: "所在主机",template:"#=getApplicationHostNameById(applicationHost)#"},
+                /*{title: "<input type='checkbox' id='chkAll' onclick='checkAll()'/>全选",template: '<input type="checkbox" name="selectChk"/>',width:"5%"},*/
+                { field:"applicationName",title:"应用名称",width:"15%"},
+                { field:"keyApp",title:"重点应用",width:"6%"},
+                { field:"appGroup",title:"应用所在组",width:"8%"},
+                { field: "applicationServiceObject", title: "服务对象",template:"#=getName(applicationServiceObject) #",width:"15%"},
+                { field: "applicationHost", title: "所在主机",template:"#=getApplicationHostNameById(applicationHost)#",width:"15%"},
 
-                { field: "applicationMiddlewareName", title: "中间件名称",template:"#=getName(applicationMiddlewareName) #"},
+                { field: "applicationMiddlewareName", title: "中间件名称",template:"#=getName(applicationMiddlewareName) #",width:"12%"},
                 { field: "applicationRemark", title: "备注",hidden:true},
                 { command: [
-                  {name:"view",text:"查看",
+                  {name:"view",text:"查看",className:"btn btn-success",
                     click:function(e){
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                      /*  if(dataItem==undefined){
+                            dataItem=submitRecObj;
+                        }*/
                         var url ="/predictCenter/applications/getApplicationViewInfo/"+dataItem.id+".html";
                         window.open(url);
                     }
                    },
-                    {text: "编辑", click: showApplicationModel },   //编辑窗体内容
-                    { text: "删除",click:delApplicationModel }    //删除记录
-                ] ,  title: "操作",width:"22%"}
+                    {text: "编辑", click: showApplicationModel  ,className: "btn btn-info"},   //编辑窗体内容
+                    { text: "删除",click:delApplicationModel ,className:"btn btn-danger " }    //删除记录
+                ] ,  title: "操作",width:"18%"}
             ],
             pageable: {
                 buttonCount:3,
@@ -328,6 +326,9 @@
         $("#addHosts").empty();
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+           dataItem=submitRecObj;
+           }
         applicationModelRecordId=dataItem.id;//记录当前被选中的应用模板的id
         $("#applicationName").val(dataItem.applicationName);//应用名称
             if(dataItem.keyApp=="是"){
@@ -366,12 +367,10 @@
                 //iCount++;
             }
         }
-
-
          var applicationMiddlewareNameMulSelect=$("#applicationMiddlewareName").data("kendoMultiSelect");//中间件名称
          var applicationMiddlewareName=dataItem.applicationMiddlewareName;
-        var applicationMiddlewareNameIds=getValue(applicationMiddlewareName);
-        applicationMiddlewareNameMulSelect.value(applicationMiddlewareNameIds);
+         var applicationMiddlewareNameIds=getValue(applicationMiddlewareName);
+         applicationMiddlewareNameMulSelect.value(applicationMiddlewareNameIds);
 
         $("#applicationRemark").val(dataItem.applicationRemark);//备注
         applicationModelWnd.center().open();
@@ -380,6 +379,9 @@
     function delApplicationModel(e){
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         applicationModelRecordId=dataItem.id;   //记录当前被选中的应用模板的id
         swal({
             title: "确认要删除该数据吗？",
@@ -505,6 +507,7 @@
         return Ids;
     }
     //提交数据至后台
+    var submitRecObj=null;//提交记录对象
     function submitApplicationModelAjax(submitURL,objData){
         $.ajax({
                     url:submitURL,
@@ -513,6 +516,7 @@
                     type: "GET",   //请求方式
                     data:objData,
                     success:function(data){
+                        submitRecObj=data;
                         $("#applicationModelWnd").data("kendoWindow").close();
                         setApplicationModelGridDataSource();
                         setApplicationModelGrid();

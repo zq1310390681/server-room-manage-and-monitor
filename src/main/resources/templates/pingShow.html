@@ -149,7 +149,7 @@
                 {field:"twoIP",title:"设备二IP"},
                 {field:"pingNote",title:"备注",hidden:true},
                 { command: [
-                    {name:"view",text:"查看",
+                    {name:"view",text:"查看",className:"btn btn-success",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                             var url ="/predictCenter/getPingShowView/"+dataItem.pingName+"/"+dataItem.hostId+"/";
@@ -157,7 +157,7 @@
                         }
                     }
                 ] ,
-                    title: "操作",width:"20%"}
+                    title: "操作",width:"10%"}
             ],
             pageable: {
                 buttonCount:3,

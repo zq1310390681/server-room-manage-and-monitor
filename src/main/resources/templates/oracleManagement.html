@@ -92,11 +92,11 @@
                         <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:335px"  id="middleNote" ></textarea>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 100px;"onclick="submitOracleModel()">
+                        <button id="saveCertifiModel"  class="k-button btn-info" style="margin-left: 180px;color: white"onclick="submitOracleModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeOracleModel" class="k-button" style="margin-left: 100px;" >
+                        <button id="closeOracleModel" class="k-button  btn-danger" style="margin-left: 30px;color: white" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -230,7 +230,7 @@ function setOracleGrid(){
             {template: kendo.template($("#outputModel_toolbar").html())}],
 
         columns:[
-            {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+          //  {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
             {field:"middleName",title:"Oracle数据库名称"},
             {field:"middleIP",title:"Oracle数据库IP"},
             {field:"middleUserName",title:"Oracle数据库用户名"},
@@ -238,18 +238,21 @@ function setOracleGrid(){
             {field:"middleHost",title:"Oracle数据库所在主机"},
             {field:"middleNote",title:"备注",hidden:true},
             { command: [
-                {name:"view",text:"查看",
+                {name:"view",text:"查看",className:"btn btn-success",
                     click:function(e) {
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        if(dataItem==undefined){
+                            dataItem=submitRecObj;
+                        }
                         var url = "/predictCenter/getOracleView/" + dataItem.id;
                         window.open(url);
                          }
                 },
-                {text: "编辑", click: showOracleModel },   //编辑窗体内容
-                { text: "删除",click:delOracleModel }    //删除记录
+                {text: "编辑", click: showOracleModel ,className: "btn btn-info"},   //编辑窗体内容
+                { text: "删除",click:delOracleModel ,className:"btn btn-danger "}    //删除记录
 
             ],
-                title: "操作"
+                title: "操作",width:"20%"
             }
         ],
         pageable: {
@@ -414,6 +417,9 @@ function getOracleHost(middleHostId){
 function showOracleModel(e) {
     e.preventDefault();
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     oracleRecordId=dataItem.id;//记录当前被选中的虚拟机的id
 
     //文本框
@@ -432,6 +438,9 @@ function delOracleModel(e){
     e.preventDefault();
 
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     oracleRecordId=dataItem.id;   //记录当前被选中的Oracle的id
 
     swal({
@@ -501,6 +510,7 @@ function submitOracleModel(){
     }
 }
 //提交数据至后台
+var submitRecObj=null;//提交记录对象
 function submitOracleModelAjax(submitURL,objData){
     $.ajax({
         url:submitURL,
@@ -509,6 +519,7 @@ function submitOracleModelAjax(submitURL,objData){
         type: "GET",   //请求方式
         data:objData,
         success:function(data){
+            submitRecObj=data;
             $("#oracleModelWnd").data("kendoWindow").close();
             setOracleGridDataSource();//获取Oracle数据源
             setOracleGrid();//重新生成表单

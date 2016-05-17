@@ -73,66 +73,48 @@
                         <input  style="height:30px;width:400px" id="fwSerialNumber"/><label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin:10px">
-                        <label style="margin-left: 36px" >防火墙S/N号:</label>
+                        <label style="margin-left: 35px" >防火墙S/N号:</label>
                         <input  style="height:30px;width:400px" id="fwSN"/>
                     </div>
                     <div style="margin-top: 10px">
                         <label style="margin-left: 67px">购买时间:</label>
-                        <input  style="height:30px;width:400px" id="fwPurchasingDate" placeholder="请选择..."/>
-
+                        <input  style="height:30px;width:403px" id="fwPurchasingDate" placeholder="请选择..."/>
                     </div>
 
                     <div style="margin-top: 10px">
-
                         <label style="margin-left: 40px" >维保到期时间:</label>
-                        <input  style="height:30px;width:400px" id="fwMaintenanceDueTime" placeholder="请选择..."/>
-
+                        <input  style="height:30px;width:403px" id="fwMaintenanceDueTime" placeholder="请选择..."/>
                     </div>
                     <div style="margin-top: 10px">
                         <label style="margin-left: 53px" >防火墙品牌:</label>
-                        <input  style="height:30px;width:400px"  id="fwBrand" />
-
+                        <input  style="height:30px;width:404px"  id="fwBrand" />
                     </div>
 
                     <div style="margin-top: 10px">
-
                         <label style="margin-left: 52px" >防火墙型号:</label>
-                        <input  style="height:30px;width:400px" id="fwType"/>
-
+                        <input  style="height:30px;width:402px" id="fwType"/>
                     </div>
                     <div style="margin-top: 10px">
-
                         <label style="margin-left: 65px" >防火墙IP:</label>
-                        <input  style="height:30px;width:400px" id="fwIP"/><label style="color: red;margin-left: 5px">*</label>
-
+                        <input  style="height:30px;width:402px" id="fwIP"/><label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-
-                        <label style="margin-left: 85px" >Group:</label>
-                        <input  style="height:30px;width:400px" id="fwGroup"/><label style="color: red;margin-left: 5px">*</label>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
                         <label style="margin-left: 92px" >SNMP:</label>
                         <input  style="height:30px;width:113px" id="fwSNMP"/>
-                        <label style="margin-left: 100px" >端口号:</label>
+                        <label style="margin-left: 103px" >端口号:</label>
                         <input  style="height:30px;width:120px" id="fwPort"/>
-
                     </div>
                     <div style="margin-top: 10px">
-
                         <label style="margin-left: 90px">备注:</label>
-                        <textarea   style="margin-left: 2px;height:70px;width:400px" rows="5" cols="30" id="fwRemark" />
-
+                        <textarea   style="margin-left: 2px;height:70px;width:395px" rows="5" cols="30" id="fwRemark" />
                     </div>
 
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveFwModel"  class="k-button" style="marginleft: 180px;"onclick="submitFwModel()">
+                        <button id="saveFwModel"  class="k-button btn-info" style="margin-left: 165px;color:white;"onclick="submitFwModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeFwModel"  class="k-button" style="margin-left: 100px;" >
+                        <button id="closeFwModel"  class="k-button btn-danger" style="margin-left: 30px;color: white" >
                             <i class="icon-remove"></i>
                             取消
                         </button>
@@ -271,36 +253,41 @@
                      {template: kendo.template($("#inputModel_toolbar").html())},
                      {template: kendo.template($("#outputModel_toolbar").html())}],
             columns:[
-                {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+               // {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
                 { field:"fwSerialNumber",title:"防火墙编号"},
                 { field: "fwSN", title: "防火墙S/N号",hidden:true},
                 { field: "fwPurchasingDate", title: "购买时间",hidden:true},
                 { field: "fwMaintenanceDueTime", title: "维保到期时间",hidden:true},
-                { field: "fwBrand", title: "防火墙品牌",template:"#=getBrandNameById(fwBrand)#",hidden:true},
-                { field: "fwType", title: "防火墙型号",hidden:true},
+                { field: "fwBrand", title: "防火墙品牌",template:"#=getBrandNameById(fwBrand)#"},
+                { field: "fwType", title: "防火墙型号"},
                 { field: "fwIP", title: "防火墙IP"},
-                { field: "fwGroup", title: "Group",hidden:true},
                 { field: "fwSNMP", title: "SNMP",hidden:true},
                 { field: "fwPort", title: "端口号",hidden:true},
                 { field: "fwRemark", title: "备注",hidden:true},
                 { command: [
-                    {name:"view",text:"查看",
+                    {name:"view",text:"查看",className:"btn btn-success",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            if(dataItem==undefined){
+                                dataItem=submitRecObj;
+                            }
                             var url ="/predictCenter/fws/getFwInfo/"+dataItem.id+".html";
                             window.open(url);
                         }
                     },
-                    {name:"viewQr",text:"二维码",
+                    {name:"viewQr",text:"二维码",className:"btn btn-warning",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            if(dataItem==undefined){
+                                dataItem=submitRecObj;
+                            }
                             var url ="/predictCenter/fws/getFwQrCode/"+dataItem.id+".html";
                             window.open(url);
                         }
                     },
-                    {text: "编辑", click: showFwModel },   //编辑窗体内容
-                    { text: "删除",click:delFwModel }    //删除记录
-                ] ,  title: "操作",width:"20%"}
+                    {text: "编辑", click: showFwModel ,className: "btn btn-info" },   //编辑窗体内容
+                    { text: "删除",click:delFwModel,className:"btn btn-danger " }    //删除记录
+                ] ,  title: "操作",width:"15%"}
             ],
             pageable: {
                 buttonCount:3,
@@ -328,7 +315,7 @@
             visible: false,
             resizable: false,
             width: 630,
-            height:600
+            height:550
         }).data("kendoWindow");
 
         //导入模板窗体 郑霞 20160115
@@ -356,6 +343,9 @@
     function showFwModel(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         fwModelRecordId=dataItem.id;//记录当前被选中的防火墙模板的id
         $("#fwSerialNumber").val(dataItem.fwSerialNumber);//防火墙编号
         $("#fwSN").val(dataItem.fwSN);//防火墙序列号
@@ -363,7 +353,6 @@
         $("#fwMaintenanceDueTime").val(dataItem.fwMaintenanceDueTime);//防火墙维保到期时间
         $("#fwType").val(dataItem.fwType);//防火墙型号
         $("#fwIP").val(dataItem.fwIP);//防火墙IP
-        $("#fwGroup").val(dataItem.fwGroup);
         $("#fwSNMP").val(dataItem.fwSNMP);//防火墙SNMP
         $("#fwPort").val(dataItem.fwPort);//服务器端口
         $("#fwRemark").val(dataItem.fwRemark);//备注
@@ -377,6 +366,9 @@
     function delFwModel(e){
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         fwModelRecordId=dataItem.id;   //记录当前被选中的防火墙模板的id
         swal({
             title: "确认要删除该数据吗？",
@@ -431,7 +423,6 @@
         var fwBrandVal= $("#fwBrand").val();
         var fwTypeVal= $("#fwType").val();
         var fwIPVal= $("#fwIP").val();
-        var fwGroupVal= $("#fwGroup").val();
         var fwSNMPVal= $("#fwSNMP").val();
         var fwPortVal= $("#fwPort").val();
         var fwRemarkVal= $("#fwRemark").val();
@@ -439,7 +430,7 @@
             alert("IP地址格式不正确！");
             return;
         }
-        if(fwSerialNumberVal==""||fwIPVal==""||fwGroupVal==""){
+        if(fwSerialNumberVal==""||fwIPVal==""){
             alert("带有红色标记的为必填项");
             return;
         }else{
@@ -453,7 +444,6 @@
                 fwBrand:fwBrandVal,
                 fwType:fwTypeVal,
                 fwIP:fwIPVal,
-                fwGroup:fwGroupVal,
                 fwSNMP:fwSNMPVal,
                 fwPort:fwPortVal,
                 fwRemark:fwRemarkVal
@@ -478,6 +468,7 @@
          }
     }
     //提交数据至后台
+    var submitRecObj=null;//提交记录对象
     function submitFwModelAjax(submitURL,objData){
         $.ajax({
                     url:submitURL,
@@ -486,6 +477,7 @@
                     type: "GET",   //请求方式
                     data:objData,
                     success:function(data){
+                        submitRecObj=data;
                         $("#fwModelWnd").data("kendoWindow").close();
                         setFwModelGridDataSource();
                         setFwModelGrid();
@@ -558,7 +550,7 @@
                     transport:{
                         read:{
                             dataType:"json",
-                            url:dropDownListUrl + "/getBrandsByType/5"
+                            url:dropDownListUrl + "/getAllBrands"
                         }
                     }
                  }

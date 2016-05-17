@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> </title>
+    <meta charset="utf-8">
+</head>
+<body>
+<div style="height: 500px;" id="canvas"/>
+<script src="/js/qunee-min.js"></script>
+<script>
+    var graph = new Q.Graph(canvas);
+
+    graph.styles = {}
+    graph.styles[Q.Styles.ARROW_TO_STYLES] = {
+        lineWidth: 1,
+        lineJoin: "round"//"miter"
+    }
+
+    var nodeApp=graph.createNode("观测数据传输程序",0,-210);
+    var node1 = graph.createNode("观测数据传输程序_主机1", -230, 0);
+    //node1.image="/assets/images/gallery/thumb-4.jpg";//改变node1的icon
+    var node2 = graph.createNode("观测数据传输程序_主机2", 200, 0);
+
+
+    function createEdge(from, to, type, lineWidth, color){
+            var edge = graph.createEdge(from.name + " --> " + to.name, from, to);
+        edge.setStyle(Q.Styles.EDGE_COLOR, color || "#000");
+        edge.setStyle(Q.Styles.EDGE_WIDTH, lineWidth || 2);
+        edge.edgeType = type || Q.Consts.EDGE_TYPE_DEFAULT;
+        return edge;
+    }
+
+    var edge = createEdge(node1, node2,'',3,"red");
+    edge.setStyle(Q.Styles.ARROW_TO, false);
+
+    var offset = 0;
+    var index = 0;
+    var timer = setInterval(function(){
+        offset += -1;
+        edge1.setStyle(Q.Styles.EDGE_LINE_DASH_OFFSET, offset);
+        index++;
+        index = index%20;
+
+    }, 150);
+
+    function destroy(){
+        clearInterval(timer);
+    }
+</script>
+</body>
+</html>

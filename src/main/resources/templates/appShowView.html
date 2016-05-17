@@ -58,8 +58,8 @@
             </div>
         </div><!-- /.main-content -->
         <div class="page-content" >
-            <div style="width: 100%">
-                <div style="float: left;width: 15%;display: inline">
+            <div style="height: 800px;width: 85%; float: left"  >
+                <div style="float: left;width: 20%;display: inline">
                    <div style="font-size: 23px">
                        <input name="id" type="hidden" th:value="*{apps} ? *{apps.id} : '0'"/>
                         <div style="margin: 40px 40px">
@@ -78,8 +78,7 @@
                         </div>
                    </div>
                 </div>
-
-                <div style="float: right;width:70%;display: inline">
+                <div style="float: right;width:80%;display: inline">
                     <div style="margin-top: 20px">
                         <div><b >所在主机</b></div>
                         <div id="hostModelGrid"  class=" k-grid k-widget" style="float: right;margin-top: 10px;margin-bottom: 20px" ></div>
@@ -94,7 +93,9 @@
                     </div>
                 </div>
             </div>
+            <div style="height: 500px;float: right;width:70%" id="canvas"/>
         </div><!-- /.page-content -->
+
     </div><!-- /.main-container-inner -->
 </div><!-- /.main-container -->
 
@@ -154,6 +155,7 @@
 <script src="/js/console.js"></script>
 <script src="/js/kendo.web.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
+<script src="/js/qunee-min.js"></script>
 <script type="text/javascript" th:inline="javascript">
 
     var crudHostBaseUr="/predictCenter/api/host";  //根地址
@@ -180,13 +182,12 @@
     function setHostModelGrid(){
         $("#hostModelGrid").kendoGrid({
             dataSource:hostModelGridDataSource,
-
             columns:[
                 {field:"hosts",title:"主机名称",width:"20%"},
                 {field:"hostType",title:"主机类型",width:"20%"},
                 { field: "routerState", title: "状态",width:"20%"},
                 { command: [
-                    {name:"view",text:"查看状态",
+                    {name:"view",text:"查看状态",className:"btn btn-success",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                             var url ="/predictCenter/getHostShowView/"+dataItem.hosts+"/"+dataItem.hostId+"/";
@@ -215,7 +216,6 @@
             selectable: "row"
         });
     }
-
     function setMiddleModelGridDataSource(){
         middleModelGridDataSource=new kendo.data.DataSource({
             transport: {
@@ -237,7 +237,7 @@
                 {field:"middleType",title:"中间件类型",width:"20%"},
                 { field: "routerState", title: "状态",width:"20%"},
                 { command: [
-                    {name:"view",text:"查看状态",
+                    {name:"view",text:"查看状态",className:"btn btn-success",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                             var url ="/predictCenter/getOracleShowView/"+dataItem.middleName+"/"+dataItem.hostId+"/";
@@ -286,7 +286,7 @@
                 {field:"serviceObjectName",title:"服务对象",width:"30%"},
                 { field: "routerState", title: "状态",width:"20%"},
                 { command: [
-                    {name:"view",text:"查看状态",
+                    {name:"view",text:"查看状态",className:"btn btn-success",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                             var url ="/predictCenter/getSerObjShowView/"+dataItem.serviceObjectName+"/"+dataItem.hostId+"/";
@@ -315,6 +315,67 @@
             selectable: "row"
         });
     }
+    //绘制网络top图相关函数
+    function destroy(){
+        clearInterval(timer);
+    }
+    //创建节点
+    function createEdge(graph,from, to, type, lineWidth, color){
+        var edge = graph.createEdge(from.name + " --> " + to.name, from, to);
+        edge.setStyle(Q.Styles.EDGE_COLOR, color || "#000");
+        edge.setStyle(Q.Styles.EDGE_WIDTH, lineWidth || 2);
+        edge.edgeType = type || Q.Consts.EDGE_TYPE_DEFAULT;
+        return edge;
+    }
+    //绘制网络top
+    function drowTop(){
+        var graph = new Q.Graph(canvas);
+        var nodeData = "";//节点数据
+        //Ajax请求主机数据
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            async:false,
+            url: crudHostBaseUr + "/getHostsNameById/"+hostIds,
+            success: function (data) {
+                alert(data);
+            },
+            error:function(data){
+                nodeData = data.responseText;
+            }
+        });
+        graph.styles = {}
+        graph.styles[Q.Styles.ARROW_TO_STYLES] = {
+            lineWidth: 1,
+            lineJoin: "round"//"miter"
+        }
+        //var nodeApp=graph.createNode("观测数据传输程序",0,-210);
+        //var node1 = graph.createNode("观测数据传输程序_主机1", -230, 0);
+        //node1.image="/assets/images/gallery/thumb-4.jpg";//改变node1的icon
+        //var node2 = graph.createNode("观测数据传输程序_主机2", 200, 0);
+        // var edge = createEdge(graph,node1, node2,'',3,"red");
+        //edge.setStyle(Q.Styles.ARROW_TO, false);
+        var nodeApps = nodeData.split(',');
+        var x=0;
+        var y=-210;
+        for(var i =0;i<nodeApps.length;i++){
+            graph.createNode(nodeApps[i],x,y);
+            if(i%2==0){
+                x+=-200;
+                y+=0;
+            }else{
+                x+=200;
+                y+=200;
+            }
+        }
+        var offset = 0;
+        var index = 0;
+        var timer = setInterval(function(){
+            offset += -1;
+            index++;
+            index = index%20;
+        }, 150);
+    }
     //程序入口
     $(function(){
         setHostModelGridDataSource();//主机
@@ -323,6 +384,7 @@
         setHostModelGrid();//主机
         setMiddleModelGrid();//中间件
         setUserModelGrid();//服务对象
+        drowTop();//绘制top
     });
 </script>
 </body>

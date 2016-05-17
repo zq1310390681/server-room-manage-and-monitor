@@ -151,14 +151,14 @@
                 {field:"hostServer",title:"虚拟机所在服务器"},
                 { field: "hostState", title: "状态"},
                 { command: [
-                    {name:"view",text:"查看状态",
+                    {name:"view",text:"查看状态",className:"btn btn-success",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                             var url ="/predictCenter/getHostShowView/"+dataItem.hosts+"/"+dataItem.hostId+"/";
                             window.open(url);
                         }
                     }
-                ] ,  title: "操作",width:"20%"}
+                ] ,  title: "操作",width:"10%"}
             ],
             pageable: {
                 buttonCount:3,

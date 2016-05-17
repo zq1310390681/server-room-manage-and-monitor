@@ -146,14 +146,14 @@
                 {field:"serviceObjectGroup",title:"服务对象所在组"},
                 { field: "serviceObjectState", title: "状态"},
                 { command: [
-                    {name:"view",text:"查看状态",
+                    {name:"view",text:"查看状态",className:"btn btn-success",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                             var url ="/predictCenter/getSerObjShowView/"+dataItem.serviceObjectName+"/"+dataItem.hostId+"/";
                             window.open(url);
                         }
                     }
-                ] ,  title: "操作",width:"20%"}
+                ] ,  title: "操作",width:"10%"}
             ],
             pageable: {
                 buttonCount:3,

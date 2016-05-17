@@ -23,7 +23,7 @@ public class predictMmApplicationsForm {
     @Getter @Setter
     private String applicationMiddlewareName;//中间件 取到的值为id
     @Getter @Setter
-    private String serverRemark;//备注
+    private String applicationRemark;//备注
     @Getter @Setter
     private String hostName;
     @Getter @Setter
@@ -32,6 +32,14 @@ public class predictMmApplicationsForm {
     private String keyApp; //重点应用
     @Getter @Setter
     private String  appState;//应用状态
+
+    public String getApplicationRemark() {
+        return applicationRemark;
+    }
+
+    public void setApplicationRemark(String applicationRemark) {
+        this.applicationRemark = applicationRemark;
+    }
 
     public String getAppState() {
         return appState;
@@ -94,14 +102,6 @@ public class predictMmApplicationsForm {
 
     public void setApplicationMiddlewareName(String applicationMiddlewareName) {
         this.applicationMiddlewareName = applicationMiddlewareName;
-    }
-
-    public String getServerRemark() {
-        return serverRemark;
-    }
-
-    public void setServerRemark(String serverRemark) {
-        this.serverRemark = serverRemark;
     }
 
     public String getHostContent() {

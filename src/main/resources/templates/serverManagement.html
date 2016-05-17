@@ -68,66 +68,43 @@
                         <label style="margin-left: 36px" >服务器S/N号:</label>
                         <input  style="height:30px;width:400px" id="serverSN"/>
                     </div>
-                    <div style="margin-top: 10px;">
-                        <label style="margin-left: 67px">购买时间:</label>
-                        <input style="height:30px;width:400px;" placeholder="请选择..." id="serverPurchasingDate"/>
-
-                    </div>
-
-                    <div style="margin-top: 10px">
-
-                        <label style="margin-left:40px;margin-top:8px" >维保到期时间:</label>
-                        <input  style="height:30px;width:400px" id="serverMaintenanceDueTime" placeholder="请选择..."/>
-
-                    </div>
-                    <div style="margin-top: 10px">
+                    <div style="margin-top:10px">
                         <label style="margin-left: 53px" >服务器品牌:</label>
-                        <input  style="height:30px;width:400px;margin-top:8px"  id="serverBrand" />
-
+                        <input  style="height:30px;width:140px;margin-top:8px"  id="serverBrand" />
+                        <label style="margin-left: 55px;margin-top: 10px" >KVM编号:</label>
+                        <input  style="height:30px;width:140px;margin-top: 10px" id="serverKvm"/>
                     </div>
-
-                    <div style="margin-top: 10px">
-
+                    <div style="margin-top:10px">
+                            <label style="margin-left: 67px">购买时间:</label>
+                            <input style="height:30px;width:140px;" placeholder="请选择..." id="serverPurchasingDate"/>
+                            <label style="margin-top:8px;margin-left: 20px" >维保到期时间:</label>
+                            <input  style="height:30px;width:140px" id="serverMaintenanceDueTime" placeholder="请选择..."/>
+                    </div>
+                    <div style="margin-top: 15px">
                         <label style="margin-left: 52px" >服务器型号:</label>
                         <input  style="height:30px;width:400px" id="serverType"/>
-
                     </div>
                     <div style="margin-top: 10px">
-
                         <label style="margin-left: 65px" >服务器IP:</label>
                         <input  style="height:30px;width:400px" id="serverIP"/><label style="color: red;margin-left: 5px">*</label>
-
                     </div>
                     <div style="margin-top: 10px">
-
-                        <label style="margin-left: 100px" >KVM:</label>
-                        <input  style="height:30px;width:400px" id="serverKvm"/><label style="color: red;margin-left: 5px">*</label>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
-                        <label style="margin-left: 85px" >Group:</label>
-                        <input  style="height:30px;width:400px" id="serverGroup"/><label style="color: red;margin-left: 5px">*</label>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
                         <label style="margin-left: 92px" >IPMI:</label>
-                        <input  style="height:30px;width:113px" id="serverIPMI"/>
-                        <label style="margin-left: 100px" >端口号:</label>
-                        <input  style="height:30px;width:118px" id="serverPort"/>
+                        <input  style="height:30px;width:140px" id="serverIPMI"/>
+                        <label style="margin-left: 55px" >端口号:</label>
+                        <input  style="height:30px;width:140px" id="serverPort"/>
 
                     </div>
                     <div style="margin-top: 10px">
 
                         <label style="margin-left: 62px" >存储设备:</label>
-                        <input  style="height:30px;width:400px;margin-left:1px"  id="serverStorageDevice" /><label style="color: red;margin-left: 5px">*</label>
+                        <input  style="height:30px;width:405px;margin-left:1px"  id="serverStorageDevice" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
 
                         <label style="margin-left: 62px" >所在机柜:</label>
-                        <input  style="height:30px;width:400px;margin-left:1px"  id="serverEquipmentCabinet" /><label style="color: red;margin-left: 5px">*</label>
+                        <input  style="height:30px;width:405px;margin-left:1px"  id="serverEquipmentCabinet" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
@@ -141,16 +118,16 @@
                     <div style="margin-top: 10px">
 
                         <label style="margin-left: 90px">备注:</label>
-                        <textarea   style="height:70px;width:400px;margin-left:1px" rows="5" cols="30" id="serverRemark" />
+                        <textarea   style="height:70px;width:395px;margin-left:1px" rows="5" cols="30" id="serverRemark" />
 
                     </div>
 
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveServerModel"  class="k-button" style="marginleft: 180px;"onclick="submitServerModel()">
+                        <button id="saveServerModel"  class="k-button btn-info" style="margin-left: 165px;color: white"onclick="submitServerModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeServerModel"  class="k-button" style="margin-left: 100px;" >
+                        <button id="closeServerModel"  class="k-button btn-danger" style="margin-left: 30px;color: white" >
                             <i class="icon-remove"></i>
                             取消
                         </button>
@@ -175,7 +152,11 @@
                     <button id="closeServerSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
                 </div>
             </div>
+            <div style="display: none;">
 
+                <iframe width="0" height="0" frameborder="0" scrolling="no" src="about:blank" id="popIframe"></iframe>
+
+            </div>
         </div><!-- /.page-content -->
     </div><!-- /.main-container-inner -->
 </div><!-- /.main-container -->
@@ -282,7 +263,7 @@
                      {template: kendo.template($("#inputModel_toolbar").html())},
                      {template: kendo.template($("#outputModel_toolbar").html())}],
             columns:[
-                {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"5%"},
+              //  {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"5%"},
                 { field:"serverSerialNumber",title:"服务器编号",width:"12%"},
                 { field: "serverSN", title: "服务器S/N号",hidden:true},
                 { field: "serverPurchasingDate", title: "购买时间",hidden:true},
@@ -290,9 +271,8 @@
                 { field: "serverBrand", title: "服务器品牌",template:"#=getBrandNameById(serverBrand)#",hidden:true},
                 { field: "serverType", title: "服务器型号",hidden:true},
                 { field: "serverIP", title: "服务器IP",width:"10%"},
-                { field: "serverKvm", title: "KVM",width:"15%"},
+                { field: "serverKvm", title: "KVM",width:"15%",template:"#=getKvmById(serverKvm)#"},
                 { field: "serverApp", title: "对应应用"},
-                { field: "serverGroup", title: "Group",hidden:true},
                 { field: "serverIPMI", title: "IPMI",hidden:true},
                 { field: "serverPort", title: "端口号",hidden:true},
                 { field: "serverStorageDevice", title: "存储设备",template:"#=getStorageDeviceNameById(serverStorageDevice)#",hidden:true},
@@ -301,22 +281,28 @@
                 { field: "lastModifiedDate", title: "最后更新时间",width:"9%"},
                 { field: "serverRemark", title: "备注",hidden:true},
                 { command: [
-                   {name:"view",text:"查看",
+                   {name:"view",text:"查看",className:"btn btn-success",
                     click:function(e){
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        if(dataItem==undefined){
+                            dataItem=submitRecObj;
+                        }
                         var url ="/predictCenter/servers/getServerInfo/"+dataItem.id+".html";
                         window.open(url);
                     }
                    },
-                    {name:"viewQr",text:"二维码",
+                    {name:"viewQr",text:"二维码",className:"btn btn-warning",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            if(dataItem==undefined){
+                                dataItem=submitRecObj;
+                            }
                             var url ="/predictCenter/servers/getServerQrCode/"+dataItem.id+".html";
                             window.open(url);
                         }
                     },
-                    {text: "编辑", click: showServerModel },   //编辑窗体内容
-                    { text: "删除",click:delServerModel }    //删除记录
+                    {text: "编辑", click: showServerModel ,className: "btn btn-info" },   //编辑窗体内容
+                    { text: "删除",click:delServerModel,className:"btn btn-danger " }    //删除记录
                 ] ,  title: "操作",width:"15%"}
             ],
             pageable: {
@@ -345,7 +331,7 @@
             visible: false,
             resizable: false,
             width: 630,
-            height:750
+            height:620
         }).data("kendoWindow");
 
         //导入模板窗体 郑霞 20160115
@@ -373,6 +359,9 @@
     function showServerModel(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         serverModelRecordId=dataItem.id;//记录当前被选中的服务器模板的id
         $("#serverSerialNumber").val(dataItem.serverSerialNumber);//服务器编号
         $("#serverSN").val(dataItem.serverSN);//服务器序列号
@@ -380,13 +369,14 @@
         $("#serverMaintenanceDueTime").val(dataItem.serverMaintenanceDueTime);//服务器维保到期时间
         $("#serverType").val(dataItem.serverType);//服务器型号
         $("#serverIP").val(dataItem.serverIP);//服务器IP
-        $("#serverKvm").val(dataItem.serverKvm);//服务器KVM
-        $("#serverGroup").val(dataItem.serverGroup);
         $("#serverIPMI").val(dataItem.serverIPMI);//服务器IPMI
         $("#serverPort").val(dataItem.serverPort);//服务器端口
         $("#serverRemark").val(dataItem.serverRemark);//备注
 
         /*声明为 下拉 输入框样式并赋值*/
+        // KVM编号下拉框
+        var serverKvm= $("#serverKvm").data("kendoDropDownList");
+        serverKvm.value(dataItem.serverKvm);
         //服务器品牌
         var serverBrand= $("#serverBrand").data("kendoDropDownList");
         serverBrand.value(dataItem.serverBrand);
@@ -408,10 +398,14 @@
 
        serverModelWnd.center().open();
     }
+
     //删除数据
     function delServerModel(e){
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         serverModelRecordId=dataItem.id;   //记录当前被选中的服务器模板的id
         swal({
             title: "确认要删除该数据吗？",
@@ -444,13 +438,12 @@
         $("#serverType").val("");
         $("#serverIP").val("");
         $("#serverKvm").val("");
-        $("#serverGroup").val("");
         $("#serverIPMI").val("");
         $("#serverPort").val("");
         $("#serverStorageDevice").val("");
         $("#serverEquipmentCabinet").val("");
         $("#serverU1").val("");
-         $("#serverU2").val("");
+        $("#serverU2").val("");
         $("#serverRemark").val("");
 
         serverModelRecordId=0;//添加服务器模板，模板id设为0.
@@ -501,7 +494,6 @@
         var serverTypeVal= $("#serverType").val();
         var serverIPVal= $("#serverIP").val();
         var serverKvmVal= $("#serverKvm").val();
-        var serverGroupVal= $("#serverGroup").val();
         var serverIPMIVal= $("#serverIPMI").val();
         var serverPortVal= $("#serverPort").val();
         var serverStorageDeviceVal= $("#serverStorageDevice").val();
@@ -513,7 +505,7 @@
             alert("IP地址格式不正确！");
             return;
         }
-        if(serverSerialNumberVal==""||serverIPVal==""||serverGroupVal==""||serverStorageDeviceVal==""||serverEquipmentCabinetVal==""||serverU1Val==""||serverU2Val==""){
+        if(serverSerialNumberVal==""||serverIPVal==""||serverStorageDeviceVal==""||serverEquipmentCabinetVal==""||serverU1Val==""||serverU2Val==""){
             alert("带有红色标记的为必填项");
             return ;
         }else if(!compare()){}
@@ -530,7 +522,6 @@
                 serverType:serverTypeVal,
                 serverIP:serverIPVal,
                 serverKvm:serverKvmVal,
-                serverGroup:serverGroupVal,
                 serverIPMI:serverIPMIVal,
                 serverPort:serverPortVal,
                 serverStorageDevice:serverStorageDeviceVal,
@@ -558,6 +549,7 @@
          }
     }
     //提交数据至后台
+    var submitRecObj=null;//提交记录对象
     function submitServerModelAjax(submitURL,objData){
         $.ajax({
                     url:submitURL,
@@ -566,6 +558,7 @@
                     type: "GET",   //请求方式
                     data:objData,
                     success:function(data){
+                        submitRecObj=data;
                         $("#serverModelWnd").data("kendoWindow").close();
                         setServerModelGridDataSource();
                         setServerModelGrid();
@@ -632,7 +625,19 @@
         return StorageDeviceName;
     }
 
-
+    //根据Id获取KVM编号
+    function getKvmById(id){
+        var kvmNum;//存储设备
+        $.ajax({
+            dataType:"json",
+            url:dropDownListUrl + "/getKvmById/"+id,
+            async:false,                       //是否异步：不异步，页面加载同时加载数据
+            success:function(data){
+                kvmNum=data.kvmNum;
+            }
+        });
+        return kvmNum;
+    }
     //根据Id获取所在U
      function getUNumberById(id){
         var UNumber;//所在U
@@ -684,7 +689,7 @@
                     transport:{
                         read:{
                             dataType:"json",
-                            url:dropDownListUrl + "/getBrandsByType/1"
+                            url:dropDownListUrl + "/getAllBrands"
                         }
                     }
                  }
@@ -718,7 +723,23 @@
                                 }
                              }
                         });
-         //所在U起始
+
+        //KVM编号下拉列表
+        $("#serverKvm").kendoDropDownList({
+            optionLabel: "请选择...",
+            dataTextField: "kvmNum",
+            dataValueField: "id",
+            dataSource: {
+                transport:{
+                    read:{
+                        dataType:"json",
+                        url:dropDownListUrl + "/getAllKvm"
+                    }
+                }
+            }
+        });
+
+        //所在U起始
              $("#serverU1").kendoDropDownList({
                             optionLabel: "请选择...",
                             dataTextField: "uName",

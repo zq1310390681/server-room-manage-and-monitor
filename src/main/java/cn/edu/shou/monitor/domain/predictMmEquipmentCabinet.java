@@ -12,7 +12,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class predictMmEquipmentCabinet extends BaseEntity {
+public class PredictMmEquipmentCabinet extends BaseEntity {
     @Getter @Setter
     private  String equipmentCabinetName;//机柜名称
     @Getter @Setter

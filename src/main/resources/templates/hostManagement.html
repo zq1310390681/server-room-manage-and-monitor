@@ -98,11 +98,11 @@
 
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button" style="margin-left: 110px;"onclick="submitVmwareModel()">
+                        <button id="saveCertifiModel"  class="k-button btn-info" style="margin-left: 160px;color: white"onclick="submitVmwareModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeHostModel" class="k-button" style="margin-left: 80px;" >
+                        <button id="closeHostModel" class="k-button btn-danger" style="margin-left: 30px;color: white" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -248,26 +248,29 @@ function setHostGrid(){
             {template: kendo.template($("#inputModel_toolbar").html())},
             {template: kendo.template($("#outputModel_toolbar").html())}],
         columns:[
-            {title: "<input type='checkbox'onclick='checkAll()'/>全选",template: '<input type="checkbox"/>',width:"5%"},
+           // {title: "<input type='checkbox'onclick='checkAll()'/>全选",template: '<input type="checkbox"/>',width:"5%"},
             {field:"hostIP",title:"主机IP"},
-            {field:"hosts",title:"主机名称"},
+            {field:"hosts",title:"主机名称",width:"15%"},
             {field:"appName",title:"对应应用"},
             {field:"hostOS",title:"操作系统"},
             {field:"hostServer",title:"所在服务器"},
-            {field:"operational",title:"业务化"},
+            {field:"operational",title:"业务化",width:"7%"},
             {field:"hostUserName",title:"用户名",hidden:true},
             {field:"hostPassword",title:"密码",hidden:true},
             {field:"hostNote",title:"备注",hidden:true},
             { command: [
-                {name:"view",text:"查看",
+                {name:"view",text:"查看",className:"btn btn-success",
                     click:function(e){
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        if(dataItem==undefined){
+                            dataItem=submitRecObj;
+                        }
                         var url ="/predictCenter/getHostViewInfo/"+dataItem.id+".html";
                         window.open(url);
                     }
                 },
-                {text: "编辑", click: showHostModel },   //编辑窗体内容
-                { text: "删除",click:delHostModel }    //删除记录
+                {text: "编辑", click: showHostModel,className: "btn btn-info" },   //编辑窗体内容
+                { text: "删除",click:delHostModel ,className:"btn btn-danger " }    //删除记录
 
             ],
                 title: "操作",width:"20%"
@@ -298,7 +301,7 @@ function setHostGrid(){
         visible: false,
         resizable: false,
         width: 630,
-        height:550
+        height:510
     }).data("kendoWindow");
     //导入模板窗体
     inputWnd = $("#inputWnd").kendoWindow({
@@ -408,6 +411,9 @@ function getHostServer(hostServerId){
 function showHostModel(e) {
     e.preventDefault();
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     hostRecordId=dataItem.id;//记录当前被选中的虚拟机的id
 
     //文本框
@@ -433,6 +439,9 @@ function delHostModel(e){
     e.preventDefault();
 
     var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
     hostRecordId=dataItem.id;   //记录当前被选中的虚拟机的id
 
     swal({
@@ -511,6 +520,7 @@ function submitVmwareModel(){
     }
 }
 //提交数据至后台
+var submitRecObj=null;//提交记录对象
 function submitHostModelAjax(submitURL,objData){
     $.ajax({
         url:submitURL,
@@ -519,6 +529,7 @@ function submitHostModelAjax(submitURL,objData){
         type: "GET",   //请求方式
         data:objData,
         success:function(data){
+            submitRecObj=data;
             $("#hostModelWnd").data("kendoWindow").close();
             setHostGridDataSource();//获取主机数据源
             setHostGrid();//重新生成表单

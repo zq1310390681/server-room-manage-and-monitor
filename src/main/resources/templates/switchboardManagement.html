@@ -69,24 +69,24 @@
                         <input  style="height:30px;width:400px" id="switchboardSerialNumber"/><label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin:10px">
-                        <label style="margin-left: 36px" >交换机S/N号:</label>
+                        <label style="margin-left: 35px" >交换机S/N号:</label>
                         <input  style="height:30px;width:400px" id="switchboardSN"/>
                     </div>
                     <div style="margin-top: 10px">
                         <label style="margin-left: 67px">购买时间:</label>
-                        <input  style="height:30px;width:400px" id="switchboardPurchasingDate" placeholder="请选择..."/>
+                        <input  style="height:30px;width:403px" id="switchboardPurchasingDate" placeholder="请选择..."/>
 
                     </div>
 
                     <div style="margin-top: 10px">
 
                         <label style="margin-left: 40px" >维保到期时间:</label>
-                        <input  style="height:30px;width:400px" id="switchboardMaintenanceDueTime" placeholder="请选择..."/>
+                        <input  style="height:30px;width:403px" id="switchboardMaintenanceDueTime" placeholder="请选择..."/>
 
                     </div>
                     <div style="margin-top: 10px">
                         <label style="margin-left: 53px" >交换机品牌:</label>
-                        <input  style="height:30px;width:400px"  id="switchboardBrand" />
+                        <input  style="height:30px;width:404px"  id="switchboardBrand" />
 
                     </div>
 
@@ -98,28 +98,22 @@
                     </div>
                     <div style="margin-top: 10px">
 
-                        <label style="margin-left: 65px" >交换机IP:</label>
+                        <label style="margin-left: 66px" >交换机IP:</label>
                         <input  style="height:30px;width:400px" id="switchboardIP"/><label style="color: red;margin-left: 5px">*</label>
-
-                    </div>
-                    <div style="margin-top: 10px">
-
-                        <label style="margin-left: 85px" >Group:</label>
-                        <input  style="height:30px;width:400px" id="switchboardGroup"/><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
 
                         <label style="margin-left: 92px" >SNMP:</label>
                         <input  style="height:30px;width:113px" id="switchboardSNMP"/>
-                        <label style="margin-left: 100px" >端口号:</label>
+                        <label style="margin-left: 104px" >端口号:</label>
                         <input  style="height:30px;width:119px" id="switchboardPort"/>
 
                     </div>
                     <div style="margin-top: 10px">
 
                         <label style="margin-left: 62px" >所在机柜:</label>
-                        <input  style="height:30px;width:400px"  id="switchboardEquipmentCabinet" /><label style="color: red;margin-left: 5px">*</label>
+                        <input  style="height:30px;width:408px"  id="switchboardEquipmentCabinet" /><label style="color: red;margin-left: 5px">*</label>
 
                     </div>
                     <div style="margin-top: 10px">
@@ -133,17 +127,17 @@
                     </div>
                     <div style="margin-top: 10px">
 
-                        <label style="margin-left: 90px">备注:</label>
+                        <label style="margin-left: 87px">备注:</label>
                         <textarea   style="margin-left: 2px;height:70px;width:400px" rows="5" cols="30" id="switchboardRemark" />
 
                     </div>
 
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveSwitchboardModel"  class="k-button" style="marginleft: 180px;"onclick="submitSwitchboardModel()">
+                        <button id="saveSwitchboardModel"  class="k-button btn-info" style="margin-left: 165px;color: white"onclick="submitSwitchboardModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeSwitchboardModel"  class="k-button" style="margin-left: 100px;" >
+                        <button id="closeSwitchboardModel"  class="k-button btn-danger" style="margin-left: 30px;color: white" >
                             <i class="icon-remove"></i>
                             取消
                         </button>
@@ -254,38 +248,43 @@
                      {template: kendo.template($("#inputModel_toolbar").html())},
                      {template: kendo.template($("#outputModel_toolbar").html())}],
             columns:[
-                {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+              //  {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
                 { field:"switchboardSerialNumber",title:"交换机编号"},
                 { field: "switchboardSN", title: "交换机S/N号",width:"8%",hidden:true},
                 { field: "switchboardPurchasingDate", title: "购买时间",hidden:true},
                 { field: "switchboardMaintenanceDueTime", title: "维保到期时间",hidden:true},
-                { field: "switchboardBrand", title: "交换机品牌",template:"#=getBrandNameById(switchboardBrand)#",hidden:true},
-                { field: "switchboardType", title: "交换机型号",hidden:true},
+                { field: "switchboardBrand", title: "交换机品牌",template:"#=getBrandNameById(switchboardBrand)#"},
+                { field: "switchboardType", title: "交换机型号"},
                 { field: "switchboardIP", title: "交换机IP"},
-                { field: "switchboardGroup", title: "Group",hidden:true},
                 { field: "switchboardSNMP", title: "SNMP",width:"5%",hidden:true},
                 { field: "switchboardPort", title: "端口号",width:"5%",hidden:true},
                 { field: "switchboardEquipmentCabinet", title: "所在机柜",template:"#=getEquipmentCabinetNameById(switchboardEquipmentCabinet)#",hidden:true},
-                { field: "switchboardU", title: "所在U",hidden:true},
+                { field: "switchboardU", title: "所在U"},
                 { field: "switchboardRemark", title: "备注",hidden:true},
                 { command: [
-                    {name:"view",text:"查看",
+                    {name:"view",text:"查看",className:"btn btn-success",
                     click:function(e){
                         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                        if(dataItem==undefined){
+                            dataItem=submitRecObj;
+                        }
                         var url ="/predictCenter/switchboards/getSwitchboardViewInfo/"+dataItem.id+".html";
                         window.open(url);
                         }
                      },
-                    {name:"viewQr",text:"二维码",
+                    {name:"viewQr",text:"二维码",className:" btn btn-warning",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                            if(dataItem==undefined){
+                                dataItem=submitRecObj;
+                            }
                             var url ="/predictCenter/switchboards/getSwitchboardQrCode/"+dataItem.id+".html";
                             window.open(url);
                         }
                     },
-                    {text: "编辑", click: showSwitchboardModel },   //编辑窗体内容
-                    { text: "删除",click:delSwitchboardModel }    //删除记录
-                ] ,  title: "操作",width:"20%"}
+                    {text: "编辑", click: showSwitchboardModel,className: "btn btn-info" },   //编辑窗体内容
+                    { text: "删除",click:delSwitchboardModel ,className:"btn btn-danger "}    //删除记录
+                ] ,  title: "操作",width:"15%"}
             ],
             pageable: {
                 buttonCount:3,
@@ -313,7 +312,7 @@
             visible: false,
             resizable: false,
             width: 630,
-            height:700
+            height:630
         }).data("kendoWindow");
 
         //导入模板窗体 郑霞 20160115
@@ -341,6 +340,9 @@
     function showSwitchboardModel(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         switchboardModelRecordId=dataItem.id;//记录当前被选中的交换机模板的id
         $("#switchboardSerialNumber").val(dataItem.switchboardSerialNumber);//交换机编号
         $("#switchboardSN").val(dataItem.switchboardSN);//交换机序列号
@@ -348,7 +350,6 @@
         $("#switchboardMaintenanceDueTime").val(dataItem.switchboardMaintenanceDueTime);//交换机维保到期时间
         $("#switchboardType").val(dataItem.switchboardType);//交换机型号
         $("#switchboardIP").val(dataItem.switchboardIP);//交换机IP
-        $("#switchboardGroup").val(dataItem.switchboardGroup);
         $("#switchboardSNMP").val(dataItem.switchboardSNMP);//交换机SNMP
         $("#switchboardPort").val(dataItem.switchboardPort);//服务器端口
         $("#switchboardRemark").val(dataItem.switchboardRemark);//备注
@@ -375,6 +376,9 @@
     function delSwitchboardModel(e){
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        if(dataItem==undefined){
+            dataItem=submitRecObj;
+        }
         switchboardModelRecordId=dataItem.id;   //记录当前被选中的交换机模板的id
         swal({
             title: "确认要删除该数据吗？",
@@ -404,7 +408,6 @@
         $("#switchboardBrand").val("");
         $("#switchboardType").val("");
         $("#switchboardIP").val("");
-        $("#switchboardGroup").val("");
         $("#switchboardSNMP").val("");
         $("#switchboardPort").val("");
         $("#switchboardEquipmentCabinet").val("");
@@ -456,7 +459,6 @@
         var switchboardBrandVal= $("#switchboardBrand").val();
         var switchboardTypeVal= $("#switchboardType").val();
         var switchboardIPVal= $("#switchboardIP").val();
-        var switchboardGroupVal= $("#switchboardGroup").val();
         var switchboardSNMPVal= $("#switchboardSNMP").val();
         var switchboardPortVal= $("#switchboardPort").val();
         var switchboardEquipmentCabinetVal= $("#switchboardEquipmentCabinet").val();
@@ -467,7 +469,7 @@
             alert("IP地址格式不正确！");
             return;
         }
-        if(switchboardSerialNumberVal==""||switchboardIPVal==""||switchboardGroupVal==""||switchboardEquipmentCabinetVal==""||switchboardU1Val==""||switchboardU2Val==""){
+        if(switchboardSerialNumberVal==""||switchboardIPVal==""||switchboardEquipmentCabinetVal==""||switchboardU1Val==""||switchboardU2Val==""){
             alert("带有红色标记的为必填项");
             return;
         }else if(!compare()){}
@@ -482,7 +484,6 @@
                 switchboardBrand:switchboardBrandVal,
                 switchboardType:switchboardTypeVal,
                 switchboardIP:switchboardIPVal,
-                switchboardGroup:switchboardGroupVal,
                 switchboardSNMP:switchboardSNMPVal,
                 switchboardPort:switchboardPortVal,
                 switchboardEquipmentCabinet:switchboardEquipmentCabinetVal,
@@ -509,6 +510,7 @@
          }
     }
     //提交数据至后台
+    var submitRecObj=null;//提交记录对象
     function submitSwitchboardModelAjax(submitURL,objData){
         $.ajax({
                     url:submitURL,
@@ -517,6 +519,7 @@
                     type: "GET",   //请求方式
                     data:objData,
                     success:function(data){
+                        submitRecObj=data;
                         $("#switchboardModelWnd").data("kendoWindow").close();
                         setSwitchboardModelGridDataSource();
                         setSwitchboardModelGrid();
@@ -617,7 +620,7 @@
                     transport:{
                         read:{
                             dataType:"json",
-                            url:dropDownListUrl + "/getBrandsByType/3"
+                            url:dropDownListUrl + "/getAllBrands"
                         }
                     }
                  }

@@ -4,8 +4,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by sqhe18 on 2016/4/23.
@@ -19,7 +18,7 @@ public class CsvUtilRepository {
      * @param dataList 数据
      * @return
      */
-    public  boolean exportCsv(File file, List<?> dataList){
+    public  boolean exportCsv(File file, List<String> dataList,String header){
         boolean isSucess=false;
 
         FileOutputStream out=null;
@@ -33,12 +32,13 @@ public class CsvUtilRepository {
             //bw =new BufferedWriter(osw);
             bw =new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
             bw.write("\uFEFF");
-            bw.write("编号,姓名,性别\r\n");
+            bw.write(header+"\r\n");//生成表头
             if(dataList!=null && !dataList.isEmpty()){
                 /*for(Object data : dataList){
                     bw.append(data.toString()).append("\r\n");
                 }*/
                 for(int i=0;i<dataList.size();++i) {
+
                     bw.append(dataList.get(i).toString()).append("\r\n");
                 }
             }

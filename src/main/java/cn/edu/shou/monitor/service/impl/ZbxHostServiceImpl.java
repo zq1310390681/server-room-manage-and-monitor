@@ -39,19 +39,19 @@ public class ZbxHostServiceImpl {
 
     //创建iis 服务
     public String createHostIIS(String hostName,String interfaceIp) {
-        response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10081",1);
+        response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10107",1);
         return response;
     }
 
     //创建jvm
     public String createHostJava(String hostName,String interfaceIp) {
-        response= createDuplicate.createHostEasy(hostName,interfaceIp,"12345","10081",4);
+        response= createDuplicate.createHostEasy(hostName,interfaceIp,"12345","10082",4);
         return response;
     }
 
     //创建 oracle 数据库
     public String createHostOracle(String hostName,String interfaceIp) {
-        response= createDuplicate.createHostEasy(hostName,interfaceIp,"161","10081",2);
+        response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10109",1);
         return response;
     }
 
@@ -79,8 +79,9 @@ public class ZbxHostServiceImpl {
         return response;
     }
 
+    //SQL_Server
     public String createHostSqlserver(String hostName,String interfaceIp) {
-        response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10081",1);
+        response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10111",1);
         return response;
     }
 
@@ -98,7 +99,7 @@ public class ZbxHostServiceImpl {
 
     //创建tomact服务
     public String createHostTomcat(String hostName,String interfaceIp) {
-        response= createDuplicate.createHostEasy(hostName,interfaceIp,"12345","10081",4);
+        response= createDuplicate.createHostEasy(hostName,interfaceIp,"12345","10082",4);
         return response;
     }
 

@@ -43,42 +43,22 @@ public class GetDropDownListApiContentController {
     @Autowired
     VersionRepository versionRepository;
     @Autowired
-    PredictMmBrandTypeRepository BrandTypeRepository;
-    @Autowired
     SerObjGroupManagementRepository serObjGroupManagementRepository;
     @Autowired
     AppGroupManagementRepository appGroupManagementRepository;
     @Autowired
     AlarmGradeRepository alarmGradeRepository;
+    @Autowired
+    KvmRepository kvmRepository;
     //获取所有品牌数据
     @RequestMapping(value = "/getAllBrands")
     public List<predictMmBrand>getAllBrands(){
         return brandRepository.findAll();
     }
-    //根据品牌类型获取品牌数据
-    @RequestMapping(value = "/getBrandsByType/{type}")
-    public List<predictMmBrand>getBrandsByType(@PathVariable int type){
-        return brandRepository.findBrandByType(type);
-    }
     //根据品牌Id获取品牌数据
     @RequestMapping(value = "/getBrandNameById/{id}")
     public predictMmBrand getBrandNameById(@PathVariable long id){
         return brandRepository.findOne(id);
-    }
-    //系统配置获取所有品牌数据
-    @RequestMapping(value = "/getAllBrandTypes")
-    public List<predictMmBrandType>getAllBrandTypes(){
-        return BrandTypeRepository.findAll();
-    }
-/*    //根据品牌类型获取品牌数据
-    @RequestMapping(value = "/getBrandsByType/{type}")
-    public List<predictMmBrand>getBrandsByType(@PathVariable int type){
-        return brandRepository.findBrandByType(type);
-    }*/
-    //根据品牌Id获取品牌数据
-    @RequestMapping(value = "/getBrandTypeById/{id}")
-    public predictMmBrandType getBrandTypeById(@PathVariable long id){
-        return BrandTypeRepository.findOne(id);
     }
     //获取所有U数据
     @RequestMapping(value = "/getAllUs")
@@ -93,13 +73,13 @@ public class GetDropDownListApiContentController {
     }
     //获取所有机柜数据
     @RequestMapping(value = "/getAllEquipmentCabinets")
-    public List<predictMmEquipmentCabinet>getAllEquipmentCabinets(){
+    public List<PredictMmEquipmentCabinet>getAllEquipmentCabinets(){
         return EquipmentCabinetRepository.findAll();
     }
 
     //根据Id获取机柜数据
     @RequestMapping(value = "/getEquipmentCabinetNameById/{id}")
-    public predictMmEquipmentCabinet getEquipmentCabinetNameById(@PathVariable long id){
+    public PredictMmEquipmentCabinet getEquipmentCabinetNameById(@PathVariable long id){
         return EquipmentCabinetRepository.findOne(id);
     }
     //获取所有服务器的存储设备数据
@@ -224,5 +204,13 @@ public class GetDropDownListApiContentController {
     public predictMmVersion getVersionById(@PathVariable long id){
         return versionRepository.findOne(id);
     }
-
+    //获取KVM编号
+    @RequestMapping("/getAllKvm")
+    public List<predictMmKvm>getAllKvm(){
+        return kvmRepository.findAll();
+    }
+    @RequestMapping("/getKvmById/{id}")
+    public predictMmKvm getKvmById(@PathVariable long id){
+        return kvmRepository.findOne(id);
+    }
 }

@@ -268,6 +268,13 @@
                                 配置操作系统
                             </a>
                         </li>
+                        <li th:class="${activeitem=='pj_pz_kvm'}?'active'">
+                            <a style="text-decoration:none;" href="/predictCenter/getKvmInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配置KVM编号
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -322,6 +329,13 @@
                                 <i class="icon-double-angle-right"></i>
                                 <i class="icon-inbox"></i>
                                 防火墙
+                            </a>
+                        </li>
+                        <li th:class="${activeitem=='sjzs_sb_px'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/fws/getFwShow">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配线
                             </a>
                         </li>
                     </ul>

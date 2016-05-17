@@ -4,14 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Created by Administrator on 2016/1/14 0014.
+ * Created by sqhe18 on 2016/5/9.
  */
-public class predictMmBrandForm {
-
+public class predictMmKvmForm {
     @Getter @Setter
     private long id;
     @Getter @Setter
-    private String brandName;//品牌名称
+    private String kvmNum;
 
     public long getId() {
         return id;
@@ -21,12 +20,11 @@ public class predictMmBrandForm {
         this.id = id;
     }
 
-    public String getBrandName() {
-        return brandName;
+    public String getKvmNum() {
+        return kvmNum;
     }
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
+    public void setKvmNum(String kvmNum) {
+        this.kvmNum = kvmNum;
     }
-
 }

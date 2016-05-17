@@ -20,7 +20,7 @@
         <a class="menu-toggler" id="menu-toggler" href="#">
             <span class="menu-text"></span>
         </a>
-        <div th:replace="slider :: slidermenu(${'pj_pz_system'})"></div>
+        <div th:replace="slider :: slidermenu(${'pj_pz_kvm'})"></div>
         <div class="main-content">
             <div class="breadcrumbs" id="breadcrumbs">
                 <script type="text/javascript">
@@ -35,7 +35,7 @@
                         <a href="#">监控管理配置</a>
                     </li>
                     <li class="active">
-                        <a href="#">配置操作系统</a>
+                        <a href="#">配置KVM编号</a>
                     </li>
                 </ul><!-- .breadcrumb -->
                 <div class="nav-search" id="nav-search">
@@ -51,27 +51,23 @@
         <div class="page-content">
             <div>
                 <div class="col-xs-10">
-                    <div id="operatingSystemGrid" style="position: absolute;width: 105%"></div>
+                    <div id="kvmGrid" style="position: absolute;width: 105%"></div>
                 </div>
             </div>
-            <!--操作系统模板-->
-            <div id="operatingSystemModelWnd" style="display:none">
+            <!--KVM编号模板-->
+            <div id="kvmModelWnd" style="display:none">
                 <div>
                     <div style="margin:10px">
-                        <label style="margin-left: 20px" >操作系统名称:</label>
-                        <input  style="margin-left: 10px;height:30px;width:370px"  id="operatingSystem"/>
+                        <label style="margin-left: 20px" >KVM编号:</label>
+                        <input  style="margin-left: 10px;height:30px;width:405px"  id="kvmNum"/>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
-                    <div style="margin-top: 10px">
-                        <label style="margin-left:86px">备注:</label>
-                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:365px"  id="operatingSystemNote" ></textarea>
-                    </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button btn-info" style="margin-left: 138px;color: white"onclick="submitOperatingSystemModel()">
+                        <button id="saveCertifiModel"  class="k-button btn-info" style="margin-left: 138px;color: white"onclick="submitKvmModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
-                        <button id="closeOperatingSystemModel" class="k-button btn-danger" style="margin-left: 30px;color: white" >
+                        <button id="closeKvmModel" class="k-button btn-danger" style="margin-left: 30px;color: white" >
                             <i class="icon-remove"></i>
                             关闭
                         </button>
@@ -129,22 +125,22 @@
 <script src="/js/jquery.cookie.js"></script>
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
-    var crudOperatingSystemBaseUrl = "/predictCenter/api/operatingSystem";  //根地址
+    var crudKvmBaseUrl = "/predictCenter/api/kvm";  //根地址
     var dropDownListUrl = "/predictCenter/api/dropDownList";  //根地址
-    var operatingSystemGridDataSource;        //操作系统数据源
-    var operatingSystemModelWnd;  //声明弹出的窗体
-    var operatingSystemRecordId;  //声明数据选中行的id
+    var kvmGridDataSource;        //KVM编号数据源
+    var kvmModelWnd;  //声明弹出的窗体
+    var kvmRecordId;  //声明数据选中行的id
     //主程序入口
     $(function(){
-        setOperatingSystemGridDataSource();//操作系统数据源
-        setOperatingSystemGrid();//获取操作系统数据列表
+        setKvmGridDataSource();//KVM编号数据源
+        setKvmGrid();//获取KVM编号数据列表
     });
-    //设置操作系统数据源
-    function setOperatingSystemGridDataSource(){
-        operatingSystemGridDataSource=new kendo.data.DataSource({
+    //设置KVM编号数据源
+    function setKvmGridDataSource(){
+        kvmGridDataSource=new kendo.data.DataSource({
             transport: {
                 read:  {
-                    url: crudOperatingSystemBaseUrl + "/getAllOperatingSystem",
+                    url: crudKvmBaseUrl + "/getAllKvm",
                     dataType: "json"
                 }
             },
@@ -157,18 +153,16 @@
             }
         });
     }
-    //操作系统 数据表函数
-    function setOperatingSystemGrid(){
-        $("#operatingSystemGrid").kendoGrid({
-            dataSource:operatingSystemGridDataSource,
-            toolbar:[{template: kendo.template($("#operatingSystemModel_toolbar").html())}],
+    //KVM编号 数据表函数
+    function setKvmGrid(){
+        $("#kvmGrid").kendoGrid({
+            dataSource:kvmGridDataSource,
+            toolbar:[{template: kendo.template($("#kvmModel_toolbar").html())}],
             columns:[
-                {field:"operatingSystem",title:"操作系统名称"},
-                {field:"operatingSystemNote",title:"备注",hidden:true},
+                {field:"kvmNum",title:"KVM编号"},
                 { command: [
-                    {text: "编辑", click: showOperatingSystemModel ,className: "btn btn-info"},   //编辑窗体内容
-                    { text: "删除",click:delOperatingSystemModel  ,className:"btn btn-danger "}    //删除记录
-
+                    {text: "编辑", click: showKvmModel ,className: "btn btn-info"},   //编辑窗体内容
+                    {text: "删除",click:delKvmModel ,className:"btn btn-danger "}    //删除记录
                 ],
                     title: "操作"
                 }
@@ -192,38 +186,37 @@
             },
             selectable: "row"
         });
-        operatingSystemModelWnd = $("#operatingSystemModelWnd").kendoWindow({
-            title: "操作系统",
+        kvmModelWnd = $("#kvmModelWnd").kendoWindow({
+            title: "KVM编号",
             modal: true,
             visible: false,
             resizable: false,
             width: 570,
-            height:230
+            height:130
         }).data("kendoWindow");
     }
     //查看弹窗
-    function showOperatingSystemModel(e) {
+    function showKvmModel(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         if(dataItem==undefined){
             dataItem=submitRecObj;
         }
-        operatingSystemRecordId=dataItem.id;//记录当前被选中的操作系统的id
+        kvmRecordId=dataItem.id;//记录当前被选中的KVM编号的id
 
         //文本框
-        $("#operatingSystemNote").val(dataItem.operatingSystemNote);    //备注
-        $("#operatingSystem").val(dataItem.operatingSystem);    //操作系统名称
-        operatingSystemModelWnd.center().open();
+        $("#kvmNum").val(dataItem.kvmNum);    //KVM编号名称
+        kvmModelWnd.center().open();
     }
     //删除数据
-    function delOperatingSystemModel(e){
+    function delKvmModel(e){
         e.preventDefault();
 
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         if(dataItem==undefined){
             dataItem=submitRecObj;
         }
-        operatingSystemRecordId=dataItem.id;   //记录当前被选中的操作系统的id
+        kvmRecordId=dataItem.id;   //记录当前被选中的KVM编号的id
 
         swal({
                     title: "确认要删除该数据吗？",
@@ -235,61 +228,62 @@
                     closeOnConfirm: true
                 },function(){
                     $.ajax({
-                        url:crudOperatingSystemBaseUrl+"/deleteOperatingSystem/"+operatingSystemRecordId,
+                        url:crudKvmBaseUrl+"/deleteKvm/"+kvmRecordId,
                         dataType: "json",   //返回格式为json
                         async: true,//同步，这也是ajax重要特性
                         type: "GET",   //请求方式
                         success:function(data){
                             //alert("记录删除成功！");
-                            setOperatingSystemGridDataSource();//获取操作系统数据源
-                            setOperatingSystemGrid();//重新生成表单
+                            setKvmGridDataSource();//获取KVM编号数据源
+                            setKvmGrid();//重新生成表单
                         }
                     })
                 }
         );
     }
     //添加数据
-    function addOperatingSystemModel(){
-        $("#operatingSystem").val("");
-        $("#operatingSystemNote").val("");
-        operatingSystemRecordId=0;//操作系统，模板id设为0.
-        operatingSystemModelWnd.center().open();
+    function addKvmModel(){
+        $("#kvmNum").val("");
+        kvmRecordId=0;//KVM编号，模板id设为0.
+        kvmModelWnd.center().open();
 
     }
     // 保存
-    function submitOperatingSystemModel(){
-        var operatingSystemVal= $("#operatingSystem").val();
-        var operatingSystemNoteVal= $("#operatingSystemNote").val();
-
-        if(operatingSystemVal==""){
+    function submitKvmModel(){
+        var kvmNumVal= $("#kvmNum").val();
+        if(kvmNumVal==""){
             alert("带有红色标记的为必填项");
             return;
         }else{
-            var submitOperatingSystemModelData={
+            var submitKvmModelData={
                 //提交当前行数据的所有数据
-                id:operatingSystemRecordId,
-                operatingSystem:operatingSystemVal,
-                operatingSystemNote:operatingSystemNoteVal
+                id:kvmRecordId,
+                kvmNum:kvmNumVal
             };
-            $.ajax({
-                url:"/predictCenter/api/operatingSystem/osExit/"+operatingSystemVal,
-                dataType:"json",
-                async:true,
-                type:"GET",
-                success:function(data){
-                    //判断操作系统是否存在
-                    if(!data.os){
-                        alert("操作系统已存在！");
-                        return;
+            if(kvmRecordId ==0){
+                $.ajax({
+                    url:"/predictCenter/api/kvm/kvmExist/"+kvmNumVal,
+                    dataType:"json",
+                    async:true,
+                    type:"GET",
+                    success:function(data){
+                        //判断KVM编号是否存在
+                        if(data){
+                            alert("KVM编号已存在！");
+                            return;
+                        }
+                        submitKvmModelAjax(crudKvmBaseUrl + "/createAndUpdateKvm",submitKvmModelData);
                     }
-                    submitOperatingSystemModelAjax(crudOperatingSystemBaseUrl + "/createAndUpdateOperatingSystem",submitOperatingSystemModelData);
-                }
-            });
+                });
+            }else{
+                submitKvmModelAjax(crudKvmBaseUrl + "/createAndUpdateKvm",submitKvmModelData);
+            }
+
         }
     }
     //提交数据至后台
     var submitRecObj=null;//提交记录对象
-    function submitOperatingSystemModelAjax(submitURL,objData){
+    function submitKvmModelAjax(submitURL,objData){
         $.ajax({
             url:submitURL,
             dataType: "json",   //返回格式为json
@@ -298,19 +292,19 @@
             data:objData,
             success:function(data){
                 submitRecObj=data;
-                $("#operatingSystemModelWnd").data("kendoWindow").close();
-                setOperatingSystemGridDataSource();//获取操作系统数据源
-                setOperatingSystemGrid();//重新生成表单
+                $("#kvmModelWnd").data("kendoWindow").close();
+                setKvmGridDataSource();//获取KVM编号数据源
+                setKvmGrid();//重新生成表单
             }
         })
     };
     // 关闭窗口
-    $("#closeOperatingSystemModel").click( function (e) {
-        $("#operatingSystemModelWnd").data("kendoWindow").close();
+    $("#closeKvmModel").click( function (e) {
+        $("#kvmModelWnd").data("kendoWindow").close();
     });
 </script>
-<script id="operatingSystemModel_toolbar" type="text/x-kendo-template">
-    <button class="k-button k-button-icontext k-grid-add" id="operatingSystemModel_toolbar_queryBtn" onclick="addOperatingSystemModel();"><span class="k-icon k-add"></span>添加操作系统</button>
+<script id="kvmModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="kvmModel_toolbar_queryBtn" onclick="addKvmModel();"><span class="k-icon k-add"></span>添加KVM编号</button>
 </script>
 <!-- inline scripts related to this page -->
 </body>

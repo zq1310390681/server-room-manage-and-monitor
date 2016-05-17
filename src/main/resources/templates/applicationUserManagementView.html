@@ -14,6 +14,12 @@
 </head>
 
 <body>
+<!--<script>
+
+    var userbase64 = "[[${userbase64}]]";
+
+</script>-->
+
 <div th:replace="navbar :: navbar(${user})"></div>
 <div class="main-container" id="main-container">
     <script type="text/javascript">
@@ -26,7 +32,7 @@
         </a>
 
 
-        <div th:replace="slider :: slidermenu(${'pj_sb_fw'})"></div>
+        <div th:replace="slider :: slidermenu(${'pj_yyyh'})"></div>
 
 
         <div class="main-content">
@@ -46,10 +52,10 @@
                     </li>
                     <li>
                         <i class="icon-home home-icon"></i>
-                        <a href="/predictCenter/fws/getFwInfo">设备</a>
+                        <a href="/predictCenter/getApplicationUserInfo">应用用户</a>
                     </li>
                     <li>
-                        <a th:href="@{/predictCenter/fws/getFwInfo/{fwid}.html(fwId=${fw.id})}">防火墙详细信息</a>
+                        <a th:href="@{/predictCenter/getApplicationUserViewInfo/{applicationUserid}.html(applicationUserId=${applicationUser.id})}">应用用户详细信息</a>
                     </li>
 
                 </ul><!-- .breadcrumb -->
@@ -69,90 +75,62 @@
                     <div class="col-xs-8" style="width: 600px">
                         <div class="tab-content no-border padding-24" style="font-size: 12px;background-color:#fff;font-family: Microsoft YaHei">
                             <div class="header blue bolder "  style="display: inline-block ;width:530px">
-                                <b style="font-size: 20px">防火墙详细信息</b>
-                                <button id="FwMangeViewClose" class="btn btn-primary btn-sm" style=" float:right  " >
+                                <b style="font-size: 20px">应用用户详细信息</b>
+                                <button id="applicationUserMangeViewClose" class="btn btn-primary btn-sm" style=" float:right  " >
                                     <i class="icon-reply icon-only"></i>
                                 </button>
+                                <!--//<a class="fa fa-close" style="height:26px "></a>-->
                             </div>
+                           <!-- <div class="row">
+                                <div align="center" style="background-color:#428bca!important;height: 45px;width:700px;">
+                                    <b style="color:#ffffff;font-size:25px;font-family:Microsoft YaHei">Ping监控详细信息</b>
+                                </div>
+                            </div>-->
                             <div class="row ">
                                 <div class="col-xs-12 col-sm-9 header blue" style="width:530px;left:10px">
+                                    <!--<h4 class="blue">
+                                            <span class="middle"></span>
+                                            <span class="label label-purple arrowed-in-right">
+                                                <i class="icon-circle smaller-80 align-middle"></i>
+                                                在线
+                                            </span>
+                                    </h4>-->
                                     <div class="profile-user-info">
-                                        <input name="id" type="hidden" th:value="*{fw} ? *{fw.id} : '0'"/>
+                                        <input name="id" type="hidden" th:value="*{applicationUser} ? *{applicationUser.id} : '0'"/>
                                         <div class="profile-info-row">
                                             <div class="profile-info-name">
-                                                防火墙编号：
+                                                应用用户单位：
                                             </div>
 
                                             <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwSerialNumber} : '(no user specified)'"></label>
+                                                <label th:text="*{applicationUser} ? *{applicationUser.applicationUserCompany} : '(no user specified)'"></label>
                                             </div>
                                         </div>
                                         <div class="profile-info-row">
                                             <div class="profile-info-name">
-                                                防火墙S/N号：
+                                                应用用户：
                                             </div>
 
                                             <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwSN} : '(no user specified)'"></label>
+                                                <label th:text="*{applicationUser} ? *{applicationUser.applicationUserName} : '(no user specified)'"></label>
                                             </div>
                                         </div>
+
+
                                         <div class="profile-info-row">
                                             <div class="profile-info-name">
-                                                购买时间：
+                                                应用用户IP：
                                             </div>
+
                                             <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwPurchasingDate} : '(no user specified)'"></label>
+                                                <label th:text="*{applicationUser} ? *{applicationUser.applicationUserIP} : '(no user specified)'"></label>
                                             </div>
                                         </div>
-                                        <div class="profile-info-row">
-                                            <div class="profile-info-name">
-                                                维保到期时间：
-                                            </div>
-                                            <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwMaintenanceDueTime} : '(no user specified)'"></label>
-                                            </div>
-                                        </div>
-                                        <div class="profile-info-row">
-                                            <div class="profile-info-name">
-                                                防火墙品牌：
-                                            </div>
-                                            <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwBrand} : '(no user specified)'"></label>
-                                            </div>
-                                        </div>
-                                        <div class="profile-info-row">
-                                            <div class="profile-info-name">
-                                                防火墙型号：
-                                            </div>
-                                            <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwType} : '(no user specified)'"></label>
-                                            </div>
-                                        </div>
-                                        <div class="profile-info-row">
-                                            <div class="profile-info-name">
-                                                防火墙IP：
-                                            </div>
-                                            <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwIP} : '(no user specified)'"></label>
-                                            </div>
-                                        </div>
-                                        <div class="profile-info-row">
-                                            <div class="profile-info-name">
-                                                SNMP：
-                                            </div>
-                                            <div class="profile-info-value">
-                                                <label th:text="*{fw} ? *{fw.fwSNMP} : '(no user specified)'"></label>
-                                            </div>
-                                        </div>
-                                        <div class="profile-info-row">
-                                            <div class="profile-info-name">
-                                                备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：
-                                            </div>
-                                            <div class="profile-info-value">
-                                                <textarea style="color: #478fca!important" readonly="true" th:text="*{fw} ? *{fw.fwRemark} : '(no user specified)'" cols="45" rows="10"></textarea>
-                                            </div>
-                                        </div>
+
                                     </div>
+                                    <!--<div style="margin-left: 10px">-->
+                                        <!--<a class="btn btn-primary">返回</a>-->
+                                    <!--</div>-->
                                 </div><!-- /span -->
                             </div><!-- /row-fluid -->
                         </div>
@@ -185,7 +163,7 @@
 
 <script type="text/javascript">
     window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
-    $("#FwMangeViewClose").click( function (e) {
+    $("#applicationUserMangeViewClose").click( function (e) {
        var confirm1= confirm("确定关闭吗T T？");
         if(confirm1==true){
             window.close();
