@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${title}"></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script th:replace="header :: header"></script>
+</head>
+
+<body>
+<div th:replace="navbar :: navbar(${user})"></div>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+    </script>
+
+    <div class="main-container-inner">
+        <a class="menu-toggler" id="menu-toggler" href="#">
+            <span class="menu-text"></span>
+        </a>
+        <div th:replace="slider :: slidermenu(${'pj_sb_wiring'})"></div>
+        <div class="main-content">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="icon-home home-icon"></i>
+                        <a href="/">主页</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">监控管理配置</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">服务器硬件</a>
+                    </li>
+                    <li class="active">
+                        <a href="#">配线</a>
+                    </li>
+                </ul><!-- .breadcrumb -->
+                <div class="nav-search" id="nav-search">
+                    <span class="input-icon">
+                        <input type="text" placeholder="搜索 ..." class="nav-search-input" id="nav-search-input" autocomplete="off" />
+                        <i class="icon-search nav-search-icon"></i>
+                    </span>
+                </div><!-- #nav-search -->
+            </div>
+
+
+        </div><!-- /.main-content -->
+        <div class="page-content">
+            <div>
+                <div class="col-xs-10">
+                    <div id="wiringGrid" style="position: absolute;width: 105%"></div>
+                </div>
+            </div>
+            <!--VMWare虚拟机模板-->
+            <div id="wiringModelWnd" style="display:none">
+                <div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 65px" >源头设备:</label>
+                        <input  style="margin-right: 20px;height:30px;width:300px"  id="source"/>
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin:10px">
+                        <label style="margin-left: 70px" >源头设备端口:</label>
+                        <input style="margin-right: 20px;height:30px;width:300px"  id="sourcePort" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 46px" >目标设备:</label>
+                        <input  style="margin-right: 20px;height:30px;width:300px"  id="target" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 46px" >目标设备端口:</label>
+                        <input style="margin-right: 20px;height:30px;width:300px"  id="targetPort" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left: 46px" >配线标识:</label>
+                        <input style="margin-right: 20px;height:30px;width:300px"  id="wiringMark" />
+                        <label style="color: red;margin-left: 5px">*</label>
+                    </div>
+                    <div style="margin-top: 10px">
+                        <label style="margin-left:115px">备注:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:355px"  id="wiringNote" ></textarea>
+                    </div>
+                    <div style="margin-left:190px;margin-top:20px;">
+                        <button id="saveCertifiModel"  class="k-button btn-info" style="margin-left: 160px;color: white"onclick="submitWiringModel()">
+                            <i class="icon-ok"></i>
+                            保存
+                        </button>
+                        <button id="closeWiringModel" class="k-button btn-danger" style="margin-left: 30px;color: white" >
+                            <i class="icon-remove"></i>
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="inputWnd" style="display:none">
+                <div class="file-box">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input type='file' name='textfield' style="margin-left:80px;margin-top:40px;height:25px" />
+                    </form>
+                    <button style="margin-left:400px;margin-top:25px;height:25px">导入</button>
+                    <button id="closeFolder" style="margin-left:20px;margin-top:25px;height:25px">取消</button>
+                </div>
+            </div>
+            <div id="outputWnd" style="display:none">
+                <div style="margin-top: 10px">
+                    <label style="margin-left: 52px" >选择服务器:</label>
+                    <input  style="margin-left: 10px;height:30px;width:400px" id="selection"/><label style="color: red;margin-left: 5px">*</label>
+                    <button style="margin-left:400px;margin-top:80px;height:25px">导出</button>
+                    <button id="closeSelection" style="margin-left:20px;margin-top:80px;height:25px">取消</button>
+                </div>
+            </div>
+        </div><!-- /.page-content -->
+
+    </div><!-- /.main-container-inner -->
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="icon-double-angle-up icon-only bigger-110"></i>
+    </a>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+<script src="/assets/js/jquery-2.0.3.min.js"></script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script src="/assets/js/jquery.1.10.2.min.js"></script>
+<![endif]-->
+
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>");
+</script>
+
+<!-- <![endif]-->
+
+<!--[if IE]>
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+</script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/typeahead-bs2.min.js"></script>
+<!-- page specific plugin scripts -->
+
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+<script src="/js/kendo.all.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+var crudWiringBaseUrl = "/predictCenter/api/wiring";  //根地址
+var dropDownListUrl = "/predictCenter/api/dropDownList";  //根地址
+var wiringGridDataSource;        //wiring数据源
+var wiringModelWnd;  //声明弹出的窗体
+var wiringRecordId;  //声明数据选中行的id
+//设置下拉列表
+function setDropDownList(){
+
+    $("#source").kendoDropDownList({
+        optionLabel: "选择源头服务器",
+        dataTextField: "serverSerialNumber",
+        dataValueField: "id",
+        dataSource: {
+            transport: {
+                read: {
+                    url: dropDownListUrl+"/getServerSerialNumber",
+                    dataType: "json"
+                }
+            }
+
+        }
+    });
+
+    $("#target").kendoDropDownList({
+        optionLabel: "选择目标服务器",
+        dataTextField: "serverSerialNumber",
+        dataValueField: "id",
+        dataSource: {
+            transport: {
+                read: {
+                    url: dropDownListUrl+"/getServerSerialNumber",
+                    dataType: "json"
+                }
+            }
+
+        }
+    });
+}
+//主程序入口
+$(function(){
+    setWiringGridDataSource();//Tomcat数据源
+    setWiringGrid();//获取Tomcat数据列表
+    setDropDownList();
+});
+//设置Wiring数据源
+function setWiringGridDataSource(){
+    wiringGridDataSource=new kendo.data.DataSource({
+        transport: {
+            read:  {
+                url: crudWiringBaseUrl + "/getAllWiring",
+                dataType: "json"
+            }
+        },
+        batch: true,
+        pageSize: 20,
+        schema: {
+            model: {
+                id: "id"
+            }
+        }
+    });
+}
+//VMWare虚拟机 数据表函数
+function setWiringGrid(){
+    $("#wiringGrid").kendoGrid({
+        dataSource:wiringGridDataSource,
+        toolbar:[{template: kendo.template($("#wiringModel_toolbar").html())},
+            {template: kendo.template($("#inputModel_toolbar").html())},
+            {template: kendo.template($("#outputModel_toolbar").html())}],
+        columns:[
+          //  {title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>'},
+            {field:"source",title:"源头设备",template:"#=getSource(source)#"},
+            {field:"target",title:"目标设备",template:"#=getTarget(target)#"},
+            {field:"sourcePort",title:"源头端口"},
+            {field:"targetPort",title:"目标端口"},
+            {field:"wiringMark",title:"配线标识"},
+            {field:"wiringNote",title:"备注"},
+            { command: [
+//                {name:"view",text:"查看",className:"btn btn-success",
+//                    click:function(e) {
+//                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+//                        if(dataItem==undefined){
+//                            dataItem=submitRecObj;
+//                        }
+//                        var url = "/predictCenter/getWiringView/" + dataItem.id + ".html";
+//                        window.open(url);
+//                    }
+//                },
+                {text: "编辑", click: showWiringModel ,className: "btn btn-info"},   //编辑窗体内容
+                { text: "删除",click:delWiringModel ,className:"btn btn-danger " }    //删除记录
+
+            ],
+                title: "操作",width:"20%"
+            }
+        ],
+        pageable: {
+            buttonCount:3,
+            input: true,
+            messages:{
+                display:"共{2}条记录",
+                first:"第一页",
+                last:"最后一页",
+                next:"下一页",
+                previous:"前一页",
+                morePages:"更多页",
+                refresh:"刷新表格",
+                empty:"没有数据",
+                itemsPerPage:"项数据每页",
+                page:"第",
+                of:"页"
+            }
+        },
+        selectable: "row"
+    });
+    wiringModelWnd = $("#wiringModelWnd").kendoWindow({
+        title: "配线",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 600,
+        height:400
+    }).data("kendoWindow");
+    //导入模板窗体
+    inputWnd = $("#inputWnd").kendoWindow({
+        title: "导入",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 600,
+        height:150
+    }).data("kendoWindow");
+    //导出模板窗体
+    outputWnd = $("#outputWnd").kendoWindow({
+        title: "导出",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 600,
+        height:200
+    }).data("kendoWindow");
+
+//    oracleModelWnd = $("#oracleModelWnd").kendoWindow({
+//        title: "配线",
+//        modal: true,
+//        visible: false,
+//        resizable: false,
+//        width: 620,
+//        height:400
+//    }).data("kendoWindow");
+}
+//导入
+function addInputModel(){
+    inputWnd.center().open();
+}
+//导出
+function addOutputModel(){
+    outputWnd.center().open();
+}
+//取消导入
+$("#closeFolder").click( function (e) {
+    $("#inputWnd").data("kendoWindow").close();
+});
+//取消导出
+$("#closeSelection").click( function (e) {
+    $("#outputWnd").data("kendoWindow").close();
+});
+//导入保存
+function submitFolder(){
+    var FolderVal= $("#Folder").val();
+    if(FolderVal==""){
+        alert("带有红色标记的为必填项");
+        return;
+    }else{
+        var submitFolderData={
+            //提交当前行数据的所有数据
+            id:wiringRecordId,
+            Folder:FolderVal
+        };
+        submitFolderAjax(crudServiceBaseUrl + "/create",submitFolderData);
+    }
+}
+//提交导入数据至后台
+function submitFolderAjax(submitURL,objData){
+    $.ajax({
+        url:submitURL,
+        dataType: "json",   //返回格式为json
+        async: true,//同步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        data:objData,
+        success:function(data){
+            $("#folderWnd").data("kendoWindow").close();
+            setWiringGridDataSource();
+            setWiringGrid();
+        }
+    })
+}
+//获取版本信息
+function getSource(source){
+    var serverSerialNumber="";//版本信息
+    $.ajax({
+        dataType:"json",
+        url:"/predictCenter/api/dropDownList/getServerSerialNumberById/" + source,
+        async:false,                       //是否异步：不异步，页面加载同时加载数据
+        success:function(data){
+            serverSerialNumber=data.serverSerialNumber;
+        }
+    });
+    return serverSerialNumber;
+}
+//获取主机
+function getTarget(target){
+    var serverSerialNumber="";//主机
+    $.ajax({
+        dataType:"json",
+        url:"/predictCenter/api/dropDownList/getServerSerialNumberById/" + target,
+        async:false,                       //是否异步：不异步，页面加载同时加载数据
+        success:function(data){
+            serverSerialNumber=data.serverSerialNumber;
+        }
+    });
+    return serverSerialNumber;
+}
+//查看弹窗
+function showWiringModel(e) {
+    e.preventDefault();
+    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
+    wiringRecordId=dataItem.id;//记录当前被选中的虚拟机的id
+
+    //文本框
+    $("#sourcePort").val(dataItem.sourcePort);    //备注
+    $("#targetPort").val(dataItem.targetPort);    //Tomcat名称
+    $("#wiringMark").val(dataItem.wiringMark);    //Tomcat IP
+    $("#wiringNote").val(dataItem.wiringNote);    //Tomcat IP
+
+    /*声明为 下拉 输入框样式并赋值*/
+    var wiringSourceDrop= $("#source").data("kendoDropDownList");//Tomcat版本信息
+    wiringSourceDrop.value(dataItem.source);
+    var wiringTargetDrop= $("#target").data("kendoDropDownList");//Tomcat所在主机
+    wiringTargetDrop.value(dataItem.target);
+    wiringModelWnd.center().open();
+}
+//删除数据
+function delWiringModel(e){
+    e.preventDefault();
+
+    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+    if(dataItem==undefined){
+        dataItem=submitRecObj;
+    }
+    wiringRecordId=dataItem.id;   //记录当前被选中的Tomcat的id
+
+    swal({
+                title: "确认要删除该数据吗？",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#55c6dc",
+                confirmButtonText: "删除",
+                cancelButtonText: "取消",
+                closeOnConfirm: true
+            },function(){
+                $.ajax({
+                    url:crudTomcatBaseUrl+"/deleteWiring/"+wiringRecordId,
+                    dataType: "json",   //返回格式为json
+                    async: true,//同步，这也是ajax重要特性
+                    type: "GET",   //请求方式
+                    success:function(data){
+                        //alert("记录删除成功！");
+                        setWiringGridDataSource();//获取Tomcat数据源
+                        setWiringGrid();//重新生成表单
+                    }
+                })
+            }
+    );
+}
+//添加数据
+function addWiringModel(){
+    var wiringSource= $("#source").data("kendoDropDownList");
+    wiringSource.value("");
+    var wiringTarget= $("#target").data("kendoDropDownList");
+    wiringTarget.value("");
+
+    $("#sourcePort").val("");
+    $("#targetPort").val("");
+    $("#wiringMark").val("");
+    $("#wiringNote").val("");
+    wiringRecordId=0;//添加Tomcat，模板id设为0.
+    wiringModelWnd.center().open();
+}
+// 保存
+function submitWiringModel(){
+    var sourceVal= $("#source").val();
+    var targetVal= $("#target").val();
+    var sourcePortVal= $("#sourcePort").val();
+    var targetPortVal= $("#targetPort").val();
+    var wiringMarkVal= $("#wiringMark").val();
+    var wiringNoteVal= $("#wiringNote").val();
+//    if(!validateIp(middleIPVal)){
+//        alert("IP地址格式不正确！");
+//        return;
+//    }
+    if(sourceVal==""||targetVal==""||sourcePortVal==""||targetPortVal==""||wiringMarkVal==""){
+        alert("带有红色标记的为必填项");
+        return;
+    }else{
+        var submitWiringModelData={
+            //提交当前行数据的所有数据
+            id:wiringRecordId,
+            source:sourceVal,
+            target:targetVal,
+            sourcePort:sourcePortVal,
+            targetPort:targetPortVal,
+            wiringMark:wiringMarkVal,
+            wiringNote:wiringNoteVal
+        };
+        submitWiringModelAjax(crudWiringBaseUrl + "/createAndUpdateWiring",submitWiringModelData);
+    }
+}
+//提交数据至后台
+var submitRecObj=null;//提交记录对象
+function submitWiringModelAjax(submitURL,objData){
+    $.ajax({
+        url:submitURL,
+        dataType: "json",   //返回格式为json
+        async: true,//同步，这也是ajax重要特性
+        type: "GET",   //请求方式
+        data:objData,
+        success:function(data){
+            submitRecObj=data;
+            $("#wiringModelWnd").data("kendoWindow").close();
+            setWiringGridDataSource();//
+            setWiringGrid();//重新生成表单
+        }
+    })
+};
+// 关闭窗口
+$("#closeWiringModel").click( function (e) {
+    $("#closeWiringModel").data("kendoWindow").close();
+});
+</script>
+<script id="wiringModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="wiringModel_toolbar_queryBtn" onclick="addWiringModel();"><span class="k-icon k-add"></span>添加配线</button>   <!--添加证书-->
+</script>
+<script id="inputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
+</script>
+<script id="outputModel_toolbar" type="text/x-kendo-template">
+    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
+</script>
+<!-- inline scripts related to this page -->
+</body>
+</html>

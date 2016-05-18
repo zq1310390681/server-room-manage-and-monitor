@@ -1,19 +1,14 @@
-package cn.edu.shou.monitor.domain;
+package cn.edu.shou.monitor.domain.missiveDataForm;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.Entity;
 
 /**
  * Created by light on 2016/5/17.
  */
-@Entity
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class PredictMmWiring extends BaseEntity {
-
+public class PredictMmWiringForm {
+    @Getter @Setter
+    private long id;
     @Getter @Setter
     private String target;//目标
     @Getter @Setter
@@ -25,7 +20,7 @@ public class PredictMmWiring extends BaseEntity {
     @Getter @Setter
     private String wiringMark;//配线的标识
     @Getter @Setter
-    private String wiringNote;
+    private String wiringNote;//配线备注
 
 
     public long getId() {

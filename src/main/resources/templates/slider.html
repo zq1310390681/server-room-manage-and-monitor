@@ -89,6 +89,13 @@
                                 防火墙
                             </a>
                         </li>
+                        <li th:class="${activeitem=='pj_sb_wiring'}?'active'">
+                             <a style="text-decoration:none;"  href="/predictCenter/wiring/getWiringInfo">
+                                 <i class="icon-double-angle-right"></i>
+                                 <i class="icon-inbox"></i>
+                                 配线
+                             </a>
+                        </li>
                     </ul>
                 </li>
                 <li th:class="${activeitem.contains('pj_zjj')}?'active'">
@@ -329,13 +336,6 @@
                                 <i class="icon-double-angle-right"></i>
                                 <i class="icon-inbox"></i>
                                 防火墙
-                            </a>
-                        </li>
-                        <li th:class="${activeitem=='sjzs_sb_px'}?'active'">
-                            <a style="text-decoration:none;"  href="/predictCenter/fws/getFwShow">
-                                <i class="icon-double-angle-right"></i>
-                                <i class="icon-inbox"></i>
-                                配线
                             </a>
                         </li>
                     </ul>
