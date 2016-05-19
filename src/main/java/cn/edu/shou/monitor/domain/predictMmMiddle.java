@@ -31,7 +31,6 @@ public class predictMmMiddle extends BaseEntity {
     private String middleNote;//备注
     @Getter @Setter
     private String hostId;
-
     @Getter @Setter
     private String middleType;//中间件类型   1代表iis 2代表tomact 3代表sql 4代表oracle 5代表java
 

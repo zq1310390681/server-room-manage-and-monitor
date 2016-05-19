@@ -33,6 +33,8 @@ public class MiddleApiController {
     VersionRepository versionRepository;
     @Autowired
     OperatingSystemRepository operatingSystemRepository;
+    ZbxHostServiceImpl zbxHost = new ZbxHostServiceImpl();
+
     //获取所有中间件数据库数据信息
     @RequestMapping(value = "/getAllMiddle")
     public List<predictMmMiddle> getAllMiddle(){
@@ -57,9 +59,23 @@ public class MiddleApiController {
         mmMiddle.setMiddleNote(mmMiddleForm.getMiddleNote());
         mmMiddle.setMiddleType(mmMiddleForm.getMiddleType());
         mmMiddle.setMiddleVersion(mmMiddleForm.getMiddleVersion());
-        middleRepository.save(mmMiddle);
-        List<predictMmMiddle> list=new ArrayList<predictMmMiddle>();
-        list.add(mmMiddle);
+
+        List<predictMmMiddle> list = new ArrayList<predictMmMiddle>();
+        if(recordId==0){
+            String result = zbxHost.createMiddleWare(mmMiddleForm.getMiddleType(),mmMiddleForm.getMiddleName(),mmMiddleForm.getMiddleIP());
+            if(result.contains("success")){
+                String hostId = result.replaceAll("[^0-9]","");
+                mmMiddle.setHostId(hostId);
+                middleRepository.save(mmMiddle);
+                list.add(mmMiddle);
+            }
+            if(result.contains("error")){
+                return list;
+            }
+        }else{
+            middleRepository.save(mmMiddle);
+            list.add(mmMiddle);
+        }
         return list;
 
     }
@@ -68,11 +84,7 @@ public class MiddleApiController {
     public List<predictMmMiddle> deleteOracle(@PathVariable long id){
         predictMmMiddle mmMiddle=middleRepository.findOne(id);
 
-        String hostId; //关联ZBX的hostid
-        ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
-        hostId=mmMiddle.getHostId();
-        zbxHostService.ZbxDeleteServer(hostId);
-
+        zbxHost.ZbxDeleteServer(mmMiddle.getHostId());
         middleRepository.delete(mmMiddle);
         List<predictMmMiddle> list=new ArrayList<predictMmMiddle>();
         list.add(mmMiddle);
@@ -96,7 +108,7 @@ public class MiddleApiController {
 
     //根据中间件类型获得中间件  middleType=1代表iis 2代表tomact 3代表sql 4代表oracle 5代表java
     @RequestMapping(value = "/getMiddleType/{middleType}")
-    public List<predictMmMiddle>getMiddleType(@PathVariable String middleType){
+    public List<predictMmMiddle> getMiddleType (@PathVariable String middleType){
         List<predictMmMiddle> middles=middleRepository.getMiddleByMiddleType(middleType);//获取到对应的中间件名称
         //处理主机名称   版本信息名称   操作系统名称
         if (middles!=null){

@@ -45,6 +45,9 @@ public class FwManagementApiController {
     //获取所有防火墙数据信息
     @RequestMapping(value = "/getAllFws")
     public List<predictMmFws> getAllFws(){
+        return FwManagementRepository.findAll();
+    }
+    public List<predictMmFws> export(){
         List<predictMmFws> fwses = FwManagementRepository.findAll();
         if (fwses != null){
            for (predictMmFws fws : fwses){

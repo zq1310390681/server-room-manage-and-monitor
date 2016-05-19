@@ -109,6 +109,26 @@ public class ZbxHostServiceImpl {
         return response;
     }
 
+    // middle ware//根据中间件类型获得中间件  middleType=1代表iis 2代表tomact 3代表sql 4代表oracle 5代表java
+    public String createMiddleWare(String middleType,String hostName,String interfaceIp){
+        if(middleType.equals("1")){
+            response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10107",1);
+        }
+        if(middleType.equals("2")){
+            response= createDuplicate.createHostEasy(hostName,interfaceIp,"12345","10082",4);
+        }
+        if(middleType.equals("3")){
+            response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10111",1);
+        }
+        if(middleType.equals("4")){
+            response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10109",1);
+        }
+        if(middleType.equals("5")){
+            response= createDuplicate.createHostEasy(hostName,interfaceIp,"12345","10082",4);
+        }
+        return response;
+    }
+
     public String ZbxDeleteServer(String hostId) {
         // 数据准备
         HostDeleteRequest delete = new HostDeleteRequest();

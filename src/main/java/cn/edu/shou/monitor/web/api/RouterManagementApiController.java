@@ -45,7 +45,10 @@ public class RouterManagementApiController {
     PredictMmEquipmentCabinetRepository pmecDAO;
     //获取所有路由器数据信息
     @RequestMapping(value = "/getAllRouters")
-    public List<predictMmRouters> getAllRouters(){
+    public List<predictMmRouters> getAllRouters() {
+        return routerManagementRepository.findAll();
+    }
+    public List<predictMmRouters> export(){
         List<predictMmRouters> routerses = routerManagementRepository.findAll();
         if (routerses != null){
             for (predictMmRouters routers : routerses){

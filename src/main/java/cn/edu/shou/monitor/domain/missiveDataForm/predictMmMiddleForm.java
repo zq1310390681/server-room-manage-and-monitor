@@ -28,7 +28,7 @@ public class predictMmMiddleForm {
     @Getter @Setter
     private String hostId;
     @Getter @Setter
-    private String middleType;//中间件类型   1代表iis 2代表tomact 3代表sql 4代表oracle 5代表java
+    private String middleType;//中间件类型   1代表iis 2代表tomcat 3代表sql 4代表oracle 5代表java
 
 
     public long getId() {

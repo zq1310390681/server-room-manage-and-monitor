@@ -57,6 +57,10 @@ public class ServerManagementApiController {
     //获取所有服务器数据信息
     @RequestMapping(value = "/getAllServers")
     public List<predictMmServers> getAllServers(){
+        return serverManagementRepository.findAll();
+    }
+
+    public List<predictMmServers> export(){
         List<predictMmServers>serverses=serverManagementRepository.findAll();
         if (serverses != null){
             for (predictMmServers servers : serverses){
@@ -141,9 +145,9 @@ public class ServerManagementApiController {
         List<predictMmServers> list=new ArrayList<predictMmServers>();
         if(recordId==0) {
             createResult = zbxHostService.createHostServer(serversForm.getServerSerialNumber(),serversForm.getServerIP(),serversForm.getServerPort());//添加server
-            String hostId = createResult.replaceAll("[^0-9]","");
-            predictServer.setHostId(hostId);
             if(createResult.contains("success")){
+                String hostId = createResult.replaceAll("[^0-9]","");
+                predictServer.setHostId(hostId);
                 serverManagementRepository.save(predictServer);
                 list.add(predictServer);
 
@@ -174,16 +178,14 @@ public class ServerManagementApiController {
     public List<predictMmServers> deleteServer(@PathVariable long id){
         predictMmServers predictServer=serverManagementRepository.findOne(id);
 
-        String hostId; //关联ZBX的hostid
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
-        hostId=predictServer.getHostId();
         predictServer.getId();
-        zbxHostService.ZbxDeleteServer(hostId);
+        zbxHostService.ZbxDeleteServer(predictServer.getHostId());
 
         serverManagementRepository.delete(predictServer);
         String cabinetName = pmecDAO.findOne(Long.parseLong(predictServer.getServerEquipmentCabinet())).getEquipmentCabinetName();
         activeMq.addAndUpdAndDelAssetForServer("del", predictServer.getId(), predictServer.getServerSerialNumber(),
-                hostId, predictServer.getServerSN(), predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(),
+                predictServer.getHostId(), predictServer.getServerSN(), predictServer.getServerPurchasingDate(), predictServer.getServerMaintenanceDueTime(),
                 predictServer.getServerBrand(), predictServer.getServerType(), predictServer.getServerIP(),
                 predictServer.getServerStorageDevice(), cabinetName, predictServer.getServerU(), predictServer.getServerRemark(), predictServer.getServerKvm());
 

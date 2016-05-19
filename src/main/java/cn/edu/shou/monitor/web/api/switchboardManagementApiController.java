@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value ="/predictCenter/api/switchboard" )
-public class switchboardManagementApiController {
+public class SwitchboardManagementApiController {
     @Value("${spring.main.homedir}")
     String homedir;
     @Autowired
@@ -45,6 +45,9 @@ public class switchboardManagementApiController {
     //获取所有交换机数据信息
     @RequestMapping(value = "/getAllSwitchboards")
     public List<predictMmSwitchboards> getAllSwitchboards(){
+        return SwitchboardManagementRepository.findAll();
+    }
+    public List<predictMmSwitchboards> export(){
         List<predictMmSwitchboards> switchboardses = SwitchboardManagementRepository.findAll();
         if (switchboardses != null){
             for (predictMmSwitchboards switchboards : switchboardses){

@@ -44,7 +44,10 @@ public class StoreManagementApiController {
     CsvUtilRepository csvUtilRepository;
     //获取所有存储设备数据信息
     @RequestMapping(value = "/getAllStores")
-    public List<predictMmStores> getAllStores(){
+    public List<predictMmStores> getAllStores() {
+    return storeManagementRepository.findAll();
+    }
+    public List<predictMmStores> export(){
         List<predictMmStores> storeses = storeManagementRepository.findAll();
         if (storeses != null){
             for (predictMmStores stores : storeses){
