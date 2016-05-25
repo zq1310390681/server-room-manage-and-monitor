@@ -60,6 +60,11 @@ public class GetDropDownListApiContentController {
     public predictMmBrand getBrandNameById(@PathVariable long id){
         return brandRepository.findOne(id);
     }
+   //根据品牌名称获取品牌对象
+    @RequestMapping(value = "/getBrandByBrandName/{name}")
+    public predictMmBrand getBrandByBrandName(@PathVariable String name){
+        return brandRepository.getBrandByBrandName(name);
+    }
     //获取所有U数据
     @RequestMapping(value = "/getAllUs")
     public List<predictMmU>getAllUs(){
@@ -82,16 +87,25 @@ public class GetDropDownListApiContentController {
     public PredictMmEquipmentCabinet getEquipmentCabinetNameById(@PathVariable long id){
         return EquipmentCabinetRepository.findOne(id);
     }
+    //根据名称获取机柜数据
+    @RequestMapping(value = "/getCabinetByName/{name}")
+    public PredictMmEquipmentCabinet getCabinetByName(@PathVariable String name){
+        return EquipmentCabinetRepository.getCabByName(name);
+    }
     //获取所有服务器的存储设备数据
     @RequestMapping(value = "/getAllStorageDevices")
     public List<predictMmStores>getAllStorageDevices(){
         return StoresRepository.findAll();
     }
-
     //根据Id获取服务器的存储设备数据
     @RequestMapping(value = "/getStorageDeviceNameById/{id}")
     public predictMmStores getStorageDeviceNameById(@PathVariable long id){
         return StoresRepository.findOne(id);
+    }
+    //根据设备名称获取设备信息
+    @RequestMapping(value = "/getStoreByName/{name}")
+    public predictMmStores getStoreByName(@PathVariable String name){
+        return StoresRepository.getStoreByName(name);
     }
     //获取所有服务对象数据
     @RequestMapping(value = "/getAllServiceObjects")
@@ -209,8 +223,14 @@ public class GetDropDownListApiContentController {
     public List<predictMmKvm>getAllKvm(){
         return kvmRepository.findAll();
     }
+    //根据KVM ID获取数据信息
     @RequestMapping("/getKvmById/{id}")
     public predictMmKvm getKvmById(@PathVariable long id){
         return kvmRepository.findOne(id);
+    }
+    //根据KVM名称获取数据信息
+    @RequestMapping("/getKvmByName/{name}")
+    public predictMmKvm getKvmByName (@PathVariable String name){
+        return kvmRepository.getKvmByName(name);
     }
 }

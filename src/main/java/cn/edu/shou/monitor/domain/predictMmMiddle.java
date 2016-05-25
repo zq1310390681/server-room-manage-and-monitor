@@ -33,6 +33,8 @@ public class predictMmMiddle extends BaseEntity {
     private String hostId;
     @Getter @Setter
     private String middleType;//中间件类型   1代表iis 2代表tomact 3代表sql 4代表oracle 5代表java
+    @Getter @Setter
+    private String SMSName;
 
 
 
@@ -122,5 +124,13 @@ public class predictMmMiddle extends BaseEntity {
 
     public void setMiddleType(String middleType) {
         this.middleType = middleType;
+    }
+
+    public String getSMSName() {
+        return SMSName;
+    }
+
+    public void setSMSName(String SMSName) {
+        this.SMSName = SMSName;
     }
 }

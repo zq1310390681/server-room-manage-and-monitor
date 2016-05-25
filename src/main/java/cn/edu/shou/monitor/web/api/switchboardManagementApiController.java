@@ -47,7 +47,9 @@ public class SwitchboardManagementApiController {
     public List<predictMmSwitchboards> getAllSwitchboards(){
         return SwitchboardManagementRepository.findAll();
     }
-    public List<predictMmSwitchboards> export(){
+    //导出所有交换机数据信息
+    @RequestMapping(value = "/getAllSwitchboardsExport")
+    public List<predictMmSwitchboards> getAllSwitchboardsExport(){
         List<predictMmSwitchboards> switchboardses = SwitchboardManagementRepository.findAll();
         if (switchboardses != null){
             for (predictMmSwitchboards switchboards : switchboardses){
@@ -94,6 +96,7 @@ public class SwitchboardManagementApiController {
         predictSwitchboard.setSwitchboardEquipmentCabinet(switchboardsForm.getSwitchboardEquipmentCabinet());
         predictSwitchboard.setSwitchboardU(switchboardsForm.getSwitchboardU());
         predictSwitchboard.setSwitchboardRemark(switchboardsForm.getSwitchboardRemark());
+        predictSwitchboard.setSMSName("交换机");
 
         String createResult;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();

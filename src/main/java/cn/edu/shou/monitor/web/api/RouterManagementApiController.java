@@ -44,11 +44,14 @@ public class RouterManagementApiController {
     @Autowired
     PredictMmEquipmentCabinetRepository pmecDAO;
     //获取所有路由器数据信息
+    //获取所有路由器数据信息
     @RequestMapping(value = "/getAllRouters")
-    public List<predictMmRouters> getAllRouters() {
+    public List<predictMmRouters> getAllRouters(){
         return routerManagementRepository.findAll();
     }
-    public List<predictMmRouters> export(){
+    //导出所有路由器数据信息
+    @RequestMapping(value = "/getAllRoutersExport")
+    public List<predictMmRouters> getAllRoutersExport(){
         List<predictMmRouters> routerses = routerManagementRepository.findAll();
         if (routerses != null){
             for (predictMmRouters routers : routerses){
@@ -94,6 +97,7 @@ public class RouterManagementApiController {
         predictRouter.setRouterEquipmentCabinet(routersForm.getRouterEquipmentCabinet());
         predictRouter.setRouterU(routersForm.getRouterU());
         predictRouter.setRouterRemark(routersForm.getRouterRemark());
+        predictRouter.setSMSName("路由器");
 
         String createResult=null;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();

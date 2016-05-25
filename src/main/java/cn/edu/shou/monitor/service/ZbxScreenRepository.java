@@ -315,8 +315,7 @@ public class ZbxScreenRepository {
         ArrayList<String> hostNamesArray = ZbxHostServiceImpl.HostArray.getHostName();//array of hostname
         int n = hostIdsArray.size();
         for(int i=0;i<n;i++){
-            ZbxScreenRepository msgToFront = new ZbxScreenRepository();
-            JSONObject nameAndMem = msgToFront.getMemoryUsage(hostIdsArray.get(i));// 根据hostid得到value
+            JSONObject nameAndMem = this.getMemoryUsage(hostIdsArray.get(i));// 根据hostid得到value
             if(!nameAndMem.toString().equals("{}")) { //跳过空数据
                 String names = hostNamesArray.get(i);
                 nameAndMem.put("name", names); // 添加hostname进入JSON
@@ -388,8 +387,7 @@ public class ZbxScreenRepository {
         ArrayList<String> hostNamesArray = ZbxHostServiceImpl.HostArray.getHostName();
         int n = hostIdsArray.size();
         for(int i=0;i<n;i++){
-            ZbxScreenRepository msgToFront = new ZbxScreenRepository();
-            JSONObject nameAndDisk = msgToFront.getDiskUsage(hostIdsArray.get(i));
+            JSONObject nameAndDisk = this.getDiskUsage(hostIdsArray.get(i));
             if(!nameAndDisk.toString().equals("{}")) {
                 String names = hostNamesArray.get(i);
                 nameAndDisk.put("name", names);
@@ -423,8 +421,7 @@ public class ZbxScreenRepository {
         ArrayList<String> hostNamesArray = ZbxHostServiceImpl.HostArray.getHostName();
         int n = hostIdsArray.size();
         for(int i=0;i<n;i++){
-            ZbxScreenRepository msgToFront = new ZbxScreenRepository();
-            JSONObject nameAndPing = msgToFront.getPingLive(hostIdsArray.get(i));
+            JSONObject nameAndPing = this.getPingLive(hostIdsArray.get(i));
             if(!nameAndPing.toString().equals("{}")) {
                 String names = hostNamesArray.get(i);
                 nameAndPing.put("target", names);
@@ -458,8 +455,7 @@ public class ZbxScreenRepository {
         ArrayList<String> hostNamesArray = ZbxHostServiceImpl.HostArray.getHostName();
         int n = hostIdsArray.size();
         for(int i=0;i<n;i++){
-            ZbxScreenRepository msgToFront = new ZbxScreenRepository();
-            JSONObject nameAndPut = msgToFront.getPutNet(hostIdsArray.get(i), inputOrOutput);
+            JSONObject nameAndPut = this.getPutNet(hostIdsArray.get(i), inputOrOutput);
             if(!nameAndPut.toString().equals("{}")) {
                 String names = hostNamesArray.get(i);
                 nameAndPut.put("name", names);

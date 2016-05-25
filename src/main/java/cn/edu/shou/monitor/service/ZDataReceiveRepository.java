@@ -255,4 +255,11 @@ public class ZDataReceiveRepository {
         listSta.add(0,check);
         return listSta;
     }
+
+    @TargetDataSource(name = "webdata")
+    public Map<String,Object> getStatus(){
+        String sql = "select status from db_status order by time limit 1 desc";
+        Map<String,Object> status = jdbcTemplate.queryForMap(sql);
+        return null;
+    }
 }

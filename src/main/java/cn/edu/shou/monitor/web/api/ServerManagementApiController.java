@@ -53,15 +53,13 @@ public class ServerManagementApiController {
     StoreManagementRepository storeManagementRepository;
     @Autowired
     ZActiveMQRepository activeMq;
+    @Autowired
+    KvmRepository kvmRepository;
 
     //获取所有服务器数据信息
     @RequestMapping(value = "/getAllServers")
     public List<predictMmServers> getAllServers(){
-        return serverManagementRepository.findAll();
-    }
-
-    public List<predictMmServers> export(){
-        List<predictMmServers>serverses=serverManagementRepository.findAll();
+        List<predictMmServers> serverses =serverManagementRepository.findAll();
         if (serverses != null){
             for (predictMmServers servers : serverses){
                 //处理品牌
@@ -88,10 +86,18 @@ public class ServerManagementApiController {
                     cabinetId = cabinetId == ""?"暂无数据":cabinetId;
                     servers.setServerEquipmentCabinet(cabinetId);
                 }
+                //处理KVM编号
+                String kvmId = servers.getServerKvm();
+                if (kvmId != null){
+                    kvmId = kvmRepository.findOne(Long.parseLong(kvmId)) == null ?"":
+                            kvmRepository.findOne(Long.parseLong(kvmId)).getKvmNum();
+                    kvmId = kvmId == ""?"暂无数据":kvmId;
+                    servers.setServerKvm(kvmId);
+                }
             }
         }
 
-        List<predictMmServers>results=serverses;
+        List<predictMmServers> results =serverses;
 
         if (serverses!=null){
             for (int i=0;i<serverses.size();++i){
@@ -103,12 +109,11 @@ public class ServerManagementApiController {
                     for (predictMmApplications app:applicationses){
                         appNames+=app.getApplicationName()+",";
                     }//end three for
-                    if(appNames!=""){
+                    if(!appNames.equals("") &&appNames.length()>0){
                         appNames=appNames.substring(0,appNames.length()-1);//去掉最后逗号
                     }
                     results.get(i).setServerApp(appNames);
                 }//end second for
-
             }//end first for
         }
         return results;
@@ -138,6 +143,7 @@ public class ServerManagementApiController {
         predictServer.setServerRemark(serversForm.getServerRemark());
         predictServer.setServerKvm(serversForm.getServerKvm());
         predictServer.setLastModifiedDate(DateTime.now());
+        predictServer.setSMSName("服务器硬件");
 
         String createResult;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();

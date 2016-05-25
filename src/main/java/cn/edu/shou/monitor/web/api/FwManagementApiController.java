@@ -47,7 +47,9 @@ public class FwManagementApiController {
     public List<predictMmFws> getAllFws(){
         return FwManagementRepository.findAll();
     }
-    public List<predictMmFws> export(){
+    //获取所有防火墙数据信息
+    @RequestMapping(value = "/getAllFwsExport")
+    public List<predictMmFws> getAllFwsExport(){
         List<predictMmFws> fwses = FwManagementRepository.findAll();
         if (fwses != null){
            for (predictMmFws fws : fwses){
@@ -57,6 +59,7 @@ public class FwManagementApiController {
                    brandId = brandRepository.findOne(Long.parseLong(brandId))==null?"":
                            brandRepository.findOne(Long.parseLong(brandId)).getBrandName();
                    brandId = brandId ==null?"暂无数据":brandId;
+                   fws.setFwBrand(brandId);
                }
            }
         }
@@ -82,6 +85,7 @@ public class FwManagementApiController {
         predictFw.setFwSNMP(fwsForm.getFwSNMP());
         predictFw.setFwPort(fwsForm.getFwPort());
         predictFw.setFwRemark(fwsForm.getFwRemark());
+        predictFw.setSMSName("防火墙");
 
         String createResult=null;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();

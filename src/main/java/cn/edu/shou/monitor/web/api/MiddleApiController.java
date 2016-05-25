@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/3/15 0015.
@@ -33,7 +35,7 @@ public class MiddleApiController {
     VersionRepository versionRepository;
     @Autowired
     OperatingSystemRepository operatingSystemRepository;
-    ZbxHostServiceImpl zbxHost = new ZbxHostServiceImpl();
+
 
     //获取所有中间件数据库数据信息
     @RequestMapping(value = "/getAllMiddle")
@@ -60,6 +62,15 @@ public class MiddleApiController {
         mmMiddle.setMiddleType(mmMiddleForm.getMiddleType());
         mmMiddle.setMiddleVersion(mmMiddleForm.getMiddleVersion());
 
+        Map<String,String> type = new HashMap<>();
+        type.put("1","IIS服务");
+        type.put("2","Tomcat服务");
+        type.put("3","SQLServer服务");
+        type.put("4","Oracle服务");
+        type.put("5","JAVA虚拟机");
+        mmMiddle.setSMSName(type.get(mmMiddleForm.getMiddleType()));
+
+        ZbxHostServiceImpl zbxHost = new ZbxHostServiceImpl();
         List<predictMmMiddle> list = new ArrayList<predictMmMiddle>();
         if(recordId==0){
             String result = zbxHost.createMiddleWare(mmMiddleForm.getMiddleType(),mmMiddleForm.getMiddleName(),mmMiddleForm.getMiddleIP());
@@ -84,6 +95,7 @@ public class MiddleApiController {
     public List<predictMmMiddle> deleteOracle(@PathVariable long id){
         predictMmMiddle mmMiddle=middleRepository.findOne(id);
 
+        ZbxHostServiceImpl zbxHost = new ZbxHostServiceImpl();
         zbxHost.ZbxDeleteServer(mmMiddle.getHostId());
         middleRepository.delete(mmMiddle);
         List<predictMmMiddle> list=new ArrayList<predictMmMiddle>();

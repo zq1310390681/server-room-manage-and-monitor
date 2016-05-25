@@ -359,7 +359,7 @@
         /*声明为 下拉 输入框样式并赋值*/
         //防火墙品牌
         var fwBrand= $("#fwBrand").data("kendoDropDownList");
-        fwBrand.value(dataItem.fwBrand);
+        fwBrand.text(dataItem.fwBrand);
        fwModelWnd.center().open();
     }
     //删除数据
@@ -519,6 +519,7 @@
         $.ajax({
             dataType:"json",
             url:dropDownListUrl + "/getBrandNameById/"+id,
+           // url:dropDownListUrl + "/getBrandByBrandName/"+id,
             async:false,                       //是否异步：不异步，页面加载同时加载数据
             success:function(data){
                 brandName=data.brandName;

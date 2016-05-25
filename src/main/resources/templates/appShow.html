@@ -143,9 +143,9 @@
             columns:[
                 { field:"applicationName",title:"应用名称"},
                 { field:"appGroup",title:"应用所在组"},
-                { field: "applicationServiceObject", title: "服务对象"},
+                { field: "applicationServiceObject", title: "服务对象",template:"#=getName(applicationServiceObject) #"},
                 { field: "hostName", title: "所在主机"},
-                { field: "applicationMiddlewareName", title: "中间件名称"},
+                { field: "applicationMiddlewareName", title: "中间件名称",template:"#=getName(applicationMiddlewareName) #"},
                 { field: "appState", title: "状态"},
                 { command: [
                     {name:"view",text:"查看状态",className:"btn btn-success",
@@ -176,6 +176,15 @@
             },
             selectable: "row"
         });
+    }
+
+    //获取名称 格式为：1,2,3|**,**,**
+    function getName(IdsAndNames){
+        var IdsNames=IdsAndNames.split('|');
+        if(IdsNames=="暂无数据"){
+            return "暂无数据";
+        }
+        return IdsNames[1];
     }
     //程序入口
     $(function(){

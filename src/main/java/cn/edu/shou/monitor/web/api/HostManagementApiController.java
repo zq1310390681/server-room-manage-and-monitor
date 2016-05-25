@@ -105,11 +105,15 @@ public class HostManagementApiController {
         predictHost.setHostUserName(hostForm.getHostUserName());
         predictHost.setOperational(hostForm.getOperational());
         predictHost.setVmwareUserName(hostForm.getVmwareUserName());
-        predictHost.setSMSName("服务器操作系统");
+        if(hostForm.getHostType().equals("1")) {
+            predictHost.setSMSName("虚拟机");
+        }
+        if(hostForm.getHostType().equals("2")) {
+            predictHost.setSMSName("物理主机");
+        }
 
         String zbxHostname = ChineseCharToAbc.getPinYin(hostForm.getHosts());
         predictHost.setZbxHostname(zbxHostname);
-
 
         String createResult = null;
         ZbxHostServiceImpl zbxHostService = new ZbxHostServiceImpl();

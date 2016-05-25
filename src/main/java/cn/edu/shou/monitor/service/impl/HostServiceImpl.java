@@ -48,23 +48,20 @@ public class HostServiceImpl implements IHostService {
 		String content ;
 		try {
 			content = js.toJson(create);
-			System.out.println("content is String"+content);
+//			System.out.println("content is String"+content);
 			putMethod.setRequestBody( FormatData.fromString(content));
 			client.executeMethod(putMethod);
 			String response = putMethod.getResponseBodyAsString();
-			System.out.println("response is String"+response);
+//			System.out.println("response is String"+response);
 			rs = new JSONObject(response);
-			System.out.println("rs is Json"+rs);
+//			System.out.println("rs is Json"+rs);
 //			if (rs.has("result")) {
 //				result = rs.get("result");
 //			}
 //			else if (rs.has("error")) {
 //				result = rs.get("error");
 //			}
-			//transmission
-//			MQSendMessage sendTest = new MQSendMessage();
-//			sendTest.sendMessages(content);
-//			sendTest.sendMessages(rsString);
+
 		}
 		 catch (HttpException e) {
 			e.printStackTrace();

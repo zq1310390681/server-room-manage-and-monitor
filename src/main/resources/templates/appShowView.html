@@ -92,10 +92,40 @@
                         <div id="userModelGrid"  class=" k-grid k-widget" style="float: right;margin-top: 10px" ></div>
                     </div>
                 </div>
+
+            </div>
+            <div style="width: 85%;float: right; ">
+                <button id="addTop"  class="k-button btn-info" style="color:white " onclick="addTopModel();">添加拓扑</button>
+            </div>
+            <div style="width: 85%;float: right;margin-top: 30px; ">
+                <button id="deleteTop"  class="k-button btn-info" style="color:white ">删除拓扑</button>
             </div>
             <div style="height: 500px;float: right;width:70%" id="canvas"/>
         </div><!-- /.page-content -->
-
+        <div id="addTopWnd" style="display:none">
+            <div>
+                <div style="margin:10px">
+                    <label style="margin-left: 50px" >主机1:</label>
+                    <input  style="margin-left: 10px;height:30px;width:340px"  id="hostOne"/>
+                    <label style="color: red;margin-left: 5px">*</label>
+                </div>
+                <div style="margin:10px">
+                    <label style="margin-left: 50px" >主机2:</label>
+                    <input  style="margin-left: 10px;height:30px;width:340px"  id="hostTwo" />
+                    <label style="color: red;margin-left: 5px">*</label>
+                </div>
+                <div style="margin-left:190px;margin-top:20px;">
+                    <button id="saveAddTop"  class="k-button btn-info" style="margin-left: 109px;color:white "onclick="submitSaveAddTop()">
+                        <i class="icon-ok"></i>
+                        保存
+                    </button>
+                    <button id="closeAddTop" class="k-button btn-danger" style="margin-left: 29px;color:white" >
+                        <i class="icon-remove"></i>
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
     </div><!-- /.main-container-inner -->
 </div><!-- /.main-container -->
 
@@ -165,6 +195,7 @@
     var hostModelGridDataSource;
     var middleModelGridDataSource;
     var userModelGridDataSource;
+    var addTopWnd;
     // 数据源
     function setHostModelGridDataSource(){
         hostModelGridDataSource=new kendo.data.DataSource({
@@ -330,15 +361,20 @@
     //绘制网络top
     function drowTop(){
         var graph = new Q.Graph(canvas);
+        graph.enableTooltip = true;
+        graph.tooltipDelay = 0;
+        graph.tooltipDuration = 10000;
         var nodeData = "";//节点数据
         //Ajax请求主机数据
         $.ajax({
             type: "get",
             dataType: "json",
             async:false,
-            url: crudHostBaseUr + "/getHostsNameById/"+hostIds,
+            //url: crudHostBaseUr + "/getHostsNameById/"+hostIds,
+            url: crudHostBaseUr + "/getHostsByIds/"+hostIds,
             success: function (data) {
-                alert(data);
+                //alert(data);
+                nodeData=data;
             },
             error:function(data){
                 nodeData = data.responseText;
@@ -355,11 +391,12 @@
         //var node2 = graph.createNode("观测数据传输程序_主机2", 200, 0);
         // var edge = createEdge(graph,node1, node2,'',3,"red");
         //edge.setStyle(Q.Styles.ARROW_TO, false);
-        var nodeApps = nodeData.split(',');
+        //var nodeApps = nodeData.split(',');
         var x=0;
-        var y=-210;
-        for(var i =0;i<nodeApps.length;i++){
-            graph.createNode(nodeApps[i],x,y);
+        var y=-180;
+        var temp=[];
+        for(var i =0;i<nodeData.length;i++){
+            temp[i]=graph.createNode(nodeData[i].hosts+"\r\n"+nodeData[i].hostIP,x,y);
             if(i%2==0){
                 x+=-200;
                 y+=0;
@@ -368,14 +405,50 @@
                 y+=200;
             }
         }
-        var offset = 0;
+        /*var offset = 0;
         var index = 0;
         var timer = setInterval(function(){
             offset += -1;
             index++;
             index = index%20;
-        }, 150);
+        }, 150);*/
+        var label2 = new Q.LabelUI();
+        label2.position = Q.Position.CENTER_TOP;
+        label2.anchorPosition = Q.Position.CENTER_BOTTOM;
+        label2.border = 1;
+        label2.padding = new Q.Insets(2, 5);
+        label2.showPointer = true;
+        label2.offsetY = -10;
+        //label2.backgroundColor = Colors.yellow;
+        label2.fontSize = 12;
+        label2.fontStyle = "italic 100";
+        for(var j=0;j<nodeData.length;j++){
+            temp[j].addUI(label2, [{
+                property : "label2",
+                propertyType : Q.Consts.PROPERTY_TYPE_CLIENT,
+                bindingProperty : "data"
+            },{
+                property : "label2.color",
+                propertyType : Q.Consts.PROPERTY_TYPE_CLIENT,
+                bindingProperty : "color"
+            }]);
+            temp[j].set("label2", nodeData[j].appName.substring(0,10)+".....");//气泡显示文字
+            temp[j].tooltip = setToolTipStyle(nodeData[j].appName);//tooltip
+        }
     }
+    //设置toolTip样式
+    function setToolTipStyle(tipContent){
+        var div="<div style='width: 200px;'>"+tipContent+"</div>";
+        return div;
+    }
+    //弹出添加连线窗口
+    function addTopModel(){
+        addTopWnd.center.open();
+    }
+    //取消添加拓扑
+    $("#closeAddTop").click( function (e) {
+        $("#addTopWnd").data("kendoWindow").close();
+    });
     //程序入口
     $(function(){
         setHostModelGridDataSource();//主机

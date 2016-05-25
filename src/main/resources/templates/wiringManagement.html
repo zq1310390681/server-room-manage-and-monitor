@@ -61,36 +61,36 @@
             <div id="wiringModelWnd" style="display:none">
                 <div>
                     <div style="margin:10px">
-                        <label style="margin-left: 65px" >源头设备:</label>
-                        <input  style="margin-right: 20px;height:30px;width:300px"  id="source"/>
+                        <label style="margin-left: 50px" >源头设备:</label>
+                        <input  style="margin-left: 10px;height:30px;width:390px"  id="source"/>
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin:10px">
-                        <label style="margin-left: 70px" >源头设备端口:</label>
-                        <input style="margin-right: 20px;height:30px;width:300px"  id="sourcePort" />
+                        <label style="margin-left: 22px" >源头设备端口:</label>
+                        <input style="margin-left: 10px;height:30px;width:385px"  id="sourcePort" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 46px" >目标设备:</label>
-                        <input  style="margin-right: 20px;height:30px;width:300px"  id="target" />
+                        <label style="margin-left: 59px" >目标设备:</label>
+                        <input  style="margin-left: 10px;height:30px;width:390px"  id="target" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 46px" >目标设备端口:</label>
-                        <input style="margin-right: 20px;height:30px;width:300px"  id="targetPort" />
+                        <label style="margin-left: 31px" >目标设备端口:</label>
+                        <input style="margin-left:10px;height:30px;width:385px"  id="targetPort" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left: 46px" >配线标识:</label>
-                        <input style="margin-right: 20px;height:30px;width:300px"  id="wiringMark" />
+                        <label style="margin-left: 58px" >配线标识:</label>
+                        <input style="margin-left: 10px;height:30px;width:385px"  id="wiringMark" />
                         <label style="color: red;margin-left: 5px">*</label>
                     </div>
                     <div style="margin-top: 10px">
-                        <label style="margin-left:115px">备注:</label>
-                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:355px"  id="wiringNote" ></textarea>
+                        <label style="margin-left:85px">备注:</label>
+                        <textarea rows="5" cols="20"  style="margin-left: 10px;height:60px;width:380px"  id="wiringNote" ></textarea>
                     </div>
                     <div style="margin-left:190px;margin-top:20px;">
-                        <button id="saveCertifiModel"  class="k-button btn-info" style="margin-left: 160px;color: white"onclick="submitWiringModel()">
+                        <button id="saveCertifiModel"  class="k-button btn-info" style="margin-left: 153px;color: white"onclick="submitWiringModel()">
                             <i class="icon-ok"></i>
                             保存
                         </button>
@@ -507,7 +507,7 @@ function submitWiringModelAjax(submitURL,objData){
 };
 // 关闭窗口
 $("#closeWiringModel").click( function (e) {
-    $("#closeWiringModel").data("kendoWindow").close();
+    $("#wiringModelWnd").data("kendoWindow").close();
 });
 </script>
 <script id="wiringModel_toolbar" type="text/x-kendo-template">

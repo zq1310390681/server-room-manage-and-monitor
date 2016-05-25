@@ -44,10 +44,12 @@ public class StoreManagementApiController {
     CsvUtilRepository csvUtilRepository;
     //获取所有存储设备数据信息
     @RequestMapping(value = "/getAllStores")
-    public List<predictMmStores> getAllStores() {
-    return storeManagementRepository.findAll();
+    public List<predictMmStores> getAllStores(){
+        return storeManagementRepository.findAll();
     }
-    public List<predictMmStores> export(){
+    //导出所有存储设备数据信息
+    @RequestMapping(value = "/getAllStoresExport")
+    public List<predictMmStores> getAllStoresExport(){
         List<predictMmStores> storeses = storeManagementRepository.findAll();
         if (storeses != null){
             for (predictMmStores stores : storeses){
@@ -91,7 +93,7 @@ public class StoreManagementApiController {
         predictStore.setStoreEquipmentCabinet(storesForm.getStoreEquipmentCabinet());
         predictStore.setStoreU(storesForm.getStoreU());
         predictStore.setStoreRemark(storesForm.getStoreRemark());
-
+        predictStore.setSMSName("存储设备");
 //        storeManagementRepository.save(predictStore);
 //        List<predictMmStores> list=new ArrayList<predictMmStores>();
 //        list.add(predictStore);

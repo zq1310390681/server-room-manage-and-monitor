@@ -62,15 +62,18 @@ public class ApplicationManagementApiController {
         //处理应用所在组、服务对象、中间件
         if(applicationses!=null){
             for (predictMmApplications application:applicationses){
+               String appName = application.getApplicationName().replace("%", "");
+
                 //应用所在组
                 String groupId=application.getAppGroup();//组ID
                 String serviceObjId=application.getApplicationServiceObject();//服务对象ID
                 String middleId=application.getApplicationMiddlewareName();//中间件ID
+                application.setApplicationName(appName);
                 //处理应用所在组
                 if (groupId!=""){
                     groupId=groupManagementRepository.findOne(Long.parseLong(groupId))==null?"":
                             groupManagementRepository.findOne(Long.parseLong(groupId)).getAppGroupName();//组名称
-                    groupId=groupId==""?"暂无数据":groupId;
+                    groupId=groupId==""?"暂无数据":groupId.replaceAll("[【】]"," ");
                     application.setAppGroup(groupId);
                 }
                 //处理服务对象
@@ -82,7 +85,7 @@ public class ApplicationManagementApiController {
                                 serviceObjectManagementRepository.findOne(Long.parseLong(id)).getServiceObjectName();//服务对象名称
                         serviceObjNames+=serviceObjName+",";
                     }
-                    serviceObjNames=serviceObjNames.substring(0,serviceObjNames.length()-1);//去掉最后一个逗号
+                    serviceObjNames=serviceObjNames.substring(0,serviceObjNames.length()-1).replace("%","");//去掉最后一个逗号
                     //serviceObjNames=serviceObjNames.length()
                     application.setApplicationServiceObject(application.getApplicationServiceObject()+"|"+serviceObjNames);
                 }else {

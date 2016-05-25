@@ -5,6 +5,7 @@ import cn.edu.shou.monitor.domain.host.HostGetRequest;
 import cn.edu.shou.monitor.service.zbxapi.IHostService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 
@@ -69,7 +70,7 @@ public class ZbxHostServiceImpl {
 
     // 收集服务器硬件信息：温度，转速等
     public String createHostServer(String hostName,String interfaceIp,String interfacePort) {
-        response= createDuplicate.createHostEasy(hostName,interfaceIp,interfacePort,"10081",1);
+        response= createDuplicate.createHostEasy(hostName,interfaceIp,"10050","10081",1);
         return response;
     }
 
