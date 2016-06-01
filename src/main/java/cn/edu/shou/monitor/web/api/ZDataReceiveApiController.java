@@ -73,8 +73,8 @@ public class ZDataReceiveApiController {
         double quantitySum =0;
         double checkSum=0;
         for(List<Map<String,Object>> list : check){
-            double a = Double.valueOf(list.get(0).get("fenzi").toString()); //固定第一位为check
-            double b = Double.valueOf(list.get(0).get("fenmu").toString());
+            double a = Double.valueOf(list.get(0).get("fenziAll").toString()); //固定第一位为check
+            double b = Double.valueOf(list.get(0).get("fenmuAll").toString());
             quantitySum = quantitySum + a;
             checkSum = checkSum + b;
         }
@@ -84,17 +84,6 @@ public class ZDataReceiveApiController {
         return receiveRate.toString();
     }
 
-    @RequestMapping(value = "/seaStation") // 测试
-    public String getSeaStationNum(){
-        receive.updStationNum();
-        return "success";
-    }
-
-    @RequestMapping(value = "/network")  // 测试
-    public String sendNetwork(){
-        receive.updSeaStaNum();
-        return "success";
-    }
 
     @RequestMapping(value = "/stationSum")
     public List<Map<String,Object>> sendStationSum(){
@@ -113,5 +102,10 @@ public class ZDataReceiveApiController {
         together.put("radar",rd);
         together.put("xradar",xrd);
         return together;
+    }
+
+    @RequestMapping(value = "/db_status")
+    public Map<String,Object> getDbStatus(){
+        return receive.getDbStatus();
     }
 }

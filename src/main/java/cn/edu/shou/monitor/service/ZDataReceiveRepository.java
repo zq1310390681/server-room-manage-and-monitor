@@ -63,8 +63,12 @@ public class ZDataReceiveRepository {
             int hour = Integer.valueOf(hourStr);
             int a = Math.round(quty*(hour+1)/24); // a 为应收的个数
             hashMap.put("fenmu", a);
-            sumCheckNum = sumCheckNum+a;
             int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
+            if(qutyGot>a){
+                qutyGot = a;
+            }
+            hashMap.put("fenzi", qutyGot);
+            sumCheckNum = sumCheckNum+a;
             sumQuantity = qutyGot + sumQuantity;
             hashMap.remove("time");
             hashMap.remove("day_quantity");
@@ -90,8 +94,12 @@ public class ZDataReceiveRepository {
                 String minStr = timeStr.substring(index+1,index+3); // 得到分钟
                 int min = Integer.valueOf(minStr);// 标准为1分钟1个数据
                 hashMap.put("fenmu", min+1);
-                fenmu = fenmu+min;
                 int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
+                if(qutyGot> min+1){
+                    qutyGot =  min+1;
+                }
+                hashMap.put("fenzi",qutyGot);
+                fenmu = fenmu+min;
                 fenzi = qutyGot + fenzi;
             }
             Map<String,Object> sumCheck = new HashMap<String,Object>();
@@ -109,8 +117,12 @@ public class ZDataReceiveRepository {
                 String quantity = hashMap.get("hourly").toString();
                 int quty = Integer.valueOf(quantity);
                 hashMap.put("fenmu", quty);
-                sumCheckNum=sumCheckNum+quty;
                 int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
+                if(qutyGot>quty){
+                    qutyGot=quty;
+                }
+                hashMap.put("fenzi", qutyGot);
+                sumCheckNum=sumCheckNum+quty;
                 sumQuantity = qutyGot + sumQuantity;
             }
             Map<String,Object> sumCheck = new HashMap<String,Object>();
@@ -147,8 +159,12 @@ public class ZDataReceiveRepository {
                     a= 4*quty/4;
                     hashMap.put("fenmu", a);
                 }
-                sumCheckNum=sumCheckNum+a;
                 int qutyGot = Integer.valueOf(hashMap.get("fenzi").toString());
+                if(qutyGot>a){
+                    qutyGot=a;
+                }
+                hashMap.put("fenzi", qutyGot);
+                sumCheckNum=sumCheckNum+a;
                 sumQuantity = qutyGot + sumQuantity;
             }
             Map<String,Object> sumCheck = new HashMap<String,Object>();
@@ -234,13 +250,17 @@ public class ZDataReceiveRepository {
             int hourNeed = Integer.parseInt(element.get("hourly").toString());
             int punNeed = Integer.parseInt(element.get("pun").toString());
 //            int stationSum = realSum + hourly + pun;  //正式上线用这个
-            int stationSum = (realSum + 60 * h) + hourly + pun;  //测试展示数据
+            int stationSum = (realSum + 60 * h) + hourly + pun;  //测试展示数据,上线去掉
             int stationNeed = Math.round(m * realNeed/1440 + (realNeed * h/24)) + Math.round(hourNeed * h/24) + Math.round(punNeed * h/24);
+            if(stationSum>stationNeed){
+                stationSum=stationNeed;
+            }
+
             fenzi = fenzi + stationSum;
             fenmu = fenmu + stationNeed;
 
             element.put("fenzi",stationSum);
-            element.put("fenmu",stationNeed);
+            element.put("fenmu", stationNeed);
             element.put("time",String.valueOf(h)+":"+String.valueOf(m));
             element.remove("current_num");
             element.remove("hourly_quantity");
@@ -257,9 +277,9 @@ public class ZDataReceiveRepository {
     }
 
     @TargetDataSource(name = "webdata")
-    public Map<String,Object> getStatus(){
-        String sql = "select status from db_status order by time limit 1 desc";
+    public Map<String,Object> getDbStatus(){
+        String sql = "select status from db_status order by time desc limit 1 ;";
         Map<String,Object> status = jdbcTemplate.queryForMap(sql);
-        return null;
+        return status;
     }
 }

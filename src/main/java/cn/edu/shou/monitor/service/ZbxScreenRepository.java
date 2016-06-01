@@ -467,6 +467,7 @@ public class ZbxScreenRepository {
         putResult.put("dateTime",System.currentTimeMillis());
         return putResult.toString().replace("null,","");
     }
+
     //获取cpu，内存，存储联合查询函数
     public JSONObject getUnionUsage(String type,String hostIds){
         String searchStr="";
