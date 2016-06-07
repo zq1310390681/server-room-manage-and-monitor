@@ -282,4 +282,11 @@ public class ZDataReceiveRepository {
         Map<String,Object> status = jdbcTemplate.queryForMap(sql);
         return status;
     }
+
+    @TargetDataSource(name = "webdata")
+    public List<Map<String,Object>> getGpsInfo(){
+        String sql = "SELECT name,fenzi,fenmu,time FROM gps;";
+        List<Map<String,Object>> gpsInfo = jdbcTemplate.queryForList(sql);
+        return gpsInfo;
+    }
 }

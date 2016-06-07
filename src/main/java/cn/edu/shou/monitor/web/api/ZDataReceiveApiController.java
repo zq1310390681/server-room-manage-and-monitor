@@ -90,6 +90,11 @@ public class ZDataReceiveApiController {
         return receive.getStationNum();
     }
 
+    @RequestMapping(value = "/gpsInfo")
+    public List<Map<String,Object>> getGpsInfo(){
+        return receive.getGpsInfo();
+    }
+
     @RequestMapping(value = "/stationAndRadar")
     public Map<String,List<Map<String,Object>>> sendStationAndRadar(){
 //        JSONObject together = new JSONObject();
