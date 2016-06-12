@@ -84,7 +84,6 @@ public class ZDataReceiveApiController {
         return receiveRate.toString();
     }
 
-
     @RequestMapping(value = "/stationSum")
     public List<Map<String,Object>> sendStationSum(){
         return receive.getStationNum();
@@ -113,4 +112,32 @@ public class ZDataReceiveApiController {
     public Map<String,Object> getDbStatus(){
         return receive.getDbStatus();
     }
+
+    @RequestMapping(value = "/rtnormal")
+    public List<Map<String,Object>> rtnormal(){
+        return receive.getNetworkRealData();
+    }
+
+    @RequestMapping(value = "/rterror")
+    public List<Map<String,Object>> rterror(){
+        return receive.getNetworkError();
+    }
+
+    @RequestMapping(value = "/networkRealTimeData") // 包括正常和有错误的
+    public Map<String,List<Map<String,Object>>> getRealTimeData(){
+        Map<String,List<Map<String,Object>>> realTimeData = new HashMap<>();
+        List<Map<String,Object>> normal = receive.getNetworkRealData();
+        List<Map<String,Object>> error = receive.getNetworkError();
+        realTimeData.put("normal",normal);
+        realTimeData.put("error",error);
+        return realTimeData;
+    }
+
+    @RequestMapping(value = "/dbDataNum")
+    public Map<String,Object> getDbDataNum(){
+        return receive.getDbDataNum();
+    }
+
+
+
 }

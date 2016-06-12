@@ -180,7 +180,7 @@ public class ZDataReceiveRepository {
     // 定时执行 不用这个了
     @TargetDataSource(name = "webdata")
     public  void updStationNum(){
-        String selectSql = "SELECT sum(real_quantity) as sum_sta, parent_name FROM webdata.sea_station group by parent_name;";
+        String selectSql = "SELECT SUM(real_quantity) AS sum_sta, parent_name FROM webdata.sea_station GROUP BY parent_name;";
         List<Map<String,Object>> allStaNum = new ArrayList<Map<String,Object>>();
         allStaNum = jdbcTemplate.queryForList(selectSql);
 
@@ -213,7 +213,7 @@ public class ZDataReceiveRepository {
         //sql sea station
         //sql sea quantity
         String sql = "SELECT sea_station.name,sea_quantity.last_real,sea_quantity.current_num,sea_station.real_quantity,sea_station.real_time,sea_station.parent_name\n" +
-                "FROM webdata.sea_quantity,sea_station where sea_station.name = sea_quantity.name;";
+                "FROM webdata.sea_quantity,sea_station WHERE sea_station.name = sea_quantity.name;";
         //compare last and real quantity
         List<Map<String,Object>> compareList = jdbcTemplate.queryForList(sql);
         for(Map element : compareList){
@@ -223,11 +223,11 @@ public class ZDataReceiveRepository {
             int currentNumNew;
             String name = element.get("name").toString();
             if(lastValue<=realQuantity){
-                String updLastValue = "UPDATE sea_quantity SET last_real="+realQuantity+" where name = '"+name+"';";
+                String updLastValue = "UPDATE sea_quantity SET last_real="+realQuantity+" WHERE name = '"+name+"';";
                 jdbcTemplate.update(updLastValue);
             }else{                   //last + currentNumOld = current
                 currentNumNew = lastValue + currentNumOld; //需要新加上去的
-                String updTwoValue ="UPDATE sea_quantity SET last_real="+ realQuantity +",current_num="+ currentNumNew +" where name ='"+name+"';";
+                String updTwoValue ="UPDATE sea_quantity SET last_real="+ realQuantity +",current_num="+ currentNumNew +" WHERE name ='"+name+"';";
                 jdbcTemplate.update(updTwoValue);
             }
         }
@@ -237,7 +237,7 @@ public class ZDataReceiveRepository {
     @TargetDataSource(name = "webdata")
     public List<Map<String,Object>> getStationNum(){
         String sql = "SELECT quty.name,quty.current_num,sta.hourly_quantity,sta.pun_quantity,sta.parent_name,quty.real, quty.hourly,quty.pun\n" +
-                "FROM sea_station as sta,sea_quantity as quty where quty.name = sta.name;";
+                "FROM sea_station as sta,sea_quantity as quty WHERE quty.name = sta.name;";
         List<Map<String,Object>> listSta = jdbcTemplate.queryForList(sql);
 
         int fenzi = 0;
@@ -278,9 +278,15 @@ public class ZDataReceiveRepository {
 
     @TargetDataSource(name = "webdata")
     public Map<String,Object> getDbStatus(){
-        String sql = "select status from db_status order by time desc limit 1 ;";
+        String sql = "SELECT status FROM db_status ORDER BY time DESC limit 1 ;";
         Map<String,Object> status = jdbcTemplate.queryForMap(sql);
         return status;
+    }
+
+    @TargetDataSource(name = "webdata")
+    public Map<String,Object> getDbDataNum(){
+        String sql = "SELECT total FROM day_total WHERE id = 1 ;";
+        return  jdbcTemplate.queryForMap(sql);
     }
 
     @TargetDataSource(name = "webdata")
@@ -288,5 +294,30 @@ public class ZDataReceiveRepository {
         String sql = "SELECT name,fenzi,fenmu,time FROM gps;";
         List<Map<String,Object>> gpsInfo = jdbcTemplate.queryForList(sql);
         return gpsInfo;
+    }
+
+    //network real-time data
+    @TargetDataSource(name = "webdata")
+    public  List<Map<String,Object>> getNetworkRealData(){
+        String sql = "SELECT s.station_name,s.type,s.parent_name,n.ob_date,n.wind_direction,n.wind_speed,n.air_temp,n.air_pressure,n.humidity,n.water_temp,\n" +
+                "n.salinity,n.tide,n.wv_height3,n.wv_height10,n.wv_height_max \n" +
+                "FROM webdata.network_data n,station_all s \n" +
+                "WHERE s.station_num IN (SELECT station_num FROM webdata.station_all \n" +
+                "WHERE flag = 1 AND\n" +
+                "station_num NOT IN (SELECT view_object FROM webdata.network_error GROUP BY view_object)) \n" +
+                "AND s.station_num =n.station;";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    //network error
+    @TargetDataSource(name = "webdata")
+    public  List<Map<String,Object>> getNetworkError(){
+        String sql = "select s.station_name,s.parent_name,e.* from station_all s,network_error e\n" +
+                "where s.station_num in (\n" +
+                "SELECT view_object FROM network_error\n" +
+                "WHERE (happen_time,view_object) IN \n" +
+                "(SELECT MAX(happen_time),view_object FROM network_error GROUP BY view_object))\n" +
+                "and s.station_num = e.view_object and s.flag = 1;";
+        return jdbcTemplate.queryForList(sql);
     }
 }
