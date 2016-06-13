@@ -88,7 +88,13 @@ public class ApplicationManagementController {
                 predictMmApplications applications=new predictMmApplications();
                 String hostNames=hostManagementRepository.findOne(Long.parseLong(hostIds[i])).getHosts();
                 if (hostContentIds!=null){
-                    hostNames=hostNames+"-"+hostContentIds[i];
+                    String hostCotent="";
+                    try {
+                            hostCotent=hostContentIds[i];
+                            hostNames=hostNames+"-"+hostCotent;
+                        }catch (Exception e){
+
+                        }
                 }
                 applications.setApplicationHost(hostNames);
                 hostsInfo.add(applications);

@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web.api;
 
-import cn.edu.shou.monitor.domain.missiveDataForm.predictMmEquipmentCabinetForm;
 import cn.edu.shou.monitor.domain.PredictMmEquipmentCabinet;
+import cn.edu.shou.monitor.domain.missiveDataForm.predictMmEquipmentCabinetForm;
 import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

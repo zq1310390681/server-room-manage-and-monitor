@@ -145,10 +145,11 @@ function setServerModelGrid(){
     $("#serverModelGrid").kendoGrid({
         dataSource:serverModelGridDataSource,
         columns:[
-            { field:"serverSerialNumber",title:"服务器编号",width:"15%",},
-            { field: "serverIP", title: "服务器IP",width:"10%",},
+            { field:"serverSerialNumber",title:"服务器编号",width:"15%"},
+            { field: "serverIP", title: "服务器IP",width:"10%"},
+            { field: "serverKvm", title: "KVM编号",width:"10%"},
             {field:  "serverApp",title: "应用名称"},
-            { field: "serverState", title: "状态",width:"10%",},
+            { field: "serverState", title: "状态",width:"10%"},
             { command: [
                 {name:"view",text:"查看状态",className:"btn btn-success",
                     click:function(e){

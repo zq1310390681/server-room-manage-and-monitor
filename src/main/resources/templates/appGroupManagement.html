@@ -181,24 +181,11 @@ function setAppGroupGridDataSource(){
 function setAppGroupGrid(){
     $("#appGroupGrid").kendoGrid({
         dataSource:appGroupGridDataSource,
-        toolbar:[{template: kendo.template($("#appGroupModel_toolbar").html())},
-            {template: kendo.template($("#inputModel_toolbar").html())},
-            {template: kendo.template($("#outputModel_toolbar").html())}],
+        toolbar:[{template: kendo.template($("#appGroupModel_toolbar").html())}],
         columns:[
-            /*{title: "<input type='checkbox'/>全选",template: '<input type="checkbox"/>',width:"10%"},*/
-            {field:"groupOrder",title:"分组排序"},
+            {field:"groupOrder",title:"分组排序", filterable: false},
             {field:"appGroupName",title:"分组名称"},
             { command: [
-               /* {name:"view",text:"查看",
-                    click:function(e){
-                        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-                        if(dataItem==undefined){
-                            dataItem=submitRecObj;
-                        }
-                        var url ="/predictCenter/getAppGroupView/"+dataItem.id+".html";
-                        window.open(url);
-                    }
-                },*/
                 {text: "编辑", click: showAppGroupModel,className: "btn btn-info"},   //编辑窗体内容
                 {text: "删除",click:delAppGroupModel ,className:"btn btn-danger "}    //删除记录
             ],
@@ -222,8 +209,23 @@ function setAppGroupGrid(){
                 of:"页"
             }
         },
-        selectable: "row"
+        selectable: "row",
+        sortable: true,
+        scrollable: true,
+        filterable: {
+            extra: false,
+            operators: {
+                string: {
+                    contains: "关键词"
+                }
+            },
+            messages: {
+                filter: "搜索",
+                clear: "清除"
+            }
+        }
     });
+
     appGroupModelWnd = $("#appGroupModelWnd").kendoWindow({
         title: "应用分组",
         modal: true,
@@ -232,70 +234,6 @@ function setAppGroupGrid(){
         width: 570,
         height:200
     }).data("kendoWindow");
-    //导入模板窗体
-    inputWnd = $("#inputWnd").kendoWindow({
-        title: "导入",
-        modal: true,
-        visible: false,
-        resizable: false,
-        width: 600,
-        height:150
-    }).data("kendoWindow");
-    //导出模板窗体
-    outputWnd = $("#outputWnd").kendoWindow({
-        title: "导出",
-        modal: true,
-        visible: false,
-        resizable: false,
-        width: 600,
-        height:200
-    }).data("kendoWindow");
-}
-//导入
-function addInputModel(){
-    inputWnd.center().open();
-}
-//导出
-function addOutputModel(){
-    outputWnd.center().open();
-}
-//取消导入
-$("#closeFolder").click( function (e) {
-    $("#inputWnd").data("kendoWindow").close();
-});
-//取消导出
-$("#closeSelection").click( function (e) {
-    $("#outputWnd").data("kendoWindow").close();
-});
-//导入保存
-function submitFolder(){
-    var FolderVal= $("#Folder").val();
-    if(FolderVal==""){
-        alert("带有红色标记的为必填项");
-        return;
-    }else{
-        var submitFolderData={
-            //提交当前行数据的所有数据
-            id:modelRecordId,
-            Folder:FolderVal
-        };
-        submitFolderAjax(crudServiceBaseUrl + "/create",submitFolderData);
-    }
-}
-//提交导入数据至后台
-function submitFolderAjax(submitURL,objData){
-    $.ajax({
-        url:submitURL,
-        dataType: "json",   //返回格式为json
-        async: true,//同步，这也是ajax重要特性
-        type: "GET",   //请求方式
-        data:objData,
-        success:function(data){
-            $("#folderWnd").data("kendoWindow").close();
-            setModelGridDataSource();
-            setModelGrid();
-        }
-    })
 }
 
 //查看弹窗
@@ -418,12 +356,6 @@ $("#closeAppGroupModel").click( function (e) {
 </script>
 <script id="appGroupModel_toolbar" type="text/x-kendo-template">
     <button class="k-button k-button-icontext k-grid-add" id="appGroupModel_toolbar_queryBtn" onclick="addAppGroupModel();"><span class="k-icon k-add"></span>添加应用分组</button>   <!--添加证书-->
-</script>
-<script id="inputModel_toolbar" type="text/x-kendo-template">
-    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
-</script>
-<script id="outputModel_toolbar" type="text/x-kendo-template">
-    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
 </script>
 <!-- inline scripts related to this page -->
 </body>

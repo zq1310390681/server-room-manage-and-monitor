@@ -2,10 +2,10 @@ package cn.edu.shou.monitor.web;
 
 import cn.edu.shou.monitor.domain.User;
 import cn.edu.shou.monitor.domain.predictMmServers;
-import cn.edu.shou.monitor.service.StoreManagementRepository;
 import cn.edu.shou.monitor.service.PredictMmBrandRepository;
 import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
 import cn.edu.shou.monitor.service.PredictMmURepository;
+import cn.edu.shou.monitor.service.StoreManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

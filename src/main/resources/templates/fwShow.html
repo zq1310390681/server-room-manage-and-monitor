@@ -131,7 +131,7 @@
         fwModelGridDataSource=new kendo.data.DataSource({
             transport: {
                 read:  {
-                    url: crudFwBaseUrl + "/getAllFws",
+                    url: crudFwBaseUrl + "/getAllFwsExport",
                     dataType: "json"
                 }
             },
@@ -145,6 +145,8 @@
             dataSource:fwModelGridDataSource,
             columns:[
                 { field:"fwSerialNumber",title:"防火墙编号"},
+                { field: "fwBrand", title: "防火墙品牌"},
+                { field: "fwType", title: "防火墙型号"},
                 { field: "fwIP", title: "防火墙IP"},
                 { field: "routerState", title: "状态"},
                 { command: [

@@ -5,10 +5,7 @@ import cn.edu.shou.monitor.domain.predictMmApplications;
 import cn.edu.shou.monitor.domain.predictMmHost;
 import cn.edu.shou.monitor.domain.predictMmOperatingSystem;
 import cn.edu.shou.monitor.domain.predictMmServers;
-import cn.edu.shou.monitor.service.ApplicationManagementRepository;
-import cn.edu.shou.monitor.service.HostManagementRepository;
-import cn.edu.shou.monitor.service.OperatingSystemRepository;
-import cn.edu.shou.monitor.service.ServerManagementRepository;
+import cn.edu.shou.monitor.service.*;
 import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import cn.edu.shou.monitor.util.ChineseCharToAbc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +31,68 @@ public class HostManagementApiController {
     OperatingSystemRepository operatingSystemRepository;
     @Autowired
     ApplicationManagementRepository applicationManagementRepository;
+    @Autowired
+    HostTypeRepository hostTypeRepository;
     //获取所有模型数据信息
     @RequestMapping(value = "/getAllHost")
     public List<predictMmHost> getAllHost() {
         return hostManagementRepository.findAll();
     }
-
-    //根据ID集合获取主机信息
+    //根据ID集合获取主机信息   应用显示主机列表  top结构使用
     @RequestMapping(value = "/getHostsByIds/{ids}")
     public List<predictMmHost>getHostsByIds(@PathVariable String ids){
+        //使显示主机类型名称，而不是编号
+        List <predictMmHost> hostes = hostManagementRepository.findAll();
+        if (hostes!=null){
+            for (predictMmHost host1:hostes){
+                String hostTypeId = host1.getHostType();
+                if (hostTypeId != null){
+                    hostTypeId = hostTypeRepository.findOne(Long.parseLong(hostTypeId))==null?"":
+                            hostTypeRepository.findOne(Long.parseLong(hostTypeId)).getHostTypeName();
+                    host1.setHostType(hostTypeId);
+                }
+            }
+        }
         List<predictMmHost> hosts=new ArrayList<predictMmHost>();
+        if (ids!=null && ids!="" && !ids.contains("null")){
+            String [] topRelIds = ids.split(",");//拆分拓扑主机ids
+            String [] hostsIds=ids.split(",");//拆分主机IDs
+            for (String id:hostsIds){
+                predictMmHost host=new predictMmHost();
+                List<predictMmApplications> applications=new ArrayList<predictMmApplications>();
+                host=hostManagementRepository.findOne(Long.parseLong(id));
+               /* List<predictMmHost> host1=new ArrayList<predictMmHost>();
+                for (String relId : topRelIds){
+                    host1 = hostManagementRepository.getHostByTopId("%"+host.getId()+"%");
+                }*/
+                //根据hostId获取主机信息
+                //获取每台主机所有的程序名
+                applications=applicationManagementRepository.getApplicationsByHostId("%"+host.getId()+"%");
+                String applicationContents="";
+                //取出程序名
+                for (predictMmApplications application:applications){
+                    applicationContents+=application.getHostContent()+",";
+                }
+                applicationContents=applicationContents==""?"暂无数据":applicationContents.substring(0,applicationContents.length()-1);
+                host.setAppName(applicationContents);
+
+                hosts.add(host);
+            }
+        }
+        return hosts;
+    }
+    //张倩 20160513 根据主机ID集合获取主机名称
+    @RequestMapping(value = "/getHostsNameById/{ids}")
+    public String  getHostsNameById(@PathVariable String ids){
+        String  hosts="";
         if (ids!=null && ids!="" && !ids.contains("null")){
             String [] hostsIds=ids.split(",");//拆分主机IDs
             for (String id:hostsIds){
                 predictMmHost host=new predictMmHost();
                 host=hostManagementRepository.findOne(Long.parseLong(id));
-                hosts.add(host);
+                hosts+=host.getHosts()+",";
             }
+            hosts = hosts.substring(0,hosts.length()-1);
         }
         return hosts;
     }
@@ -85,7 +127,7 @@ public class HostManagementApiController {
         return hosts;
     }
 
-    //创建VMWare虚拟机
+    //创建主机
     @RequestMapping(value = "/createAndUpdateHost", method = RequestMethod.GET)
     public List<predictMmHost> createAndUpdateHost(predictMmHostForm hostForm) {
         long recordId = hostForm.getId();//获取记录ID
@@ -134,7 +176,16 @@ public class HostManagementApiController {
         }
         return list;
     }
-
+    //top关系
+    @RequestMapping(value = "/createAndUpTop")
+    public List<predictMmHost>createAndUpTop(predictMmHostForm hostForm){
+        predictMmHost predictHost = hostManagementRepository.findOne(hostForm.getId());;
+        predictHost.setTopRelation(hostForm.getTopRelation());
+        List<predictMmHost> list = new ArrayList<predictMmHost>();
+        hostManagementRepository.save(predictHost);
+        list.add(predictHost);
+        return list;
+    }
     //删除虚拟机
     @RequestMapping(value = "/deleteHost/{id}")
     public List<predictMmHost> deleteHost(@PathVariable long id) {

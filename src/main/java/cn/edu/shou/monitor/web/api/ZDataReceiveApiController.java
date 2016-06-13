@@ -138,6 +138,4 @@ public class ZDataReceiveApiController {
         return receive.getDbDataNum();
     }
 
-
-
 }

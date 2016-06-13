@@ -24,7 +24,7 @@ public class ZbxScreenApiController {
     @Autowired
     ZbxScreenRepository zbx;
     @Autowired
-    ZbxScreenThreeToOneRepository  zbx321;
+    ZbxScreenThreeToOneRepository zbx321;
 
     @RequestMapping(value = "/cpu")
     public List<Map<String,Object>> getCpu(){

@@ -42,7 +42,17 @@ public class predictMmHost extends BaseEntity {
     @Getter  @Setter
     private String  hostState;//主机状态
     @Getter @Setter
-    private String  SMSName; //
+    private String  SMSName; //短信提示
+    @Getter @Setter
+    private String topRelation; //拓扑关系
+
+    public String getTopRelation() {
+        return topRelation;
+    }
+
+    public void setTopRelation(String topRelation) {
+        this.topRelation = topRelation;
+    }
 
     public String getSMSName() {
         return SMSName;

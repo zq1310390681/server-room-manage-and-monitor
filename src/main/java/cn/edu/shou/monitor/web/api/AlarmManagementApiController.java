@@ -27,11 +27,19 @@ public class AlarmManagementApiController {
     EquipTypeRepository alarmInfoToSearch;
     @Autowired
     ZbxTriggerRepository zbxTrigger;
+    @Autowired
+    EquipTypeRepository equipTypeRepository;
 
     //获取所有告警规则数据信息
     @RequestMapping(value = "/getAllAlarm")
     public List<predictMmAlarm> getAllAlarm(){
         return alarmManagementRepository.findAll();
+    }
+    //获取提示信息
+    @RequestMapping(value = "/getDescription/{id}")
+    public predictMmEquipType getDescription(@PathVariable long id){
+        predictMmEquipType equipType = equipTypeRepository.findOne(id);
+        return equipType;
     }
     //创建告警规则
     @RequestMapping(value = "/createAndUpdateAlarm",method = RequestMethod.GET)
@@ -96,6 +104,7 @@ public class AlarmManagementApiController {
         predictAlarm.setAlarmThreshold(alarmForm.getAlarmThreshold());//阈值
         predictAlarm.setAlarmGrade(alarmForm.getAlarmGrade());//告警等级
         predictAlarm.setAlarmNote(alarmForm.getAlarmNote());//备注信息
+        predictAlarm.setAlarmInform(alarmForm.getAlarmInform());
 
         String name = alarmInfoToSearch.findOne(alarmForm.getEquipTypeName()).getEquipTypeName();
         predictMmEquipType alarmRelate = alarmInfoToSearch.findOne(alarmForm.getEquipTypeElement());

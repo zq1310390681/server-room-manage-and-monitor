@@ -131,7 +131,7 @@
         routerModelGridDataSource=new kendo.data.DataSource({
             transport: {
                 read:  {
-                    url: crudRouterBaseUrl + "/getAllRouters",
+                    url: crudRouterBaseUrl + "/getAllRoutersExport",
                     dataType: "json"
                 }
             },
@@ -145,7 +145,10 @@
             dataSource:routerModelGridDataSource,
             columns:[
                 { field:"routerSerialNumber",title:"路由器编号"},
+                { field: "routerBrand", title: "路由器品牌"},
+                { field: "routerType", title: "路由器型号"},
                 { field: "routerIP", title: "路由器IP"},
+                { field: "routerU", title: "所在U"},
                 { field: "routerState", title: "状态"},
                 { command: [
                     {name:"view",text:"查看状态",className:"btn btn-success",

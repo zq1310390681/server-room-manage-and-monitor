@@ -216,7 +216,7 @@ function setServiceObjectGrid(){
             {field:"serviceObjectName",title:"服务对象名称"},
             {field:"keySerObj",title:"重点服务对象"},
             {field:"serviceObjectIp",title:"服务对象IP"},
-            {field:"serviceObjectGroup",title:"服务对象所在组",template:"#=getServiceObjectGroup(serviceObjectGroup)#"},
+            {field:"serviceObjectGroup",title:"服务对象所在组"},
             { command: [
                 {text: "编辑", click: showServiceObjectModel,className: "btn btn-info" },   //编辑窗体内容
                 { text: "删除",click:delServiceObjectModel ,className:"btn btn-danger "}    //删除记录
@@ -307,7 +307,7 @@ function getServiceObjectGroup(serviceObjectGroupId){
         var serObjGroupName="";//服务对象分组
         $.ajax({
             dataType:"json",
-            url:"/predictCenter/api/dropDownList/getServiceObjectGroupById/" + serviceObjectGroupId,
+            url:"/predictCenter/api/dropDownList/getSoByName/" + serviceObjectGroupId,
             async:false,                       //是否异步：不异步，页面加载同时加载数据
             success:function(data){
                 serObjGroupName=data.serObjGroupName;

@@ -212,7 +212,20 @@
                     of:"页"
                 }
             },
-            selectable: "row"
+            selectable: "row",
+            scrollable: true,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "关键词"
+                    }
+                },
+                messages: {
+                    filter: "搜索",
+                    clear: "清除"
+                }
+            }
         });
         //添加及查看模板窗体 郑霞 20160115
         brandModelWnd = $("#brandModelWnd").kendoWindow({

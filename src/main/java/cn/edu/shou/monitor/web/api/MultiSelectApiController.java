@@ -56,8 +56,8 @@ public class MultiSelectApiController {
         return ServiceObjects;
     }
     //获取所有主机数据
-    @RequestMapping(value = "/getAllHosts")
-    public List<predictMmHost> getAllHosts(){
+    @RequestMapping(value = "/getHostsNameById")
+    public List<predictMmHost> getHostsNameById(){
         List<predictMmHost> Hosts=HostManagementRepository.findAll();
         return Hosts;
     }

@@ -20,13 +20,13 @@ import java.util.List;
 public class DynamicEnvironmentManagementApiController {
     @Autowired
     DynamicEnvironmentManagementRepository dynamicEnvironmentManagementRepository;
-    //获取所有模型数据信息
+    //获取数据信息
     @RequestMapping(value = "/getAllDynamicEnvironment")
     public List<predictMmDynamicEnvironment> getAllDynamicEnvironment(){
         List<predictMmDynamicEnvironment> predictMmDynamicEnvironment=dynamicEnvironmentManagementRepository.findAll();
         return predictMmDynamicEnvironment;
     }
-    //创建VMWare虚拟机
+    //创建数据信息
     @RequestMapping(value = "/createAndUpdateDynamicEnvironment",method = RequestMethod.GET)
     public List<predictMmDynamicEnvironment> createAndUpdateDynamicEnvironment(predictMmDynamicEnvironmentForm dynamicEnvironmentForm) {
         long recordId=dynamicEnvironmentForm.getId();//获取记录ID
@@ -45,7 +45,7 @@ public class DynamicEnvironmentManagementApiController {
         return list;
     }
 
-    //删除虚拟机
+    //删除数据
     @RequestMapping(value = "/deleteDynamicEnvironment/{id}")
     public List<predictMmDynamicEnvironment> deleteDynamicEnvironment(@PathVariable long id){
         predictMmDynamicEnvironment predictDynamicEnvironment=dynamicEnvironmentManagementRepository.findOne(id);

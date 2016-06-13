@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web;
 
-import cn.edu.shou.monitor.domain.User;
 import cn.edu.shou.monitor.domain.PredictMmAppGroup;
+import cn.edu.shou.monitor.domain.User;
 import cn.edu.shou.monitor.service.AppGroupManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;

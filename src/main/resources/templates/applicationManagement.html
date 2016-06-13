@@ -241,9 +241,7 @@
     function setApplicationModelGrid(){
         var applicationModelGrid=$("#applicationModelGrid").kendoGrid({
             dataSource:applicationModelGridDataSource,
-            toolbar:[{template: kendo.template($("#applicationModel_toolbar").html())},
-                     {template: kendo.template($("#inputModel_toolbar").html())},
-                     {template: kendo.template($("#outputModel_toolbar").html())}],
+            toolbar:[{template: kendo.template($("#applicationModel_toolbar").html())}],
             columns:[
                 /*{title: "<input type='checkbox' id='chkAll' onclick='checkAll()'/>全选",template: '<input type="checkbox" name="selectChk"/>',width:"5%"},*/
                 { field:"applicationName",title:"应用名称",width:"15%"},
@@ -251,7 +249,6 @@
                 { field:"appGroup",title:"应用所在组",width:"8%"},
                 { field: "applicationServiceObject", title: "服务对象",template:"#=getName(applicationServiceObject) #",width:"15%"},
                 { field: "applicationHost", title: "所在主机",template:"#=getApplicationHostNameById(applicationHost)#",width:"15%"},
-
                 { field: "applicationMiddlewareName", title: "中间件名称",template:"#=getName(applicationMiddlewareName) #",width:"12%"},
                 { field: "applicationRemark", title: "备注",hidden:true},
                 { command: [
@@ -286,7 +283,20 @@
                     of:"页"
                 }
             },
-            selectable: "row"
+            selectable: "row",
+            scrollable: true,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        contains: "关键词"
+                    }
+                },
+                messages: {
+                    filter: "搜索",
+                    clear: "清除"
+                }
+            }
         });
         //添加及查看模板窗体 郑霞 20160115
         applicationModelWnd = $("#applicationModelWnd").kendoWindow({
@@ -296,25 +306,6 @@
             resizable: false,
             width: 600,
             height:450
-        }).data("kendoWindow");
-
-        //导入模板窗体 郑霞 20160115
-         applicationInputWnd = $("#applicationInputWnd").kendoWindow({
-            title: "导入",
-            modal: true,
-            visible: false,
-            resizable: false,
-            width: 600,
-            height:150
-        }).data("kendoWindow");
-        //导出模板窗体 郑霞 20160115
-         applicationOutputWnd = $("#applicationOutputWnd").kendoWindow({
-            title: "导出",
-            modal: true,
-            visible: false,
-            resizable: false,
-            width: 600,
-            height:200
         }).data("kendoWindow");
     }
 
@@ -424,14 +415,7 @@
         applicationModelRecordId=0;//添加应用模板，模板id设为0.
         applicationModelWnd.center().open();
     }
-    //导入
-    function addApplicationInputModel(){
-        applicationInputWnd.center().open();
-    }
-    //导出
-     function addApplicationOutputModel(){
-        applicationOutputWnd.center().open();
-    }
+
 
     //全选
     function checkAll(){
@@ -521,35 +505,14 @@
                         setApplicationModelGridDataSource();
                         setApplicationModelGrid();
                      }
-                })
+                });
     }
-    //提交导入数据至后台
-    function submitapplicationFolderAjax(submitURL,objData){
-        $.ajax({
-                    url:submitURL,
-                    dataType: "json",   //返回格式为json
-                    async: true,//同步，这也是ajax重要特性
-                    type: "GET",   //请求方式
-                    data:objData,
-                    success:function(data){
-                        $("#applicationFolderWnd").data("kendoWindow").close();
-                        setApplicationModelGridDataSource();
-                        setApplicationModelGrid();
-                     }
-                })
-    }
+
     //关闭窗口
     $("#closeApplicationModel").click( function (e) {
         $("#applicationModelWnd").data("kendoWindow").close();
     });
-    //取消导入
-    $("#closeApplicationFolder").click( function (e) {
-        $("#applicationInputWnd").data("kendoWindow").close();
-    });
-    //取消导出
-     $("#closeApplicationSelection").click( function (e) {
-        $("#applicationOutputWnd").data("kendoWindow").close();
-    });
+
 
     //服务对象多选
     $("#applicationServiceObject").kendoMultiSelect({
@@ -743,13 +706,6 @@
 <script id="applicationModel_toolbar" type="text/x-kendo-template">
     <button class="k-button k-button-icontext k-grid-add" id="applicationModel_toolbar_queryBtn" onclick="addApplicationModel();"><span class="k-icon k-add"></span>添加应用</button>   <!--添加应用-->
 
-</script>
-<script id="inputModel_toolbar" type="text/x-kendo-template">
-    <button class="k-button k-button-icontext k-grid-add" id="inputModel_toolbar_queryBtn" onclick="addApplicationInputModel();"><span class="k-icon k-add"></span>导入</button>   <!--导入-->
-</script>
-
-<script id="outputModel_toolbar" type="text/x-kendo-template">
-    <button class="k-button k-button-icontext k-grid-add" id="output_toolbar_queryBtn" onclick="addApplicationOutputModel();"><span class="k-icon k-add"></span>导出</button>   <!--导出-->
 </script>
 </body>
 </html>

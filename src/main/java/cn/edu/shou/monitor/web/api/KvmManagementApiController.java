@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by sqhe18 on 2016/5/9.
@@ -49,7 +47,7 @@ public class KvmManagementApiController {
        list.add(predictKvm);
        return list;
    }
-    //判断分组是否已存在
+    //判断是否已存在
     @RequestMapping(value = "/kvmExist/{kvmName}")
     public Boolean kvmExist(@PathVariable String kvmName){
         predictMmKvm kvm= kvmRepository.getKvmByName(kvmName);//根据KVM获取对象

@@ -1,7 +1,7 @@
 package cn.edu.shou.monitor.web.api;
 
-import cn.edu.shou.monitor.domain.missiveDataForm.PredictMmServiceObjGroupForm;
 import cn.edu.shou.monitor.domain.PredictMmServiceObjGroup;
+import cn.edu.shou.monitor.domain.missiveDataForm.PredictMmServiceObjGroupForm;
 import cn.edu.shou.monitor.service.SerObjGroupManagementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

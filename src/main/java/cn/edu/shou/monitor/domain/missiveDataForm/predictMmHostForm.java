@@ -35,6 +35,25 @@ public class predictMmHostForm {
     private String vmwareUserName;// 虚拟机用户名
     @Getter  @Setter
     private String  hostState;//主机状态
+    @Getter @Setter
+    private String  SMSName; //短信提示
+    @Getter @Setter
+    private String topRelation; //拓扑关系
+
+    public String getTopRelation() {
+        return topRelation;
+    }
+
+    public void setTopRelation(String topRelation) {
+        this.topRelation = topRelation;
+    }
+    public String getSMSName() {
+        return SMSName;
+    }
+
+    public void setSMSName(String SMSName) {
+        this.SMSName = SMSName;
+    }
 
     public String getHostState() {
         return hostState;

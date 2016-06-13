@@ -131,7 +131,7 @@
         switchModelGridDataSource=new kendo.data.DataSource({
             transport: {
                 read:  {
-                    url: crudSwitchBaseUrl + "/getAllSwitchboards",
+                    url: crudSwitchBaseUrl + "/getAllSwitchboardsExport",
                     dataType: "json"
                 }
             },
@@ -145,7 +145,10 @@
             dataSource:switchModelGridDataSource,
             columns:[
                 { field:"switchboardSerialNumber",title:"交换机编号"},
+                { field: "switchboardBrand", title: "交换机品牌"},
+                { field: "switchboardType", title: "交换机型号"},
                 { field: "switchboardIP", title: "交换机IP"},
+                { field: "switchboardU", title: "所在U"},
                 { field: "routerState", title: "状态"},
                 { command: [
                     {name:"view",text:"查看状态",className:"btn btn-success",

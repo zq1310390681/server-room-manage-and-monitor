@@ -131,7 +131,7 @@
         storeModelGridDataSource=new kendo.data.DataSource({
             transport: {
                 read:  {
-                    url: crudStoreBaseUrl + "/getAllStores",
+                    url: crudStoreBaseUrl + "/getAllStoresExport",
                     dataType: "json"
                 }
             },
@@ -145,7 +145,10 @@
             dataSource:storeModelGridDataSource,
             columns:[
                 { field:"storeSerialNumber",title:"存储设备编号"},
+                { field: "storeBrand", title: "存储设备品牌"},
+                { field: "storeType", title: "存储设备型号"},
                 { field: "storeIP", title: "存储设备IP"},
+                { field: "storeU", title: "所在U"},
                 { field: "routerState", title: "状态"},
                 { command: [
                     {name:"view",text:"查看状态",className:"btn btn-success",

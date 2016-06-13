@@ -272,7 +272,7 @@
                         window.open(url);
                         }
                      },
-                    {name:"viewQr",text:"二维码",className:" btn btn-warning",
+                    /*{name:"viewQr",text:"二维码",className:" btn btn-warning",
                         click:function(e){
                             var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
                             if(dataItem==undefined){
@@ -281,10 +281,10 @@
                             var url ="/predictCenter/switchboards/getSwitchboardQrCode/"+dataItem.id+".html";
                             window.open(url);
                         }
-                    },
+                    },*/
                     {text: "编辑", click: showSwitchboardModel,className: "btn btn-info" },   //编辑窗体内容
                     { text: "删除",click:delSwitchboardModel ,className:"btn btn-danger "}    //删除记录
-                ] ,  title: "操作",width:"15%"}
+                ] ,  title: "操作",width:"20%"}
             ],
             pageable: {
                 buttonCount:3,

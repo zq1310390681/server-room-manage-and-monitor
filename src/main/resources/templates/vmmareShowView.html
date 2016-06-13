@@ -24,7 +24,7 @@
         <a class="menu-toggler" id="menu-toggler" href="#">
             <span class="menu-text"></span>
         </a>
-        <div th:replace="slider :: slidermenu(${'sjzs_sb_server'})"></div>
+        <div th:replace="slider :: slidermenu(${'sjzs_zj_vmware'})"></div>
         <div class="main-content">
 
             <div class="demo-section k-content wide">
@@ -38,7 +38,7 @@
                             <a href="/">主页</a>
                         </li>
                         <li class="active">
-                            <a href="#">服务器硬件监控数据</a>
+                            <a href="#">虚拟机控数据</a>
                         </li>
                     </ul><!-- .breadcrumb -->
 
@@ -111,7 +111,7 @@
         var youIFrame = $("#test1");
         var iframeHeight = window.innerHeight-$("#navbar").height()-$("#breadcrumbs").height();
         youIFrame.height(iframeHeight-10);
-        var hostname =  /*[[${serverHostname}]]*/  null;
+        var hostname =  /*[[${vmmareHostname}]]*/  null;
         var hostid =  /*[[${hostid}]]*/  null;
         youIFrame.attr("src", "http://192.168.8.167:3000/dashboard/script/scripted.js?theme=light&hostname="+hostname+"&hostid="+hostid);
         youIFrame.load(function() {

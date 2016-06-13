@@ -81,7 +81,6 @@ public class GetDropDownListApiContentController {
     public List<PredictMmEquipmentCabinet>getAllEquipmentCabinets(){
         return EquipmentCabinetRepository.findAll();
     }
-
     //根据Id获取机柜数据
     @RequestMapping(value = "/getEquipmentCabinetNameById/{id}")
     public PredictMmEquipmentCabinet getEquipmentCabinetNameById(@PathVariable long id){
@@ -167,7 +166,11 @@ public class GetDropDownListApiContentController {
     public PredictMmServiceObjGroup getServiceObjectGroupById(@PathVariable long id){
         return serObjGroupManagementRepository.findOne(id);
     }
-
+    //根据名称获取服务对象分组数据
+    @RequestMapping(value = "/getSoByName/{name}")
+    public PredictMmServiceObjGroup getSoByName(@PathVariable String name){
+        return serObjGroupManagementRepository.getSerObjByName(name);
+    }
     //获取应用分组列表
     @RequestMapping("/getAppGroup")
     public List<PredictMmAppGroup>getAppGroup(){

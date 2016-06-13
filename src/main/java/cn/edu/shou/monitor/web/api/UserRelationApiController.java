@@ -20,16 +20,16 @@ public class UserRelationApiController {
     JdbcTemplate jdbcTemplate;
     @RequestMapping(value ="/test")
     public String getMatrix(){
-        String selectApp = "select id,application_name as name,app_group as 'group',key_app as 'key',host_content as 'subSystem'\n" +
-                "from predict_mm_applications;";
+        String selectApp = "select app.id,application_name as name,app_group as 'group',key_app as 'key',host_content as 'subSystem',group_order\n" +
+                "from predict_mm_applications as app,predict_mm_app_group as ag where app.app_group = ag.id order by group_order;";
         List<Map<String,Object>> listApp;
         listApp = jdbcTemplate.queryForList(selectApp);
         for(Map<String,Object> map : listApp){
             map.put("type","app");
         }
 
-        String selectSo = "select id,service_object_name as name,service_object_group as 'group',key_ser_obj as 'key'\n" +
-                "from predict_mm_service_object;";
+        String selectSo = "select so.id,service_object_name as name,service_object_group as 'group',key_ser_obj as 'key',group_order\n" +
+                "from predict_mm_service_object as so,predict_mm_service_obj_group as og where so.service_object_group = og.id order by group_order;";
         List<Map<String,Object>> listSo;
         listSo = jdbcTemplate.queryForList(selectSo);
         for(Map<String,Object> map:listSo){
@@ -67,7 +67,6 @@ public class UserRelationApiController {
                             JSONObject link = new JSONObject();
                             link.put("value",1);
                             link.put("state",1);
-
                             link.put("target",j);
                             link.put("source",i);
                             links.add(link);
@@ -79,7 +78,6 @@ public class UserRelationApiController {
 
         }
         matrix.put("links",links);
-
 
         String selectAppGroup = "select id,app_group_name as 'groupName' from predict_mm_app_group;";
         List<Map<String,Object>>listAppGroup;

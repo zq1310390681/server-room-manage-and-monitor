@@ -1,14 +1,16 @@
 package cn.edu.shou.monitor.web.api;
 
-import cn.edu.shou.monitor.domain.predictMmRouters;
 import cn.edu.shou.monitor.domain.missiveDataForm.predictMmRoutersForm;
+import cn.edu.shou.monitor.domain.predictMmRouters;
 import cn.edu.shou.monitor.service.CsvUtilRepository;
-import cn.edu.shou.monitor.service.RouterManagementRepository;
-import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import cn.edu.shou.monitor.service.PredictMmBrandRepository;
 import cn.edu.shou.monitor.service.PredictMmEquipmentCabinetRepository;
+import cn.edu.shou.monitor.service.RouterManagementRepository;
+import cn.edu.shou.monitor.service.impl.ZbxHostServiceImpl;
 import cn.edu.shou.monitor.web.FileOperate;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +45,7 @@ public class RouterManagementApiController {
     PredictMmBrandRepository brandRepository;
     @Autowired
     PredictMmEquipmentCabinetRepository pmecDAO;
-    //获取所有路由器数据信息
+    private final static Logger logger = LoggerFactory.getLogger(RouterManagementApiController.class);
     //获取所有路由器数据信息
     @RequestMapping(value = "/getAllRouters")
     public List<predictMmRouters> getAllRouters(){
@@ -97,7 +99,6 @@ public class RouterManagementApiController {
         predictRouter.setRouterEquipmentCabinet(routersForm.getRouterEquipmentCabinet());
         predictRouter.setRouterU(routersForm.getRouterU());
         predictRouter.setRouterRemark(routersForm.getRouterRemark());
-        predictRouter.setSMSName("路由器");
 
         String createResult=null;
         ZbxHostServiceImpl zbxHostService= new ZbxHostServiceImpl();
@@ -115,8 +116,11 @@ public class RouterManagementApiController {
                 list.add(predictRouter);
                 return list;
             }
+        }else {
+            routerManagementRepository.save(predictRouter);
+            list.add(predictRouter);
+            return list;
         }
-        return list;
 //        routerManagementRepository.save(predictRouter);
 //        List<predictMmRouters> list=new ArrayList<predictMmRouters>();
 //        list.add(predictRouter);
@@ -143,7 +147,7 @@ public class RouterManagementApiController {
         String filePath=homedir+"/download/";
         String fileName="路由器.csv";
         List exportDa = new ArrayList<>();
-        List<predictMmRouters> routerses = getAllRouters();//获取到需要导出的数据
+        List<predictMmRouters> routerses = getAllRoutersExport();//获取到需要导出的数据
         List<String>results=new ArrayList<String>();
         String header="路由器编号,路由器S/N号,购买时间,维保到期时间,路由器品牌,路由器型号,路由器IP,SNMP,端口号,所在机柜,所在U,备注";
         for (predictMmRouters routers:routerses){

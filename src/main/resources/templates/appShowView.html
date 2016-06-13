@@ -58,7 +58,7 @@
             </div>
         </div><!-- /.main-content -->
         <div class="page-content" >
-            <div style="height: 800px;width: 85%; float: left"  >
+            <div style="height:auto;width: 85%; float: left"  >
                 <div style="float: left;width: 20%;display: inline">
                    <div style="font-size: 23px">
                        <input name="id" type="hidden" th:value="*{apps} ? *{apps.id} : '0'"/>
@@ -79,43 +79,34 @@
                    </div>
                 </div>
                 <div style="float: right;width:80%;display: inline">
-                    <div style="margin-top: 20px">
-                        <div><b >所在主机</b></div>
-                        <div id="hostModelGrid"  class=" k-grid k-widget" style="float: right;margin-top: 10px;margin-bottom: 20px" ></div>
-                    </div>
                     <div >
                         <div><b>中间件</b></div>
                         <div id="middleModelGrid"  class=" k-grid k-widget" style="float: right;margin-top: 10px;margin-bottom: 20px"></div>
                     </div>
                     <div style="margin-top: 10px">
                         <div><b>服务对象</b></div>
-                        <div id="userModelGrid"  class=" k-grid k-widget" style="float: right;margin-top: 10px" ></div>
+                        <div id="userModelGrid"  class=" k-grid k-widget" style="float: right;margin-top: 10px;margin-bottom: 20px" ></div>
+                    </div>
+                    <div style="margin-top: 20px">
+                        <div><b >所在主机</b></div>
+                        <div id="hostModelGrid"  class=" k-grid k-widget" style="float: right;margin-top: 10px;margin-bottom: 20px" ></div>
                     </div>
                 </div>
-
-            </div>
-            <div style="width: 85%;float: right; ">
-                <button id="addTop"  class="k-button btn-info" style="color:white " onclick="addTopModel();">添加拓扑</button>
-            </div>
-            <div style="width: 85%;float: right;margin-top: 30px; ">
-                <button id="deleteTop"  class="k-button btn-info" style="color:white ">删除拓扑</button>
             </div>
             <div style="height: 500px;float: right;width:70%" id="canvas"/>
         </div><!-- /.page-content -->
         <div id="addTopWnd" style="display:none">
             <div>
                 <div style="margin:10px">
-                    <label style="margin-left: 50px" >主机1:</label>
-                    <input  style="margin-left: 10px;height:30px;width:340px"  id="hostOne"/>
-                    <label style="color: red;margin-left: 5px">*</label>
+                    <label style="margin-left: 65px" >主机:</label>
+                    <input  style="margin-left: 10px;height:30px;width:395px" readonly="true" id="hosts"/>
                 </div>
                 <div style="margin:10px">
-                    <label style="margin-left: 50px" >主机2:</label>
-                    <input  style="margin-left: 10px;height:30px;width:340px"  id="hostTwo" />
-                    <label style="color: red;margin-left: 5px">*</label>
+                    <label style="margin-left: 50px" >子主机:</label>
+                    <input  style="margin-left: 115px;width:400px;margin-top: -20px"  id="topRelation"/>
                 </div>
                 <div style="margin-left:190px;margin-top:20px;">
-                    <button id="saveAddTop"  class="k-button btn-info" style="margin-left: 109px;color:white "onclick="submitSaveAddTop()">
+                    <button id="saveAddTop"  class="k-button btn-info" style="margin-left: 153px;color:white "onclick="submitSaveAddTop()">
                         <i class="icon-ok"></i>
                         保存
                     </button>
@@ -196,6 +187,22 @@
     var middleModelGridDataSource;
     var userModelGridDataSource;
     var addTopWnd;
+    var hostRecordId;
+    function setDropDownList(){
+        $("#topRelation").kendoMultiSelect({
+            placeholder: "请选择...",
+            dataTextField: "hosts",
+            dataValueField: "id",
+            enabled:true,
+            dataSource: {
+                transport: {
+                    read: crudHostBaseUr + "/getHostsByIds/"+hostIds,
+                    dataType: "json"
+                }
+            }
+        });
+    }
+
     // 数据源
     function setHostModelGridDataSource(){
         hostModelGridDataSource=new kendo.data.DataSource({
@@ -216,6 +223,7 @@
             columns:[
                 {field:"hosts",title:"主机名称",width:"20%"},
                 {field:"hostType",title:"主机类型",width:"20%"},
+                {field:"topRelation",title:"拓扑主机",width:"20%",template:"#=getHostNameById(topRelation)#"},
                 { field: "routerState", title: "状态",width:"20%"},
                 { command: [
                     {name:"view",text:"查看状态",className:"btn btn-success",
@@ -224,7 +232,8 @@
                             var url ="/predictCenter/getHostShowView/"+dataItem.hosts+"/"+dataItem.hostId+"/";
                             window.open(url);
                         }
-                    }
+                    },
+                    {text: "编辑",click:showHost, className:"btn btn-info" }   //编辑窗体内容
                 ] ,  title: "操作",width:"20%"}
             ],
             pageable: {
@@ -246,7 +255,81 @@
             },
             selectable: "row"
         });
+        addTopWnd = $("#addTopWnd").kendoWindow({
+            title: "主机拓扑维护",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 650,
+            height:200
+        }).data("kendoWindow");
     }
+    //弹出编辑窗口
+    function showHost(e){
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        hostRecordId = dataItem.id;
+        $("#hosts").val(dataItem.hosts);
+        var hostTwoMultiSelect=$("#topRelation").data("kendoMultiSelect");//子主机
+        var topRelation=dataItem.topRelation;
+        var topRelationVal=topRelation==null?"":topRelation.split(",");
+        hostTwoMultiSelect.value(topRelationVal);
+        addTopWnd.center().open();
+    }
+    // 关闭窗口
+    $("#closeAddTop").click( function (e) {
+        $("#addTopWnd").data("kendoWindow").close();
+    });
+    //保存拓扑关系
+    function submitSaveAddTop(){
+        var hostsVal = $("#hosts").val();
+        var topRelationArr=$("#topRelation").data("kendoMultiSelect").value();
+        var topRelationVal=topRelationArr.join(",");
+        var submitHostModelData = {
+            //提交当前行所有数据
+            id:hostRecordId,
+            hosts:hostsVal,
+            topRelation:topRelationVal
+        };
+        submitHostModelAjax(crudHostBaseUr + "/createAndUpTop",submitHostModelData);
+    }
+    //提交数据至后台
+    function submitHostModelAjax(submitURL,objData){
+        $.ajax({
+            url:submitURL,
+            dataType: "json",   //返回格式为json
+            async: true,//同步，这也是ajax重要特性
+            type: "GET",   //请求方式
+            data:objData,
+            success:function(data){
+                $("#addTopWnd").data("kendoWindow").close();
+                setHostModelGridDataSource()
+                setHostModelGrid()
+            }
+        });
+    }
+    //在页面显示名称，而不是ID
+    //根据主机ID获取名称字符串
+    function getHostNameById(names){
+        if(names!=null && names!=""){
+            var hostName;//主机名称
+            $.ajax({
+                dataType:"json",
+                url:crudHostBaseUr + "/getHostsById/"+names,
+                async:false,                       //是否异步：不异步，页面加载同时加载数据
+                success:function(data){
+                    hostName=data;
+                },
+                error:function(data){
+                    hostName=data.responseText;
+                }
+            });
+        }else{
+            hostName="暂无数据";
+        }
+        return hostName;
+    }
+
     function setMiddleModelGridDataSource(){
         middleModelGridDataSource=new kendo.data.DataSource({
             transport: {
@@ -396,7 +479,7 @@
         var y=-180;
         var temp=[];
         for(var i =0;i<nodeData.length;i++){
-            temp[i]=graph.createNode(nodeData[i].hosts+"\r\n"+nodeData[i].hostIP,x,y);
+            temp[i]=graph.createNode(nodeData[i].hosts+"\r\n"+nodeData[i].hostIP+nodeData[i].id,x,y);
             if(i%2==0){
                 x+=-200;
                 y+=0;
@@ -416,7 +499,7 @@
         label2.position = Q.Position.CENTER_TOP;
         label2.anchorPosition = Q.Position.CENTER_BOTTOM;
         label2.border = 1;
-        label2.padding = new Q.Insets(2, 5);
+        label2.padding = new Q.Insets(2,5);
         label2.showPointer = true;
         label2.offsetY = -10;
         //label2.backgroundColor = Colors.yellow;
@@ -441,14 +524,7 @@
         var div="<div style='width: 200px;'>"+tipContent+"</div>";
         return div;
     }
-    //弹出添加连线窗口
-    function addTopModel(){
-        addTopWnd.center.open();
-    }
-    //取消添加拓扑
-    $("#closeAddTop").click( function (e) {
-        $("#addTopWnd").data("kendoWindow").close();
-    });
+
     //程序入口
     $(function(){
         setHostModelGridDataSource();//主机
@@ -458,6 +534,8 @@
         setMiddleModelGrid();//中间件
         setUserModelGrid();//服务对象
         drowTop();//绘制top
+        $($("canvas")[1]).css("display","none");
+        setDropDownList();
     });
 </script>
 </body>

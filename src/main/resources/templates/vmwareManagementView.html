@@ -99,6 +99,15 @@
                                         </div>
                                         <div class="profile-info-row">
                                             <div class="profile-info-name">
+                                                应用：
+                                            </div>
+
+                                            <div class="profile-info-value">
+                                                <label th:text="*{vmware} ? *{vmware.appName} : '(no user specified)'"></label>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name">
                                                 虚拟机用户名：
                                             </div>
 

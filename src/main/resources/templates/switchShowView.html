@@ -38,7 +38,7 @@
                             <a href="/">主页</a>
                         </li>
                         <li class="active">
-                            <a href="#">服务器监控数据</a>
+                            <a href="#">交换机监控数据</a>
                         </li>
                     </ul><!-- .breadcrumb -->
 
@@ -111,7 +111,7 @@
         var youIFrame = $("#test1");
         var iframeHeight = window.innerHeight-$("#navbar").height()-$("#breadcrumbs").height();
         youIFrame.height(iframeHeight-10);
-        var hostname =  /*[[${serverHostname}]]*/  null;
+        var hostname =  /*[[${switchHostname}]]*/  null;
         var hostid =  /*[[${hostid}]]*/  null;
         youIFrame.attr("src", "http://192.168.8.167:3000/dashboard/script/scripted_net.js?theme=light&hostname="+hostname+"&hostid="+hostid);
         youIFrame.load(function() {

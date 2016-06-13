@@ -89,13 +89,14 @@
                                 防火墙
                             </a>
                         </li>
-                        <li th:class="${activeitem=='pj_sb_wiring'}?'active'">
-                             <a style="text-decoration:none;"  href="/predictCenter/wiring/getWiringInfo">
-                                 <i class="icon-double-angle-right"></i>
-                                 <i class="icon-inbox"></i>
-                                 配线
-                             </a>
-                        </li>
+                       <!-- <li th:class="${activeitem=='pj_sb_wiring'}?'active'">
+                            <a style="text-decoration:none;"  href="/predictCenter/wiring/getWiringInfo">
+                                <i class="icon-double-angle-right"></i>
+                                <i class="icon-inbox"></i>
+                                配线
+                            </a>
+                        </li>-->
+
                     </ul>
                 </li>
                 <li th:class="${activeitem.contains('pj_zjj')}?'active'">
@@ -135,7 +136,7 @@
                             </a>
                         </li>
                         <li th:class="${activeitem=='pj_zjj_java'}?'active'">
-                            <a style="text-decoration:none;"  href="/predictCenter/getJavaInfo">
+                            <a style="text-decoration:none;"  href="/predictCenter/getJaveInfo">
                                 <i class="icon-double-angle-right"></i>
                                 <i class="icon-inbox"></i>
                                 Java虚拟机
@@ -173,7 +174,6 @@
                         网络
                     </a>
                     <ul class="submenu"  >
-
                         <li th:class="${activeitem=='pj_wl_ping'}?'active'">
                             <a style="text-decoration:none;" href="/predictCenter/getPingInfo">
                                 <i class="icon-double-angle-right"></i>
